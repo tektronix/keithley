@@ -32,7 +32,7 @@ trigger.model.initiate()
 waitcomplete()
 --Parse index and the data into three columns.
 for i = 1, defbuffer1.n do
-print(i, "\t", defbuffer1[i], "\t", defbuffer1.relativetimestamps[i])
+    print(i, "\t", defbuffer1[i], "\t", defbuffer1.relativetimestamps[i])
 end
 --Turn off the output.
 smu.source.output = smu.OFF
