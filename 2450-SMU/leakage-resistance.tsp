@@ -35,7 +35,7 @@ waitcomplete()
 -- Parse index and data into three columns.
 print("Rdg #", "Time (s)", "Current (A)")
 for i = 1, defbuffer1.n do
-print(i, defbuffer1.relativetimestamps[i], defbuffer1[i])
+    print(i, defbuffer1.relativetimestamps[i], defbuffer1[i])
 end
 -- Discharge the capacitor to 0 V and turn off the output.
 smu.source.level = 0

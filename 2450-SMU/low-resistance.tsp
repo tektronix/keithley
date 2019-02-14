@@ -35,5 +35,5 @@ smu.source.output = smu.OFF
 --Read the resistance and time values from defbuffer1.
 print("Resistance:\tTime:")
 for i = 1, 100 do
-print(string.format("%f\t%f", defbuffer1[i], defbuffer1.relativetimestamps[i]))
+    print(string.format("%f\t%f", defbuffer1[i], defbuffer1.relativetimestamps[i]))
 end
