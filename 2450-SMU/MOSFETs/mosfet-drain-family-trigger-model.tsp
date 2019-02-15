@@ -21,9 +21,9 @@ reset()
 --If the tsplink state is not online, print an error message and quit
 state = tsplink.state
 if state ~= "online" then
-print("Error:\n-Check that all SMUs have a different node number")
-print("-Check that all SMUs are connected correctly\n")
-return
+    print("Error:\n-Check that all SMUs have a different node number")
+    print("-Check that all SMUs are connected correctly\n")
+    return
 end
 
 --######################## Model 2450 #1 (gate) setup ################
@@ -49,7 +49,7 @@ end
 trigger.model.setblock(1, trigger.BLOCK_CONFIG_RECALL, "stepVals")
 trigger.model.setblock(2, trigger.BLOCK_SOURCE_OUTPUT, smu.ON)
 trigger.model.setblock(3, trigger.BLOCK_MEASURE)
-trigger.model.setblock(4, trigger.BLOCK_NOTIFY, trigger.EVENT_NOTIFY2)
+trigger.model.setblock(4, trigger.BLOCK_NOTIFY, trigger.EVENT_NOTIFY1)
 trigger.model.setblock(5, trigger.BLOCK_WAIT, trigger.EVENT_TSPLINK1)
 trigger.model.setblock(6, trigger.BLOCK_CONFIG_NEXT, "stepVals")
 trigger.model.setblock(7, trigger.BLOCK_BRANCH_COUNTER, steppoints, 3)
@@ -73,8 +73,8 @@ node[2].trigger.tsplinkout[1].stimulus = node[2].trigger.EVENT_NOTIFY1
 --Populate the sweepVals source config list, with source levels
 --0 V to 5 V in 100 mV steps
 for i = 0, 5, 0.1 do
-node[2].smu.source.level = i
-node[2].smu.source.configlist.store("sweepVals")
+    node[2].smu.source.level = i
+    node[2].smu.source.configlist.store("sweepVals")
 end
 --Set up the trigger model.
 node[2].trigger.model.setblock(1, node[2].trigger.BLOCK_CONFIG_RECALL, "sweepVals")
@@ -97,13 +97,13 @@ if defbuffer1.n == 0 then
     print("\nNo readings in buffer\n")
 else
     for k = 1, sweeppoints do
-        print(string.format("%f\t%f\t\t%f\t%f\t\t%f\t%f\t\t%f\t%f",
-        node[2].defbuffer1.sourcevalues[k], node[2].defbuffer1[k],
-        node[2].defbuffer1.sourcevalues[k+sweeppoints],
-        node[2].defbuffer1[k+sweeppoints],
-        node[2].defbuffer1.sourcevalues[k+sweeppoints*2],
-        node[2].defbuffer1[k+sweeppoints*2],
-        node[2].defbuffer1.sourcevalues[k+sweeppoints*3],
-        node[2].defbuffer1[k+sweeppoints*3]))
+        print(
+            string.format("%f\t%f\t\t%f\t%f\t\t%f\t%f\t\t%f\t%f",
+                node[2].defbuffer1.sourcevalues[k], node[2].defbuffer1[k],
+                node[2].defbuffer1.sourcevalues[k+sweeppoints], node[2].defbuffer1[k+sweeppoints],
+                node[2].defbuffer1.sourcevalues[k+sweeppoints*2], node[2].defbuffer1[k+sweeppoints*2],
+                node[2].defbuffer1.sourcevalues[k+sweeppoints*3], node[2].defbuffer1[k+sweeppoints*3]
+            )
+        )
     end
 end
