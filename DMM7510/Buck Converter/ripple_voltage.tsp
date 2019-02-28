@@ -5,7 +5,8 @@
 *** See www.tek.com/sample-license for licensing terms. ***
 ***********************************************************
 
-This sequence of TSP commands digitizes voltage for ~ 100us.
+This sequence of TSP commands captures the ripple voltage on the output of a DC buck converter
+    by digitizing voltage for ~ 100us.
 
 After the code executes, the data is displayed in the Instrument Console of Test Script Builder.
 
@@ -35,7 +36,7 @@ defbuffer1.clear()
 dmm.digitize.read()
 -- Print the digitized readings
 if defbuffer1.n > 0 then
-    print("Digitize Voltage:")
+    print("Ripple Voltage:")
     print("Total Count:", defbuffer1.n)
     printbuffer(1, defbuffer1.n, defbuffer1)
     print("Timestamps:")
