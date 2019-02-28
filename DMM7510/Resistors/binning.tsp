@@ -47,7 +47,7 @@ trigger.digout[6].pulsewidth = 10E-6
 -- Trigger pulse is output when the Notify Block generates an event
 trigger.digout[6].stimulus = trigger.EVENT_NOTIFY2
 -- Load Component Binning trigger model template
--- See the Reference Manual for details on these settings
+-- See the Reference Manual for details on these parameters
 trigger.model.load("GradeBinning", 100, 5, 0.1, 0.1, 120, 80, 15, 4, 110, 90, 1, 105, 95, 2, 101, 99, 3, bufferVar)
 -- Initiate trigger model and wait until finished
 trigger.model.initiate()

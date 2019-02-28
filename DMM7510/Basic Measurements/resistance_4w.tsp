@@ -13,15 +13,15 @@ After the code executes, the reading is displayed in the Instrument Console of T
 
 ]]
 
---Reset the Model DMM7510 to the default settings
+-- Reset the Model DMM7510 to the default settings
 reset()
---Set the measure function to 4-wire resistance
+-- Set the measure function to 4-wire resistance
 dmm.measure.func = dmm.FUNC_4W_RESISTANCE
---Enable autozero (set to dmm.OFF to disable)
+-- Enable autozero (set to dmm.OFF to disable)
 dmm.measure.autozero.enable = dmm.ON
---Enable offset compensation (set to dmm.OFF to disable)
+-- Enable offset compensation (set to dmm.OFF to disable)
 dmm.measure.offsetcompensation.enable = dmm.ON
---Set the number of power line cycles to 1
+-- Set the number of power line cycles to 1
 dmm.measure.nplc = 1
---Read the resistance value
+-- Read the resistance value
 print(dmm.measure.read())
