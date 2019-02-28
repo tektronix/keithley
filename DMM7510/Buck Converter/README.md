@@ -1,3 +1,5 @@
+See the [DMM7510 User's Manual](https://www.tek.com/manual/downloads?product_series=DMM7510%20&manual_type=301) for details and usage schematics for this TSP scripts.
+
 # Testing a buck converter
 
 A buck converter is a highly efficient switch mode DC-to-DC voltage step-down converter. It stores
