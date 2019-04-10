@@ -1,0 +1,644 @@
+loadscript DIOControlFull
+-- $Title: I/O Control
+-- $Product: DAQ6510, DMM6500
+-- $Tag: IO, Digital, Control
+-- $Description: Allows for control of instrument's I/O lines
+-- $Requires: v1.0.0
+-- $Icon: dio_app_icon
+
+reset()
+
+currentPattern = {1,1,1,1,1,1}
+currentString = tostring(currentPattern[1]..currentPattern[2]..currentPattern[3]..currentPattern[4]..currentPattern[5]..currentPattern[6])
+function home_press_event()
+	display.changescreen(home_id)
+end
+
+--[[function DecToBase(IN,BASE)
+    local B,K,OUT,D=BASE or 10,"0123456789ABCDEFGHIJKLMNOPQRSTUVW",""
+    while IN>0 do
+        IN,D=math.floor(IN/B),math.mod(IN,B)+1
+        OUT=string.sub(K,D,D)..OUT
+    end
+    return OUT
+end
+]]
+function binary2hex(Bin)
+	local input = tonumber(tostring(Bin), 2)
+	local B,K,output,D = 16,"0123456789ABCDEF",""
+    while input>0 do
+        input,D=math.floor(input/B),math.mod(input,B)+1
+        output=string.sub(K,D,D)..output
+    end
+    return output
+	
+	--[[local out = string.format("%X", tostring(Bin))
+	return out]]
+end
+
+
+function Line1()
+	if currentPattern[1] == 1 then
+		currentPattern[1] = 0
+		digio.line[1].state = 0
+		--display.settext(line1_id, "Low")
+	elseif currentPattern[1] == 0 then
+		currentPattern[1] = 1
+		digio.line[1].state = 1
+		--display.settext(line1_id, "High")
+	end
+
+	currentString = tonumber(tostring(currentPattern[1]..currentPattern[2]..currentPattern[3]..currentPattern[4]..currentPattern[5]..currentPattern[6]))
+	display.setvalue(bitEnter_id, currentString)
+end
+function Line2()
+	if currentPattern[2] == 1 then
+		currentPattern[2] = 0
+		digio.line[2].state = 0
+		--display.settext(line2_id, "Low") 
+	elseif currentPattern[2] == 0 then
+		currentPattern[2] = 1
+		digio.line[2].state = 1
+	--	display.settext(line2_id, "High")
+	end
+
+	currentString = tonumber(tostring(currentPattern[1]..currentPattern[2]..currentPattern[3]..currentPattern[4]..currentPattern[5]..currentPattern[6]))
+	display.setvalue(bitEnter_id, currentString)
+end
+function Line3()
+	if currentPattern[3] == 1 then
+		currentPattern[3] = 0
+		digio.line[3].state = 0
+		--display.settext(line3_id, "Low")
+	elseif currentPattern[3] == 0 then
+		currentPattern[3] = 1
+		digio.line[3].state = 1
+		--display.settext(line3_id, "High")
+	end
+
+	currentString = tonumber(tostring(currentPattern[1]..currentPattern[2]..currentPattern[3]..currentPattern[4]..currentPattern[5]..currentPattern[6]))
+	display.setvalue(bitEnter_id, currentString)
+end
+function Line4()
+	if currentPattern[4] == 1 then
+		currentPattern[4] = 0
+		digio.line[4].state = 0
+		--display.settext(line4_id, "Low")
+	elseif currentPattern[4] == 0 then
+		currentPattern[4] = 1
+		digio.line[4].state = 1
+		--display.settext(line4_id, "High")
+	end
+
+	currentString = tonumber(tostring(currentPattern[1]..currentPattern[2]..currentPattern[3]..currentPattern[4]..currentPattern[5]..currentPattern[6]))
+	display.setvalue(bitEnter_id, currentString)
+end
+function Line5()
+	if currentPattern[5] == 1 then
+		currentPattern[5] = 0
+		digio.line[5].state = 0
+		--display.settext(line5_id, "Low")
+	elseif currentPattern[5] == 0 then
+		currentPattern[5] = 1
+		digio.line[5].state = 1
+		--display.settext(line5_id, "High")
+	end
+
+	currentString = tonumber(tostring(currentPattern[1]..currentPattern[2]..currentPattern[3]..currentPattern[4]..currentPattern[5]..currentPattern[6]))
+	display.setvalue(bitEnter_id, currentString)
+end
+function Line6()
+	if currentPattern[6] == 1 then
+		currentPattern[6] = 0
+		digio.line[6].state = 0
+		--display.settext(line6_id, "Low")
+	elseif currentPattern[6] == 0 then
+		currentPattern[6] = 1
+		digio.line[6].state = 1
+		--display.settext(line6_id, "High")
+	end
+
+	currentString = tonumber(tostring(currentPattern[1]..currentPattern[2]..currentPattern[3]..currentPattern[4]..currentPattern[5]..currentPattern[6]))
+	display.setvalue(bitEnter_id, currentString)
+end
+
+function bitPattern()
+	local v = display.getvalue(bitEnter_id)
+	local bits = {0,0,0,0,0,0}
+	for i = 1,string.len(v) do
+		bits[i] = tonumber(string.sub(v, i, i))
+	end
+	if  bits[i] == 1 or bits[i] == 0 or bits[i] == nil then
+		currentPattern = bits
+	
+			if string.len(v) << 6 then
+				for j = 1, (6-string.len(v)) do
+					table.insert(bits,1,0)
+				end
+			end
+
+		for i = 1,6 do
+				digio.line[i].state = bits[i]
+		end
+				
+		if currentPattern[1] == 0 then
+			digio.line[1].state = 0
+			display.settext(line1_id, "Low")
+		elseif currentPattern[1] == 1 then
+			digio.line[1].state = 1
+			display.settext(line1_id, "High")
+		end
+
+		if currentPattern[2] == 0 then
+			digio.line[2].state = 0
+			display.settext(line2_id, "Low")
+		elseif currentPattern[2] == 1 then
+			digio.line[2].state = 1
+			display.settext(line2_id, "High")
+		end
+	
+		if currentPattern[3] == 0 then
+			digio.line[3].state = 0
+			display.settext(line3_id, "Low")
+		elseif currentPattern[3] == 1 then
+			digio.line[3].state = 1
+			display.settext(line3_id, "High")
+		end
+		
+		if currentPattern[4] == 0 then
+			digio.line[4].state = 0
+			display.settext(line4_id, "Low")
+		elseif currentPattern[4] == 1 then
+			digio.line[4].state = 1
+			display.settext(line4_id, "High")
+		end
+
+		if currentPattern[5] == 0 then
+			digio.line[5].state = 0
+			display.settext(line5_id, "Low")
+		elseif currentPattern[5] == 1 then
+			digio.line[5].state = 1
+			display.settext(line5_id, "High")
+		end
+
+		if currentPattern[6] == 0 then
+			digio.line[6].state = 0
+			display.settext(line6_id, "Low")
+		elseif currentPattern[6] == 1 then
+			digio.line[6].state = 1
+			display.settext(line6_id, "High")
+		end
+			
+		
+	else
+		--error
+	end
+end
+--[[function IOselect()
+	display.changescreen(chooseIO_id)
+	chooseIO()
+end]]
+function chooseIO()
+	okButton_id = 0
+	IO_ = {}
+	--for i = 1,6 do
+	--	digio.line[i].reset()
+	--end
+
+	while okButton_id ~= chooseOK_id do
+		
+		if display.getvalue(choose1_id) == display.ON then
+			IO_[1] = 1
+			digio.line[1].mode = digio.MODE_DIGITAL_IN
+		else 
+			IO_[1] = 0
+			digio.line[1].mode = digio.MODE_DIGITAL_OUT
+			--digio.line[1].state = 1
+		end
+		if display.getvalue(choose2_id) == display.ON then
+			IO_[2] = 1
+			digio.line[2].mode = digio.MODE_DIGITAL_IN
+		else 
+			IO_[2] = 0 
+			--digio.line[2].state = 1
+		end
+		if display.getvalue(choose3_id) == display.ON then
+			IO_[3] = 1
+			digio.line[3].mode = digio.MODE_DIGITAL_IN
+		else 
+			IO_[3] = 0 
+			--digio.line[3].state = 1
+		end
+		if display.getvalue(choose4_id) == display.ON then
+			IO_[4] = 1
+			digio.line[4].mode = digio.MODE_DIGITAL_IN
+		else 
+			IO_[4] = 0 
+			--digio.line[4].state = 1
+		end
+		if display.getvalue(choose5_id) == display.ON then
+			IO_[5] = 1
+			digio.line[5].mode = digio.MODE_DIGITAL_IN
+		else 
+			IO_[5] = 0 
+			--digio.line[5].state = 1
+		end
+		if display.getvalue(choose6_id) == display.ON then
+			IO_[6] = 1
+			digio.line[6].mode = digio.MODE_DIGITAL_IN
+		else 
+			IO_[6] = 0 
+		--	digio.line[6].state = 1
+		end
+	
+		okButton_id = display.waitevent(0.01)
+		if okButton_id == chooseOK_id then
+			display.changescreen(home_id)
+		end
+	end
+	return(IO_)
+end
+
+--choose IO screen
+--display.setevent(line1_id, display.EVENT_PRESS, "Line1()")
+home_id = display.create(display.ROOT, display.OBJ_SCREEN_HOME, "DIO Control")
+load_id = display.create(display.ROOT, display.OBJ_SCREEN, "DIO Control")
+chooseIO_id = display.create(display.ROOT, display.OBJ_SCREEN, "DIO Control")
+display.changescreen(load_id)
+chooseText1_id = display.create(chooseIO_id, display.OBJ_TEXT, 25, 100, "Choose Digital Input and Output Lines")
+chooseText2_id = display.create(chooseIO_id, display.OBJ_TEXT, 25, 130, "(checked boxes are digital inputs, unchecked are outputs)")
+choose1_id = display.create(chooseIO_id, display.OBJ_EDIT_CHECK, 200, 170, "Line 1", "Input or Output")
+choose2_id = display.create(chooseIO_id, display.OBJ_EDIT_CHECK, 425, 170, "Line 2", "Input or Output")
+choose3_id = display.create(chooseIO_id, display.OBJ_EDIT_CHECK, 650, 170, "Line 3", "Input or Output")
+choose4_id = display.create(chooseIO_id, display.OBJ_EDIT_CHECK, 200, 235, "Line 4", "Input or Output")
+choose5_id = display.create(chooseIO_id, display.OBJ_EDIT_CHECK, 425, 235, "Line 5", "Input or Output")
+choose6_id = display.create(chooseIO_id, display.OBJ_EDIT_CHECK, 650, 235, "Line 6", "Input or Output")
+chooseOK_id = display.create(chooseIO_id, display.OBJ_BUTTON, 565, 350, "OK")
+
+
+line_id = display.create(home_id, display.OBJ_LINE, 100, 200, 700, 200)
+input_id = display.create(home_id, display.OBJ_TEXT, 25, 30, "Current States")
+output_id = display.create(home_id, display.OBJ_TEXT, 25, 230, "Control")
+
+ioSelect_id = display.create(home_id, display.OBJ_BUTTON, 640, 80, "I/O Select")
+display.setevent(ioSelect_id, display.EVENT_PRESS, "IOselect()")
+--input
+--[[line1TextIn_id = display.create(home_id, display.OBJ_TEXT, 250, 35, "Line 1")
+line2TextIn_id = display.create(home_id, display.OBJ_TEXT, 435, 35, "Line 2")
+line3TextIn_id = display.create(home_id, display.OBJ_TEXT, 620, 35, "Line 3")
+line4TextIn_id = display.create(home_id, display.OBJ_TEXT, 250, 125, "Line 4")
+line5TextIn_id = display.create(home_id, display.OBJ_TEXT, 435, 125, "Line 5")
+line6TextIn_id = display.create(home_id, display.OBJ_TEXT, 620, 125, "Line 6")
+line1In_id = display.create(home_id, display.OBJ_BUTTON, 210, 40, "High")
+line2In_id = display.create(home_id, display.OBJ_BUTTON, 395, 40, "High")
+line3In_id = display.create(home_id, display.OBJ_BUTTON, 580, 40, "High")
+line4In_id = display.create(home_id, display.OBJ_BUTTON, 210, 130, "High")
+line5In_id = display.create(home_id, display.OBJ_BUTTON, 395, 130, "High")
+line6In_id = display.create(home_id, display.OBJ_BUTTON, 580, 130, "High")]]--
+--output
+
+line1_id = display.create(home_id, display.OBJ_BUTTON, 25, 270, "High")
+line2_id = display.create(home_id, display.OBJ_BUTTON, 210, 270, "High")
+line3_id = display.create(home_id, display.OBJ_BUTTON, 395, 270, "High")
+line4_id = display.create(home_id, display.OBJ_BUTTON, 25, 360, "High")
+line5_id = display.create(home_id, display.OBJ_BUTTON, 210, 360, "High")
+line6_id = display.create(home_id, display.OBJ_BUTTON, 395, 360, "High")
+line_id = {line1_id, line2_id, line3_id, line4_id, line5_id, line6_id}
+--display.setevent(line1_id, display.EVENT_PRESS, "Line1()")
+--display.setevent(line2_id, display.EVENT_PRESS, "Line2()")
+--display.setevent(line3_id, display.EVENT_PRESS, "Line3()")
+--display.setevent(line4_id, display.EVENT_PRESS, "Line4()")
+--display.setevent(line5_id, display.EVENT_PRESS, "Line5()")
+--display.setevent(line6_id, display.EVENT_PRESS, "Line6()")
+
+bitText1_id = display.create(home_id, display.OBJ_TEXT, 623, 340-20, "Enter bit pattern:", 0x00FFFFFF, display.FONT_SMALL)
+bitText2_id = display.create(home_id, display.OBJ_TEXT, 635, 357-20, "(Line 1 is MSB)", 0x00FFFFFF, display.FONT_SMALL)
+bitEnter_id = display.create(home_id, display.OBJ_EDIT_NUMBER, 615, 360-20, "", "", display.NFORMAT_INTEGER, 111111, 0, 1111111, "", 9)
+hexOut_id = display.create(home_id, display.OBJ_TEXT, 700, 413, "hex:   ", 0x00B6B6B6, display.FONT_SMALL)
+display.setevent(bitEnter_id, display.EVENT_PRESS, ON)
+
+line1Text_id = display.create(home_id, display.OBJ_TEXT, 65, 265, "Line 1")
+line2Text_id = display.create(home_id, display.OBJ_TEXT, 250, 265, "Line 2")
+line3Text_id = display.create(home_id, display.OBJ_TEXT, 435, 265, "Line 3")
+line4Text_id = display.create(home_id, display.OBJ_TEXT, 65, 355, "Line 4")
+line5Text_id = display.create(home_id, display.OBJ_TEXT, 250, 355, "Line 5")
+line6Text_id = display.create(home_id, display.OBJ_TEXT, 435, 355, "Line 6")
+
+cells = {}
+text = {}
+readOut = {}
+lineIndex = 1
+for i = 1,3 do
+	cells[i] = {}
+	text[i] = {}
+	for j = 1,2 do	
+		cells[i][j] = display.create(home_id, display.OBJ_RECT, (25+200*(i-1)), (60+50*(j-1)), 200, 50)
+		
+	end
+end
+for i = 1,2 do
+	text[i] = {}
+	for j = 1,3,1 do
+		
+	end
+end
+text[1] = display.create(home_id, display.OBJ_TEXT, 30+200*(1-1), 85+50*(1-1), "Line 1")
+text[2] = display.create(home_id, display.OBJ_TEXT, 30+200*(2-1), 85+50*(1-1), "Line 2")
+text[3] = display.create(home_id, display.OBJ_TEXT, 30+200*(3-1), 85+50*(1-1), "Line 3")
+text[4] = display.create(home_id, display.OBJ_TEXT, 30+200*(1-1), 85+50*(2-1), "Line 4")
+text[5] = display.create(home_id, display.OBJ_TEXT, 30+200*(2-1), 85+50*(2-1), "Line 5")
+text[6] = display.create(home_id, display.OBJ_TEXT, 30+200*(3-1), 85+50*(2-1), "Line 6")
+readOut[1] = display.create(home_id, display.OBJ_TEXT, 140+200*(1-1), 95+50*(1-1), "")
+readOut[2] = display.create(home_id, display.OBJ_TEXT, 140+200*(2-1), 95+50*(1-1), "")
+readOut[3] = display.create(home_id, display.OBJ_TEXT, 140+200*(3-1), 95+50*(1-1), "")
+readOut[4] = display.create(home_id, display.OBJ_TEXT, 140+200*(1-1), 95+50*(2-1), "")
+readOut[5] = display.create(home_id, display.OBJ_TEXT, 140+200*(2-1), 95+50*(2-1), "")
+readOut[6] = display.create(home_id, display.OBJ_TEXT, 140+200*(3-1), 95+50*(2-1), "")
+
+bitRead = {}
+var = true
+count = 0
+
+if available(digio) == true then
+	digio.line[1].mode = digio.MODE_DIGITAL_OUT
+	digio.line[2].mode = digio.MODE_DIGITAL_OUT
+	digio.line[3].mode = digio.MODE_DIGITAL_OUT
+	digio.line[4].mode = digio.MODE_DIGITAL_OUT
+	digio.line[5].mode = digio.MODE_DIGITAL_OUT
+	digio.line[6].mode = digio.MODE_DIGITAL_OUT
+	for i = 1,6 do
+		digio.line[i].state = 1
+	end
+	display.changescreen(chooseIO_id)
+	chooseIO()
+else
+	var = false
+	noDIO_id = display.prompt(display.BUTTONS_OK, "Please power down the unit and insert a Communications Card with Digital IO")
+	display.delete(load_id)
+	display.delete(home_id)
+	display.delete(chooseIO_id)
+end
+
+function main()
+	
+	while var == true do
+		local button_id = display.waitevent(0.01)
+		if button_id == line1_id then
+			Line1()
+		elseif button_id == line2_id then
+			Line2()
+		elseif button_id == line3_id then
+			Line3()
+		elseif button_id == line4_id then
+			Line4()
+		elseif button_id == line5_id then
+			Line5()
+		elseif button_id == line6_id then
+			Line6()
+		elseif button_id == bitEnter_id then
+			bitPattern()
+		elseif button_id == ioSelect_id then
+			display.changescreen(chooseIO_id)
+			chooseIO()
+		end
+		for i = 1,6 do
+			if IO_[i] == 1 then
+				local bitState = digio.line[i].state
+				if bitState == digio.STATE_LOW then
+					bitRead[i] = "0"
+				elseif bitState == digio.STATE_HIGH then
+					bitRead[i] = "1" end
+			else
+				bitRead[i] = tostring(currentPattern[i])
+			end
+		end
+		for i = 1,6 do
+			if IO_[i] == 1 then
+				display.setstate(line_id[i], display.STATE_DISABLE)
+				display.settext(line_id[i], "N/A")
+				--currentPattern[1] = tonumber(bitRead[1])
+			else 
+				display.setstate(line_id[i], display.STATE_ENABLE) 
+				digio.line[i].mode = digio.MODE_DIGITAL_OUT
+				--currentPattern[1] = tonumber(bitRead[1])
+				if bitRead[i] == "1" then
+					display.settext(line_id[i], "High")
+				else
+					display.settext(line_id[i], "Low")
+				end
+			end
+		end
+		
+		for i = 1, 6 do
+			currentPattern[i] = tonumber(bitRead[i])
+		end
+		
+		--[[local bitReadString = tostring(DecToBase(digio.readport(),2))
+
+		for i = 1,string.len(bitReadString) do
+			bitRead[string.len(bitReadString) - i + 1] = string.sub(bitReadString, i,i)
+		end
+		if string.len(bitReadString) << 6 then
+			for j = 1, (6-string.len(bitReadString)) do
+				table.insert(bitRead,"0")
+			end
+		end]]
+		for i = 1,6 do
+			if bitRead[i] == "1" then
+				display.settext(readOut[i], "HIGH")
+				display.setcolor(readOut[i], 0xff6600)
+			elseif bitRead[i] == "0" then
+				display.settext(readOut[i], "LOW")
+				display.setcolor(readOut[i], 0x00ffbb)
+			end
+			if IO_[i] == 1 then
+				display.setcolor(text[i], 0x1288a1)
+			else
+				display.setcolor(text[i], 0x9BD0A1)
+			end
+		end
+
+
+		if IO_[1] == 0 and IO_[2] == 0 and IO_[3] == 0 and IO_[4] == 0 and IO_[5] == 0 and IO_[6] == 0 then
+			display.setstate(bitEnter_id, display.STATE_ENABLE)
+		else
+			display.setstate(bitEnter_id, display.STATE_DISABLE)
+		end
+
+		
+		currentString = tonumber(tostring(currentPattern[1]..currentPattern[2]..currentPattern[3]..currentPattern[4]..currentPattern[5]..currentPattern[6]))
+		display.setvalue(bitEnter_id, currentString)
+		--local hex = string.format("%02d", binary2hex(currentString))
+		
+		if string.len(binary2hex(currentString)) == 0 then
+			display.settext(hexOut_id, "hex: ".."00")
+		elseif string.len(binary2hex(currentString)) == 1 then
+			display.settext(hexOut_id, string.format("hex: ".."0".."%s", binary2hex(currentString)))
+		else
+			display.settext(hexOut_id, string.format("hex: ".."%s", binary2hex(currentString)))
+		end
+
+
+
+	end
+end
+
+main()
+
+endscript
+
+loadimage dio_app_icon DIOControlFull
+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
+endimage

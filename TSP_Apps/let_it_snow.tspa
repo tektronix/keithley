@@ -1,0 +1,113 @@
+loadscript let_it_snow
+-- $Title: Let it Snow
+-- $Description: A relaxing Seasonal Screensaver.
+-- $Tag:
+-- $Version: 2
+-- $Requires: 1.0.02a
+-- $Product: DAQ6510, DMM6500, DMM7510, 2461, 2450, 2460, 2470
+-- $Icon: snow_icon
+
+function makecircle()
+    x = math.random(minxy, maxx)
+    id = display.create(screen_id, display.OBJ_CIRCLE, x, minxy, snowSize)
+    return id, x, minxy
+end
+
+function update()
+    for flake in snow_ids do
+        if snow_ids == nil 
+        then -- Do Nothing
+        else 
+            snow_ys[flake] = snow_ys[flake]+gravity
+            if snow_ys[flake] > maxy then 
+                display.delete(snow_ids[flake])
+                snow_ids[flake] = nil
+            else
+                display.setposition(snow_ids[flake], snow_xs[flake], snow_ys[flake])
+            end
+        end
+    end
+    local new_flake_num = table.getn(snow_ids)+1
+    snow_ids[new_flake_num], snow_xs[new_flake_num], snow_ys[new_flake_num] = makecircle() 
+end
+
+function main()
+    screen_id = display.create(display.ROOT, display.OBJ_SCREEN, 'Happy Holidays from Keithley!')
+    snow_ids[1], snow_xs[1], snow_ys[1] = makecircle()
+    while true do
+        update()
+    end
+end
+
+reset()
+collectgarbage()
+snow_ids = {}
+snow_xs = {}
+snow_ys = {}
+-- Global Settings
+gravity = 2 --Speed that snow falls at
+snowSize = 3
+maxx = 800-snowSize
+minxy = snowSize
+maxy = 430-snowSize
+
+main()
+
+endscript
+
+loadimage snow_icon let_it_snow
+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
+endimage

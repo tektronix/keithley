@@ -1,0 +1,180 @@
+loadscript email
+-- $Title: Email
+-- $Product: DAQ6510, DMM6500
+-- $Tag: Email, TSPNet, Network
+-- $Description: Allows sending an email to an Google email address
+-- $Requires: v1.0.0
+-- $Icon: dio_app_icon
+--[[
+
+Written by: Keithley Applications Engineering (Brad Odhner)
+`
+***********************************************************
+*** Copyright 2019 Tektronix, Inc.                      ***
+*** See www.tek.com/sample-license for licensing terms. ***
+***********************************************************
+
+This app uses Google's restricted SMTP server to send data in the clear to an @gmail.com address email address.
+See <https://support.google.com/a/answer/176600> for more information
+
+Pre-message must comply with <https://tools.ietf.org/html/rfc5321>
+Message body must comply with <https://tools.ietf.org/html/rfc5322>
+
+]]--
+
+-- Global Settings
+server = '74.125.136.26' -- Google restricted SMTP Server as of Jan. 2019, aspmx.l.google.com
+port = 25
+domain = '@gmail.com'
+data = ''
+errorFlag = false
+connection = nil
+sendbuffer = false
+
+-- Functions
+function set_Domain(newDomain) -- Change the domain from gmail.com, still must be a G Suite address if using aspmx.l.google.com
+    domain = newDomain
+end
+
+function get_ipAddress() -- Get the unit ip V4 Address
+    local method, ipV4Address, subnetMask, gateway = lan.ipconfig()
+    return ipV4Address
+end
+
+function check_isError(str) -- Checks if server message is an SMTP Error
+    if not str then errorFlag = true; return true end
+    local replyCode1 = tonumber(string.sub(str, 1, 1))
+    if  (replyCode1 == 4) or (replyCode1 == 5) then
+        errorFlag = true
+        print(str)
+        return true
+    end
+    return false
+end
+
+function poll_readavailable(connection, timeout) -- Checks if there is any message available from the server
+    local bytes = tspnet.readavailable(connection)
+    for wait = 1, timeout do 
+        if (bytes == 0) then
+            delay(.001)
+            bytes = tspnet.readavailable(connection)
+            if (bytes > 0) then return true end
+        else
+            return true
+        end
+    end
+    return false
+end
+
+function rd() -- Check if data is available and recieves it
+    if connection then        
+        while poll_readavailable(connection, 500) do  
+            local incoming = tspnet.read(connection)
+
+            if isError(incoming) then
+                eventlog.post(incoming, eventlog.SEV_ERROR)
+            else
+                eventlog.post(incoming)
+            end
+        end
+    end
+end
+
+function send(string) -- simple wrapper for tspnet.connect
+    tspnet.write(connection, string..'\r\n')
+end
+
+function send_connect() -- connect to the server and get the response from 'ehlo'
+    tspnet.reset()
+    tspnet.timeout = 10
+
+    connection = tspnet.connect(server, port, '')
+    if connection then 
+        send('ehlo '..localnode.model)
+        rd()
+    end
+    return connection
+end
+
+function set_ToAddress(RCPT) -- Configure the Recipient Address
+    -- TODO: Add check that there's only ever 1 domain attached
+    if RCPT then
+        ToAddress = RCPT..domain
+    else
+        partToAddress = display.input.string("Send to who at "..domain)
+        ToAddress = partToAddress..domain
+    end
+end
+
+function send_Header() -- Configure a basic header compliant with RFC 5321
+    if not ToAddress then set_ToAddress() end
+    send('MAIL FROM:<'..From..'>')
+    rd()
+    send('RCPT TO:<'..ToAddress..'>')
+    rd()
+    send('DATA')
+    rd()
+end
+
+function set_Content(text)
+    data = data..text..'\r\n'
+end
+
+function send_Message(subject) -- Configure a basic email complaint with RFC 5322
+    if not subject then 
+        subject = display.input.string("Enter Email Subject")
+    end
+    send('From: '..localnode.model..' <'..From..'>')
+    send('To:<'..ToAddress..'>')
+    send('Subject: '..subject..'\r\n') -- \r\n must follow the subject to start the message
+    send(data)
+    if sendbuffer then
+        data = ''
+        set_buffer(bufferVar)
+        send(data)
+    end
+    send('.') -- \r\n.\r\n tells the server the email is finished
+    rd()
+end
+
+function send_Email() -- One Function to rule them all, One Function to find them, One Function to bring them all and in the script bind them 
+    if data == '' then
+        response = ''
+        while response do
+            set_Content(response)
+            response = display.input.string('What do you want to say?')
+        end
+    end
+    local goodcomms = send_connect()
+    if goodcomms and not errorFlag then
+        send_Header()
+        send_Message()
+    else
+        print('Error')
+        return nil
+    end
+    tspnet.disconnect(connection)
+end
+
+function set_buffer(bufferVar)
+    if not bufferVar then bufferVar = defbuffer1 end
+    if bufferVar.n == 0 or nil then return nil end
+    for i = 1, bufferVar.n, 1 do
+        set_Content(bufferVar.readings[i]..', '..bufferVar.relativetimestamps[i])
+    end
+end
+
+function quit()
+    tspnet.reset()
+    errorFlag, ToAddress, domain, From, connection, data, server, port, sendbuffer, bufferVar = nil
+end
+
+------ Script Starts Here
+
+From = 'DoNotReply_'..get_ipAddress()..'@keithley.com'
+print('This script is designed to be run only from a computer right now')
+print('Call send_Email() for default settings')
+print("Use \'sendbuffer=true\' and \'bufferVar=$BufferName\' to email buffers")
+print('Use set_Domain(newDomain) to change from @gmail.com')
+
+endscript

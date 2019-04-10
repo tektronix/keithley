@@ -1,0 +1,356 @@
+loadscript Probe_Hold
+-- $Title: Probe Hold
+-- $Product: DAQ6510, DMM6500
+-- $Tag: Probe Hold, Reading Hold
+-- $Description: Detects Stable measurements and holds them in a seperate buffer
+-- $Requires: v1.0.02a
+-- $Icon: hold_icon
+-- Last Updated: $Date: 2018/10/12
+--[[
+Script: Probe_Hold.tspa
+Written by: Keithley Applications Engineering (Brad Odhner)
+`
+***********************************************************
+*** Copyright 2018 Tektronix, Inc.                      ***
+*** See www.tek.com/sample-license for licensing terms. ***
+***********************************************************
+
+See Issue ABC-130 for tracking
+TODO: Change buffer behavior to be based on continuous readings, rather than measure count
+]]--
+function precheck() -- Checks that the script will work with the current settings
+    user_func = dmm.measure.func
+    if user_func == dmm.FUNC_NONE then 
+        local selection = display.prompt(display.BUTTONS_YESNO, 'Not compatible with Digitize functions, set function to DC Voltage and continue? You can change the function later.')
+        if selection == display.BUTTON_YES then 
+            user_func = dmm.FUNC_DC_VOLTAGE
+            return true 
+        else 
+            return false
+        end
+    elseif user_func == dmm.FUNC_TEMPERATURE then 
+        local selection = display.prompt(display.BUTTONS_YESNO, 'Not compatible with Temperature function, set function to DC Voltage and continue? You can change the function later.')
+        if selection == display.BUTTON_YES then 
+            user_func = dmm.FUNC_DC_VOLTAGE
+            return true 
+        else 
+            return false
+        end
+    elseif user_func == dmm.FUNC_CONTINUITY then 
+        local selection = display.prompt(display.BUTTONS_YESNO, 'Not compatible with Continuity function, set function to DC Voltage and continue? You can change the function later.')
+        if selection == display.BUTTON_YES then 
+            user_func = dmm.FUNC_DC_VOLTAGE
+            return true 
+        else 
+            return false
+        end
+    elseif user_func == dmm.FUNC_DIODE then 
+        local selection = display.prompt(display.BUTTONS_YESNO, 'Not compatible with Diode function, set function to DC Voltage and continue? You can change the function later.')
+        if selection == display.BUTTON_YES then 
+            user_func = dmm.FUNC_DC_VOLTAGE
+            return true 
+        else 
+            return false
+        end
+    end
+    if mcount == 1 then
+        local selection = display.prompt(display.BUTTONS_YESNO, 'Measure Count cannot be 1, set to 2 and continue?')
+        if selection == display.BUTTON_YES then 
+            mcount = 2
+            return true 
+        else 
+            return false
+        end
+    end
+end -- precheck()
+
+function beeper_press_event(v) -- Returns 1 for on, 2 for off
+	beeperOn = v
+end
+
+function tolerance_press_event(v) -- Sets the measure tolerance
+	readTolerance = v / 100
+end
+
+function threshold_press_event(v) -- Sets the lower reading limit
+    threshold = v
+end
+
+function repeat_press_event(v) -- Sets the tolerance for repeat readings
+    repeatTolerance = v / 100
+end
+
+function close_settings() -- Closes the settings screen and goes back to swipe_id
+    display.changescreen(display.SCREEN_HOME)
+    display.delete(settings_id)
+    delay() -- Needed to allow change to swipe_id?
+    display.changescreen(swipe_id)
+    collectgarbage()
+end
+
+function open_settings() -- Opens the settings screen
+    settings_id = display.create(display.ROOT, display.OBJ_SCREEN, 'Probe Hold Settings')
+
+    local beeper_id = display.create(settings_id, display.OBJ_EDIT_OPTION, 200, 10, "Beeper", "On or Off", "On", "Off")
+    display.setevent(beeper_id, display.EVENT_PRESS, "beeper_press_event(%value)")
+    display.setvalue(beeper_id, beeperOn)
+
+	local tolerance_id = display.create(settings_id, display.OBJ_EDIT_NUMBER, 200, 90, "Probe Hold Tolerance", "1 to 100 percent", display.NFORMAT_INTEGER, readTolerance*100, 1, 100, "%")
+	display.setevent(tolerance_id, display.EVENT_PRESS, "tolerance_press_event(%value)")
+
+    local threshold_id = display.create(settings_id, display.OBJ_EDIT_NUMBER, 200, 170, "Low Threshold", "Ignore readings below threshold", display.NFORMAT_USER, threshold, 0)
+    display.setevent(threshold_id, display.EVENT_PRESS, "threshold_press_event(%value)")
+
+    local repeat_id = display.create(settings_id, display.OBJ_EDIT_NUMBER, 200, 250, "Repeat Tolerance", "Repeat readings are ignored", display.NFORMAT_INTEGER, repeatTolerance*100, 1, 100, '%')
+    display.setevent(repeat_id, display.EVENT_PRESS, "repeat_press_event(%value)")
+
+    local exit_id = display.create(settings_id, display.OBJ_BUTTON, 350, 360, "Back")
+    display.setevent(exit_id, display.EVENT_PRESS, "close_settings()")
+end
+
+function delete_last_reading() -- Removes the last reading taken
+    for i = 1, 8 do
+        formattedReadings[i] = formattedReadings[i+1]
+    end
+    formattedReadings[9] = "-\21-\21.\21-\21-\21-\21-\21"
+    update_hold_numbers()
+end
+
+function create_main_screen() -- Create grid lines on the swipe screen
+	-- Create grid line for each reading.
+    local gridLines = {}
+	-- Column lines
+	gridLines[1] = display.create(swipe_id, display.OBJ_LINE, 1, 5, 1, 200)
+	gridLines[2] = display.create(swipe_id, display.OBJ_LINE, 210, 5, 210, 200)
+    gridLines[3] = display.create(swipe_id, display.OBJ_LINE, 420, 5, 420, 200)
+	-- Row lines
+	gridLines[4] = display.create(swipe_id, display.OBJ_LINE, 1, 50, 420, 50)
+	gridLines[5] = display.create(swipe_id, display.OBJ_LINE, 1, 100, 420, 100)
+	gridLines[6] = display.create(swipe_id, display.OBJ_LINE, 1, 150, 420, 150)
+
+	for i = 1, table.getn(gridLines) do
+		display.setcolor(gridLines[i], 0x7f7f7f)
+	end
+    -- Settings button
+    settings_button_id = display.create(swipe_id, display.OBJ_BUTTON, 625, 20, "Settings")
+    display.setevent(settings_button_id, display.EVENT_PRESS, "open_settings()")
+
+    -- TODO: Add button clear readings?
+    -- TODO: Add button to allow repeat readings?  (multiple places with the same value)
+    delete_id = display.create(swipe_id, display.OBJ_BUTTON, 625, 120, "Delete")
+    display.setevent(delete_id, display.EVENT_PRESS, "delete_last_reading()")
+end
+
+-- TODO: Put hold humber functions and variables into their own "class"
+function create_hold_numbers() -- Create objects on the swipe screen that aren't the grid lines
+    holdValues[1] = display.create(swipe_id, display.OBJ_TEXT, 12, 35,   formattedReadings[1], display.COLOR_MEASUREMENT, display.FONT_LARGE)
+	holdValues[2] = display.create(swipe_id, display.OBJ_TEXT, 12, 85,   formattedReadings[2], display.COLOR_MEASUREMENT, display.FONT_LARGE)
+	holdValues[3] = display.create(swipe_id, display.OBJ_TEXT, 12, 135,  formattedReadings[3], display.COLOR_MEASUREMENT, display.FONT_LARGE)
+	holdValues[4] = display.create(swipe_id, display.OBJ_TEXT, 12, 185,  formattedReadings[4], display.COLOR_MEASUREMENT, display.FONT_LARGE)
+	holdValues[5] = display.create(swipe_id, display.OBJ_TEXT, 221, 35,  formattedReadings[5], display.COLOR_MEASUREMENT, display.FONT_LARGE)
+	holdValues[6] = display.create(swipe_id, display.OBJ_TEXT, 221, 85,  formattedReadings[6], display.COLOR_MEASUREMENT, display.FONT_LARGE)
+	holdValues[7] = display.create(swipe_id, display.OBJ_TEXT, 221, 135, formattedReadings[7], display.COLOR_MEASUREMENT, display.FONT_LARGE)
+	holdValues[8] = display.create(swipe_id, display.OBJ_TEXT, 221, 185, formattedReadings[8], display.COLOR_MEASUREMENT, display.FONT_LARGE)
+end
+-- TODO: Put buffer functions and variables into their own "class"
+function configure_buffer() -- Configure the buffer with the proper units for display and logging
+    local bufferUnit
+    local func = dmm.measure.func
+        if     func == dmm.FUNC_DC_VOLTAGE      then bufferUnit = buffer.UNIT_VOLT
+        elseif func == dmm.FUNC_DC_CURRENT      then bufferUnit = buffer.UNIT_AMP
+        elseif func == dmm.FUNC_RESISTANCE      then bufferUnit = buffer.UNIT_OHM
+        elseif func == dmm.FUNC_4W_RESISTANCE   then bufferUnit = buffer.UNIT_OHM
+        elseif func == dmm.FUNC_CAPACITANCE     then bufferUnit = buffer.UNIT_FARAD
+        elseif func == dmm.FUNC_AC_VOLTAGE      then bufferUnit = buffer.UNIT_VOLT_AC
+        elseif func == dmm.FUNC_AC_CURRENT      then bufferUnit = buffer.UNIT_AMP_AC
+        elseif func == dmm.FUNC_ACV_FREQUENCY   then bufferUnit = buffer.UNIT_HERTZ
+        elseif func == dmm.FUNC_ACV_PERIOD      then bufferUnit = buffer.UNIT_SECOND
+        elseif func == dmm.FUNC_DCV_RATIO       then bufferUnit = buffer.UNIT_RATIO
+        end
+    local bufferDigits
+    local dig = dmm.measure.displaydigits
+        if     dig == dmm.DIGITS_3_5 then bufferDigits = buffer.DIGITS_3_5
+        elseif dig == dmm.DIGITS_4_5 then bufferDigits = buffer.DIGITS_4_5
+        elseif dig == dmm.DIGITS_5_5 then bufferDigits = buffer.DIGITS_5_5
+        elseif dig == dmm.DIGITS_6_5 then bufferDigits = buffer.DIGITS_6_5
+        end
+    buffer.write.format(App_buffer, bufferUnit, bufferDigits)
+end
+
+function configure_measure() -- Configure measurement settings for accuracy
+    dmm.measure.count = mcount
+    local func = dmm.measure.func
+        if     func == dmm.FUNC_DC_VOLTAGE      then dmm.measure.nplc = 2; dmm.measure.linesync = dmm.ON; dmm.measure.inputimpedance = dmm.IMPEDANCE_AUTO
+        elseif func == dmm.FUNC_DC_CURRENT      then dmm.measure.nplc = 2; dmm.measure.linesync = dmm.ON
+        elseif func == dmm.FUNC_RESISTANCE      then dmm.measure.nplc = 2; dmm.measure.linesync = dmm.ON
+        elseif func == dmm.FUNC_4W_RESISTANCE   then dmm.measure.nplc = 2; dmm.measure.linesync = dmm.ON
+        elseif func == dmm.FUNC_CAPACITANCE     then
+        elseif func == dmm.FUNC_AC_VOLTAGE      then
+        elseif func == dmm.FUNC_AC_CURRENT      then
+        elseif func == dmm.FUNC_ACV_FREQUENCY   then
+        elseif func == dmm.FUNC_ACV_PERIOD      then 
+        elseif func == dmm.FUNC_DCV_RATIO       then dmm.measure.nplc = 2; dmm.measure.linesync = dmm.ON
+        end
+end
+
+function setup() -- Calls other init functions and creates the timers
+    -- Recover user's previous function
+    dmm.measure.func = user_func
+    -- Create swipe screen
+    swipe_id = display.create(display.SCREEN_HOME, display.OBJ_SWIPE, 'Probe Hold')
+    create_main_screen()
+    holdValues = {} -- Table that contains id's of the text object that display the hold values, filled in create_hold_numbers()
+    -- fomattedReadings stores the text values to display, length 9
+    formattedReadings = {"-\21-\21.\21-\21-\21-\21-\21", "-\21-\21.\21-\21-\21-\21-\21", "-\21-\21.\21-\21-\21-\21-\21", "-\21-\21.\21-\21-\21-\21-\21", "-\21-\21.\21-\21-\21-\21-\21", "-\21-\21.\21-\21-\21-\21-\21", "-\21-\21.\21-\21-\21-\21-\21", "-\21-\21.\21-\21-\21-\21-\21", "-\21-\21.\21-\21-\21-\21-\21"}    
+    create_hold_numbers()
+    
+    -- Setup Reading buffer
+    App_buffer = buffer.make(1000, buffer.STYLE_WRITABLE)
+        App_buffer.fillmode = buffer.FILL_CONTINUOUS
+    configure_buffer()
+    display.activebuffer = defbuffer1
+    
+    -- Setup measurement modes and timers for ongoing stuff
+    configure_measure()
+	read_timer_id = display.create(swipe_id, display.OBJ_TIMER, 0.5, display.TIMER_FOREVER, "update()")
+	garbage_timer_id = display.create(swipe_id, display.OBJ_TIMER, 60, display.TIMER_FOREVER, "collectgarbage()")
+    dmm.measure.read(defbuffer1)
+
+    display.changescreen(display.SCREEN_HOME) -- Go to the newly created screen
+    display.changescreen(swipe_id)
+end
+
+function check_valid(newReading) -- Takes the most recent reading and verifies it's a reading I want
+    if newReading == 9.9e+37 then return false end -- Don't allow overflows
+    if math.abs(newReading) < threshold then return false end -- Don't allow readings near 0
+    if App_buffer.n == 0 then return true 
+    elseif math.abs((newReading - App_buffer[App_buffer.n]) / App_buffer[App_buffer.n]) < repeatTolerance then return false end -- Don't allow readings within $repeatTolerance of last reading
+    return true -- Reading is valid
+    -- TODO: Improve how values near 0 are handled
+end
+
+function check_tolerance(percentChange) -- Takes an array of percent changes and returns true if they are all within $readTolerance, otherwise false
+    local readTolerance = readTolerance -- local variables are faster
+    for i = 1, table.getn(percentChange) do
+        if math.abs(percentChange[i]) > readTolerance then return false end
+    end
+    return true
+end
+
+function update_hold_numbers() -- Updates the number display
+    display.settext(holdValues[1], formattedReadings[1])
+    display.settext(holdValues[2], formattedReadings[2])
+    display.settext(holdValues[3], formattedReadings[3])
+    display.settext(holdValues[4], formattedReadings[4])
+    display.settext(holdValues[5], formattedReadings[5])
+    display.settext(holdValues[6], formattedReadings[6])
+    display.settext(holdValues[7], formattedReadings[7])
+    display.settext(holdValues[8], formattedReadings[8])
+end
+
+function update_ReadingText(newReading) -- Updates the internal table of strings that holds the text to be displayed for the readings.
+    local j = 9 -- Need a seperate index because TSP doesn't support 'i = 8,1' and I want to keep the index = reading position
+    for i = 1, 8 do
+        formattedReadings[j] = formattedReadings[j-1]
+        j = j-1
+    end
+    -- Correct for some special characters
+        local changeOhms = string.find(newReading, 'O')
+        local changeRA = string.find(newReading, 'RA')
+        if changeOhms then 
+            newReading = string.sub(newReading, 1, changeOhms-1)..'\18'
+        elseif changeRA then 
+            newReading = string.sub(newReading, 1, changeRA-1)..'\189'
+        end
+    formattedReadings[1] = newReading
+    update_hold_numbers()
+    -- TODO: add numerical index before each reading, i.e. 1: ... 2: ... 3: ...
+end
+
+function update() -- Measures, determines if stable, writes stable readings to buffer, updates display
+    dmm.measure.read(defbuffer1)
+    if user_func ~= dmm.measure.func then configure_buffer(); configure_measure() end -- Reconfigures the App_buffer if the function changes
+    local endindex = defbuffer1.endindex
+    if endindex < 5 then return end
+    local newReading = defbuffer1[endindex]
+    local percentChange = {}
+    for i = 1, dmm.measure.count-1 do
+        percentChange[i] = (newReading - defbuffer1[endindex - i]) / defbuffer1[endindex - i]
+    end
+    if check_tolerance(percentChange) and check_valid(newReading) then
+        buffer.write.reading(App_buffer, newReading)
+        update_ReadingText(defbuffer1.formattedreadings[endindex])
+        if beeperOn == 1 then beeper.beep(0.05, 1000) end
+    end
+end
+
+function main() -- Does nothing in this App, here for posterity
+end
+
+--------------------------------- Script starts here ---------------------------------------
+-- Global Settings
+beeperOn = 1            -- Controls whether there is a beep when a reading's captured, 1 for on, 2 for off
+readTolerance = 0.05    -- Readings within this tolerance are considered stable
+threshold = 0.1         -- Readings below this value are ignored to prevent thinking 0 is a wanted measurement
+repeatTolerance = 0.1   -- Repeated Stable readings within this tolerance are ignored
+mcount = 5              -- Number of measurements made for each dmm.measure.read() cannot be 1 in this App, but otherwise can change
+
+
+-- Call opening functions and main()
+local continue = precheck()
+if continue == false then exit()
+else
+    reset()
+    collectgarbage() -- Built-in function
+    setup()
+    main()
+end
+
+endscript
+
+loadimage hold_icon Probe_Hold
+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
+endimage
+
+Probe_Hold.save()
