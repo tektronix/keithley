@@ -1,6 +1,6 @@
 # Keithley Instruments
 
-This GitHub repository stores working and in-progress code examples for Keithley Instruments products. The code and content here is not officially supported unless otherwise stated by Tektronix employee. It is offered for learning and collaboration purposes.
+This GitHub repository stores working and in-progress code examples for Keithley Instruments products. The code and content here is not officially supported unless otherwise stated by a Tektronix employee. It is offered for learning and collaboration purposes.
 
 ## Directory
 
@@ -14,7 +14,7 @@ Code in any language for any instrument that fulfills a specific application. Th
 Code that makes up a partial or complete instrument driver library for any programming language.
 
 * **[TSP Apps](./TSP_Apps)**  
-TSP Apps for Touch Test Invent&reg; instruments (i.e. Keithley's line of touch screen enabled instruments). These are not traditional TSP scripts.
+TSP&reg; Apps for Touch Test Invent&reg; instruments (i.e. Keithley's line of touch screen enabled instruments). These are not traditional TSP scripts.
 
 ## Maintainers
 
@@ -24,9 +24,15 @@ Brad Odhner: [Brad-O](https://github.com/Brad-O)
 
 ## License
 
-coming soon.
+Licensed under Apache 2.0
 
-## Contributor License Agreement
+## Contributing
+
+First, please consult the Tektronix [Code of Conduct](https://tektronix.github.io/Code-Of-Conduct/). Contributions in the form of new examples or bug fixes are welcome! Just submit a pull request with your changes. If you see something you're not sure is a bug, or if you'd like to request an example, please submit an Issue via GitHub.  
+
+If you'd like help from a Keithley engineer in developing an example, please submit a pull request with what you have so far placed in the proper part of the repository, including any new directories your example may need.
+
+### Contributor License Agreement
 
 Contributions to this project must be accompanied by a Contributor License Agreement. You (or your employer) retain the copyright to your contribution; this simply gives us permission to use and redistribute your contributions as part of the project.
 
