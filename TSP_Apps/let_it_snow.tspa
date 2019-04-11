@@ -4,9 +4,17 @@ loadscript let_it_snow
 -- $Tag:
 -- $Version: 2
 -- $Requires: 1.0.02a
--- $Product: DAQ6510, DMM6500, DMM7510, 2461, 2450, 2460, 2470
+-- $Product: DAQ6510, DMM6500
 -- $Icon: snow_icon
 
+--[[
+
+***********************************************************
+*** Copyright 2019 Tektronix, Inc.                      ***
+*** See www.tek.com/sample-license for licensing terms. ***
+***********************************************************
+
+]]
 function makecircle()
     x = math.random(minxy, maxx)
     id = display.create(screen_id, display.OBJ_CIRCLE, x, minxy, snowSize)
