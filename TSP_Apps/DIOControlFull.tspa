@@ -6,6 +6,15 @@ loadscript DIOControlFull
 -- $Requires: v1.0.0
 -- $Icon: dio_app_icon
 
+--[[
+
+***********************************************************
+*** Copyright 2019 Tektronix, Inc.                      ***
+*** See www.tek.com/sample-license for licensing terms. ***
+***********************************************************
+
+]]
+
 reset()
 
 currentPattern = {1,1,1,1,1,1}
