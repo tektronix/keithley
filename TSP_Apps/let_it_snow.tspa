@@ -53,7 +53,7 @@ snow_ids = {}
 snow_xs = {}
 snow_ys = {}
 -- Global Settings
-gravity = 2 --Speed that snow falls at
+gravity = 2 -- Speed that snow falls at
 snowSize = 3
 maxx = 800-snowSize
 minxy = snowSize

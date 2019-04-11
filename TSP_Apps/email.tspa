@@ -8,14 +8,14 @@ loadscript email
 --[[
 
 Written by: Keithley Applications Engineering (Brad Odhner)
-`
+
 ***********************************************************
 *** Copyright 2019 Tektronix, Inc.                      ***
 *** See www.tek.com/sample-license for licensing terms. ***
 ***********************************************************
 
 This app uses Google's restricted SMTP server to send data in the clear to an @gmail.com address email address.
-See <https://support.google.com/a/answer/176600> for more information
+See <https://support.google.com/a/answer/176600> for more information.
 
 Pre-message must comply with <https://tools.ietf.org/html/rfc5321>
 Message body must comply with <https://tools.ietf.org/html/rfc5322>
