@@ -18,7 +18,7 @@ Make sure the TERMINALS switch is set to REAR for these commands.
 reset()
 -- Establish variables to make a measurement every 60 seconds 1440 times (24 hours).
 local scanCnt = 24 * 60 -- 1440 minutes = 24 hours
-local chanCnt = 9
+local chanCnt = 10		-- we will account for channel 1 as the CJC measurement as well 
 local totalRdgs = scanCnt * chanCnt
 -- Empty the buffer and set it to the capacity calculated by totalRdgs.
 defbuffer1.clear()
@@ -32,8 +32,11 @@ channel.setdmm("1", dmm.ATTR_MEAS_TRANSDUCER, dmm.TRANS_CJC2001)
 channel.setdmm("2:10", dmm.ATTR_MEAS_TRANSDUCER, dmm.TRANS_THERMOCOUPLE)
 channel.setdmm("2:10", dmm.ATTR_MEAS_THERMOCOUPLE, dmm.THERMOCOUPLE_K)
 channel.setdmm("2:10", dmm.ATTR_MEAS_REF_JUNCTION, dmm.REFJUNCT_EXTERNAL)
--- Set up the scan; channel 2 is first available channel on a 2001-TCSCAN card.
-scan.create("2:10")
+-- Set up the scan; channel 2 is first available channel on a 2001-TCSCAN card, 
+-- however, we include channel 1 as part of the scan because it is measuring
+-- our CJC temperature and we want to refresh its measurement with each
+-- scan as well.
+scan.create("1:10")
 scan.scancount = scanCnt
 -- Set the amount of time for each scan.
 scan.scaninterval = 60.0
