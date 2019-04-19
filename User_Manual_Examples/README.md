@@ -14,3 +14,4 @@ These code examples are taken from each instruments User Manuals, please check t
 * **[DMM7510](./DMM7510)**
 
 * **[DAQ6510](./DAQ6510)**
+Examples include those from the module card manuals (7700, 7701, 7702, 7703, 7705, 7706, 7707, 7708, 7709, 7710, 7711, and 7712) where applicable. 
