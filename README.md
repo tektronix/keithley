@@ -4,8 +4,8 @@ This GitHub repository stores working and in-progress code examples for Keithley
 
 ## Directory
 
-* **[User Manual Examples](./User_Manual_Examples)**  
-Code Examples taken from each instrument's User Manual, this is a good place to start off learning about programming for an instrument.
+* **[Instrument Examples](./Instrument_Examples)**  
+Code examples sorted by instrument, including examples taken from the User's Manuals. This is a good place to start off learning about programming for an instrument.
 
 * **[Application Specific Examples](./Application_Specific)**  
 Code in any language for any instrument that fulfills a specific application. These are generally more complex solutions.
