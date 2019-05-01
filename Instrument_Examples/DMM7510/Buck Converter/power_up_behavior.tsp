@@ -1,7 +1,7 @@
 --[[
 
 ***********************************************************
-*** Copyright Tektronix, Inc.                      		***
+*** Copyright 2019 Tektronix, Inc.                      ***
 *** See www.tek.com/sample-license for licensing terms. ***
 ***********************************************************
 
