@@ -1,7 +1,7 @@
 --[[
 
 ***********************************************************
-*** Copyright Tektronix, Inc.                      		***
+*** Copyright 2019 Tektronix, Inc.                      ***
 *** See www.tek.com/sample-license for licensing terms. ***
 ***********************************************************
 
@@ -80,8 +80,7 @@ node[2].trigger.tsplinkout[2].stimulus = node[2].trigger.EVENT_NOTIFY1
 -- Configure Model 3706A-S TSP-Link line 1 to output trigger to Model DMM7510
 node[1].tsplink.trigger[1].mode = node[1].tsplink.TRIG_FALLING --output to Model DMM7510
 -- Configure Model 3706A-S TSP-Link line 2 to input trigger from Model DMM7510
-node[1].tsplink.trigger[2].mode = node[1].tsplink.TRIG_FALLING --input from Model
-DMM7510
+node[1].tsplink.trigger[2].mode = node[1].tsplink.TRIG_FALLING --input from Model DMM7510
 -- Clear Model 3706A-S TSP-Link event detectors
 node[1].tsplink.trigger[1].clear()
 node[1].tsplink.trigger[2].clear()
