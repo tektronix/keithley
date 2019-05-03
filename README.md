@@ -32,7 +32,7 @@ Licensed under Apache 2.0
 
 ## Contributing
 
-First, please consult the Tektronix [Code of Conduct](https://tektronix.github.io/Code-Of-Conduct/). Contributions in the form of new examples or bug fixes are welcome! Just submit a pull request with your changes. If you see something you're not sure is a bug, or if you'd like to request an example, please submit an Issue via GitHub.  
+First, please consult the Tektronix [Code of Conduct](https://tektronix.github.io/Code-Of-Conduct/). Contributions in the form of new examples or bug fixes are welcome! Just submit a pull request with your changes against the `dev` branch. If you see something you're not sure is a bug, or if you'd like to request an example, please submit an Issue via GitHub.  
 
 If you'd like help from a Keithley engineer in developing an example, please submit a pull request with what you have so far placed in the proper part of the repository, including any new directories your example may need.
 
