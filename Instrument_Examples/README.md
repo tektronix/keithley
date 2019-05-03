@@ -7,7 +7,10 @@ These code examples are a good place to start learning how to work with your ins
 
 [comment]: **[Insturment](./directory)**  
 
-* **[2450 SourceMeter&trade; Source Measure Unit](./2450-SMU)**  
+* **[2450 SourceMeter&reg; Source Measure Unit](./2450-SMU)**  
+
+* **[2600B Series SourceMeter&reg;](./26xx-SMU/Tutorials)**  
+Many will work with non-A and A versions of the 2600 Series
 
 * **[DMM6500](./DMM6500)**  
 
