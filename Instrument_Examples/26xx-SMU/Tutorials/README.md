@@ -57,7 +57,7 @@ Learn about the differen operating loops in TSP, `For`, `while`, and `repeat ...
 * **[Makegetter](./makegetter.tsp)**  
 Makegetters turn getting TSP attributes into functions.  Read this if you want to speed up your instrument as much as possible.
 
-** **[Makesetter](./makesetter.tsp)**  
+  * **[Makesetter](./makesetter.tsp)**  
 Makesetters turn setting TSP attributes into functions.  Read this if you want to speed up your instrument as much as possible.
 
 * **[Math](./Math)**  
@@ -66,7 +66,7 @@ TSP has a built-in library of Math functions, so don't re-write anything you don
 * **[PrintBuffer](./printBuffer.tsp)**  
 The printBuffer command is usefull when you just want the data and you want it now.
 
-** **[PrintNumber](./printNumber.tsp)**  
+  * **[PrintNumber](./printNumber.tsp)**  
 The printNumber command if your no frills answer to getting a result.  For formatted answers, see [the strings tutorial](./strings.tsp)
 
 * **[Save Setups](./Save_Setups.tsp)**  
