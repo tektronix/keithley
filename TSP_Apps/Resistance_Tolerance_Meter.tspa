@@ -1,0 +1,479 @@
+loadscript resistance_tolerance
+-- $Title: Res Tolerance
+-- $Product: DAQ6510, DMM6500
+-- $Tag: Res Tolerance, Measure
+-- $Description: Adds a Home Screen which measures target resistors, check with specific tolerance % and displays the PASS/FAIL result.
+-- $Requires: v1.0.04b
+-- $Icon: resistance_tolerance_icon
+-- Last Updated: $Date: 2019/05/20 $  $Change: 153316 $ $Revision: #7 $
+
+--[[
+***********************************************************
+*** Copyright 2019 Tektronix, Inc.                      ***
+*** See www.tek.com/sample-license for licensing terms. ***
+***********************************************************
+]]
+
+function create_buffer()
+    --create buffer to record the channel closure count
+    measure_buffer = buffer.make(100000)
+	measure_buffer.clear()
+
+	--buffer to record the channel resistance
+	resistance_result = buffer.make(2000, buffer.STYLE_WRITABLE_FULL)
+	resistance_result.clear()
+    buffer.write.format(resistance_result, buffer.UNIT_OHM, buffer.DIGITS_6_5,buffer.UNIT_OHM, buffer.DIGITS_6_5)
+
+end
+
+function sample_press_event(v)
+    sample_count = v
+end
+
+function target_press_event(v) 
+    target_val = v
+end
+
+function check_rear_terminal()
+    local flag = 1
+    local result
+    if dmm.terminals == dmm.TERMINALS_REAR then
+	    result = display.input.prompt(display.BUTTONS_OK, "Terminals switch must be set to FRONT.")
+	    if result == display.BUTTON_YES then    
+	         return 0
+	    end 
+		flag = 0
+	end
+	return flag
+end
+
+
+function wire_press_event(v)
+    sense_opt = v
+    if sense_opt == 1 then 
+	    dmm.measure.func = dmm.FUNC_RESISTANCE   --2W
+	else
+	    dmm.measure.func = dmm.FUNC_4W_RESISTANCE  --4W
+	end
+end
+
+function tolerance_press_event(v)
+    tolerance_val = v
+end
+
+function retest_press_event(v)
+    retest = v
+end
+
+function save_data_btn_press_event()
+    local file_name
+	local time_cur
+
+    --check if the usb inserted into USB port
+	if file.usbdriveexists() == 0 then   -- 
+	    display.prompt(display.BUTTONS_OK, "Please insert a USB flash drive into the front-panel USB port.")
+	else
+	    file_name = display.input.string("Please enter the file name.", display.SFORMAT_ANY) 
+		--print(file_name)
+        if file_name == nil then  --user click cancel in dialog
+            return
+		else                      --click ok
+			time_cur = string.format("%d-%.2d-%.2d_%.2d-%.2d-%.2d",os.date("%Y"), os.date("%m"), os.date("%d"), os.date("%H"), os.date("%M"), os.date("%S"))
+			file_name =  string.format("%s_%s_%d_%s", file_name,time_cur,tolerance_val,"percent")
+			buffer.save(resistance_result, "/usb1/"..file_name..".csv", buffer.SAVE_TIMESTAMP_TIME)
+			
+		end
+	end
+end
+
+function start_trigger()
+    --dmm.measure.range = 1e9
+	--[[
+    dmm.measure.autorange  = dmm.ON 
+	dmm.measure.filter.count = 10
+	dmm.measure.filter.enable = dmm.ON
+	]]--
+	local high_val = target_val*(1+tolerance_val*0.01*0.75)
+	local low_val = target_val*(1-tolerance_val*0.01*0.75)
+	dmm.measure.limit[1].high.value = high_val
+	dmm.measure.limit[1].low.value = low_val
+	dmm.measure.limit[1].enable = dmm.ON
+    
+    trigger.clear() 
+    trigger.model.load("Empty")	--load an empty trigger model as to clear all trigger model blocks
+	measure_buffer.clear()
+	trigger.model.setblock(1, trigger.BLOCK_BUFFER_CLEAR, defbuffer1)
+	trigger.model.setblock(2, trigger.BLOCK_DELAY_CONSTANT, 0.001) 
+	trigger.model.setblock(3, trigger.BLOCK_MEASURE, defbuffer1, 1)
+	trigger.model.setblock(4, trigger.BLOCK_BRANCH_LIMIT_CONSTANT, trigger.LIMIT_INSIDE , -100, 1.1e9, 6)
+	trigger.model.setblock(5, trigger.BLOCK_BRANCH_ALWAYS, 2) 
+	
+	trigger.model.setblock(6, trigger.BLOCK_BUFFER_CLEAR, measure_buffer)
+	trigger.model.setblock(7, trigger.BLOCK_DELAY_CONSTANT, 0.1) 
+	trigger.model.setblock(8, trigger.BLOCK_MEASURE, measure_buffer, 1)
+	trigger.model.setblock(9, trigger.BLOCK_BRANCH_COUNTER, 6, 7) 
+	
+	trigger.model.setblock(10, trigger.BLOCK_DELAY_CONSTANT, 0.00) 
+	trigger.model.setblock(11, trigger.BLOCK_MEASURE, defbuffer1, 1)
+	trigger.model.setblock(12, trigger.BLOCK_BRANCH_LIMIT_CONSTANT, trigger.LIMIT_ABOVE, .1, 2.0e9, 14)
+	trigger.model.setblock(13, trigger.BLOCK_BRANCH_ALWAYS, 10) 
+	trigger.model.setblock(14, trigger.BLOCK_DELAY_CONSTANT, 0.2) 
+	trigger.model.initiate()
+end
+
+function start_btn_press_event()
+	time = 0
+	start = os.time()
+	if run_stop_flag == 0 then   ---click start
+		create_buffer()
+		disable_item_start()
+		resistance_result.clear()
+		start_trigger()
+		run_stop_flag = 1
+		pass_fail_flag = -1
+		sample_index = 1
+	else       ---click abort
+	    enable_item_end()
+	    trigger.model.abort()
+	    run_stop_flag = 0
+	end
+end
+
+function display_reading(reading)
+    if reading < 0 then
+        reading = -reading
+    end
+    if reading < 1000 then
+		--str_val = display.format(reading, "\18", display.NFORMAT_DECIMAL, 8)
+		str_val = string.format("%.5f\21\18", reading)
+		display.settext(resistance_val_txt, str_val)
+	elseif reading < 1000000 then
+		reading = reading/1000.0
+		--str_val = display.format(reading, "k\18", display.NFORMAT_DECIMAL, 8)
+		str_val = string.format("%.5f\21k\18", reading)
+		display.settext(resistance_val_txt, tostring(str_val))
+	elseif reading < 1000000000 then
+		reading = reading/1000000.0
+		--str_val = display.format(reading, "M\18", display.NFORMAT_DECIMAL, 8)
+		str_val = string.format("%.5f\21M\18", reading)
+		display.settext(resistance_val_txt, tostring(str_val))
+	elseif reading < 1100000000 then
+		reading = reading/1000000000.0
+		--str_val = display.format(reading, "G\18", display.NFORMAT_DECIMAL, 8)
+		str_val = string.format("%.5f\21G\18", reading)
+		display.settext(resistance_val_txt, tostring(str_val))
+	else
+	    display.settext(resistance_val_txt, "Overflow\21\18")
+	end
+end
+
+function beeper_sound(pass_fail_flag)
+    if pass_fail_flag == 0 then
+	    beeper.beep(0.75, 200)
+	    delay(0.03)
+	    beeper.beep(0.25, 200)
+	else
+	    beeper.beep(0.1, 2000)
+	    delay(0.03)
+	    beeper.beep(0.1, 2000)
+	    delay(0.03)
+	    beeper.beep(0.1, 2000)
+	    delay(0.03)
+	    beeper.beep(0.1, 2000)
+	end 
+
+end
+
+function check_pass_fail()
+    local last_reading
+	local initial_flag
+	initial_flag = 0
+	last_reading = measure_buffer[measure_buffer.n]
+	time = os.time() - start
+	if last_reading > target_val*(1+tolerance_val*0.01) or last_reading < target_val*(1-tolerance_val*0.01) then
+		display.setstate(fail_txt, display.STATE_ENABLE)
+		display.setstate(pass_txt, display.STATE_INVISIBLE)
+		display.setcolor(resistance_val_txt, 0x00ff0000)  --red
+		display_reading(last_reading)
+		--fail,Issue a low frequency, double beep audible signal
+		--buffer.write.reading(resistance_result,last_reading,target_val)
+		pass_fail_flag = 0
+		beeper_sound(pass_fail_flag)
+		if retest == 1 then   -- pop up a dialog to ask the user if to re-test
+			optionID = display.input.option("Failed, re-test again?", "Yes", "No") 
+			--print(optionID)
+			if optionID == display.BUTTON_OPTION1  then   --retest again
+				initial_flag = 1
+				pass_fail_flag = -1
+				trigger.model.abort()
+				waitcomplete()
+				--retest again
+				trigger.model.initiate()
+			else
+				buffer.write.reading(resistance_result,last_reading,target_val, time)
+			end
+		else
+		    buffer.write.reading(resistance_result,last_reading,target_val, time)
+		end
+	else
+		display.setstate(pass_txt, display.STATE_ENABLE)
+		display.setstate(fail_txt, display.STATE_INVISIBLE)
+		if last_reading > target_val*(1+tolerance_val*0.01*0.75) or last_reading < target_val*(1-tolerance_val*0.01*0.75) then  --If above 75% of the tolerance limits but less than failing (> 100%), yellow
+			display.setcolor(resistance_val_txt, 0x00ffff0f)  --yellow
+			display_reading(last_reading)
+		else
+			display.setcolor(resistance_val_txt, 0x00ff00)  --green
+			display_reading(last_reading)
+		end
+		buffer.write.reading(resistance_result,last_reading,target_val, time)
+		--pass, Issue a high frequency, short triple beep audible signal
+		pass_fail_flag = 1
+		beeper_sound(pass_fail_flag)
+	end
+    return initial_flag
+end
+
+function Timer_update()
+    local trigger_state
+	local block_num
+	local trigger_state_2
+	local retrigger
+	
+	if run_stop_flag == 1 then   --start
+	    trigger_state, trigger_state_2, block_num = trigger.model.state()
+		--display.setstate(fail_txt, display.STATE_ENABLE)
+		--display.settext(fail_txt, tostring(trigger_state)..tostring(block_num))
+		if trigger_state == trigger.STATE_RUNNING then
+            if (block_num > 9) and (pass_fail_flag == -1) then   -- finishing test resistor
+			    ---get the last reading to  check the pass/fail 
+				retrigger = check_pass_fail()
+				---check if this is the last sample, if it is , stop running 
+				if (sample_index >= sample_count) and (retrigger == 0) then
+						trigger.model.abort()
+						enable_item_end()
+						run_stop_flag = 0
+				end
+			end
+		elseif trigger_state == trigger.STATE_IDLE then
+		    if pass_fail_flag == -1 then
+		        retrigger = check_pass_fail()
+			    if retrigger == 0 then  
+				    sample_index = sample_index + 1
+					if sample_index > sample_count then
+						--test end
+						enable_item_end()
+						run_stop_flag = 0
+					else
+					    pass_fail_flag = -1
+						trigger.model.initiate()
+					end
+				end
+			else
+			    sample_index = sample_index + 1
+				if sample_index > sample_count then
+				    --test end
+					enable_item_end()
+	                run_stop_flag = 0
+				else
+				    pass_fail_flag = -1
+				    trigger.model.initiate()
+				end
+			end
+		end
+	end
+
+end
+
+function enable_item_end()
+    display.setstate(target_id, display.STATE_ENABLE )
+	display.setstate(wire2_4_opt, display.STATE_ENABLE )
+	display.setstate(tolerance_id, display.STATE_ENABLE )
+	display.setstate(sample_id, display.STATE_ENABLE )
+	display.setstate(retest_flag, display.STATE_ENABLE )
+	display.setstate(save_data_btn, display.STATE_ENABLE )
+	display.setstate(next_resistor_txt, display.STATE_INVISIBLE)
+	display.settext(start_btn, "Start")
+end
+
+function disable_item_start()
+    display.setstate(pass_txt, display.STATE_INVISIBLE)
+	display.setstate(fail_txt, display.STATE_INVISIBLE)
+    display.setstate(target_id, display.STATE_DISABLE )
+	display.setstate(wire2_4_opt, display.STATE_DISABLE )
+	display.setstate(tolerance_id, display.STATE_DISABLE )
+	display.setstate(sample_id, display.STATE_DISABLE )
+	display.setstate(retest_flag, display.STATE_DISABLE )
+	display.setstate(save_data_btn, display.STATE_DISABLE )
+	display.setstate(next_resistor_txt, display.STATE_ENABLE)
+	display.settext(start_btn, "Stop")
+end
+
+function help_btn_press_event()
+	display.prompt(display.BUTTONS_OK, "Switch to the front terminal and connect a resistor to probes in the front panel. Connect new resistors to take more readings.")
+end
+
+function main()
+    create_buffer()
+    --menu
+    menu_res = display.create(display.ROOT, display.OBJ_SCREEN_MENU, "Measure", "Table", "System")
+	display.create(menu_res, display.OBJ_BUTTON_MENU, 1, 1, display.SCREEN_MEAS_SETTINGS)
+	display.create(menu_res, display.OBJ_BUTTON_MENU, 1, 2, display.SCREEN_MEAS_CALCULATIONS)
+	display.create(menu_res, display.OBJ_BUTTON_MENU, 1, 3, display.SCREEN_MEAS_RBUFFERS)
+	display.create(menu_res, display.OBJ_BUTTON_MENU, 2, 2, display.SCREEN_GRAPH)
+	display.create(menu_res, display.OBJ_BUTTON_MENU, 2, 1, display.SCREEN_READING_TABLE)
+	display.create(menu_res, display.OBJ_BUTTON_MENU, 3, 1, display.SCREEN_SYS_EVENT_LOG)
+	display.create(menu_res, display.OBJ_BUTTON_MENU, 3, 2, display.SCREEN_SYS_SETTINGS)
+	display.create(menu_res, display.OBJ_BUTTON_MENU, 3, 3, display.SCREEN_SYS_INFO_MANAGE)
+	--home
+    resistance_meter_main = display.create(display.ROOT, display.OBJ_SCREEN_HOME, "Resistance Tolerance Meter")  --main GUI screen
+    resistance_val_txt = display.create(resistance_meter_main, display.OBJ_TEXT, 60, 100, "-\21-\21.\21-\21-\21-\21-\21\18",0x0000ff00, display.FONT_HUGE)
+	next_resistor_txt = display.create(resistance_meter_main, display.OBJ_TEXT, 60, 145, "Connect probes to next resistor.")
+	display.setstate(next_resistor_txt, display.STATE_INVISIBLE)
+    pass_txt = display.create(resistance_meter_main, display.OBJ_TEXT, 720, 100, "PASS",0x0000ff00, display.FONT_LARGE)
+    fail_txt = display.create(resistance_meter_main, display.OBJ_TEXT, 720, 100, "FAIL",0x00ff0000, display.FONT_LARGE)
+    display.setstate(pass_txt, display.STATE_INVISIBLE)
+	display.setstate(fail_txt, display.STATE_INVISIBLE)
+    target_id = display.create(resistance_meter_main, display.OBJ_EDIT_NUMBER, 115, 170, "Target     Value   ", "", display.NFORMAT_PREFIX , 10000,0,1000000000, "",4)
+    --terminal_opt = display.create(resistance_meter_main, display.OBJ_EDIT_OPTION, 115, 250, "Terminal Setting", "","Front","Rear")
+    wire2_4_opt = display.create(resistance_meter_main, display.OBJ_EDIT_OPTION, 365, 170, "2&4W", "", "2W", "4W")
+	sample_id = display.create(resistance_meter_main, display.OBJ_EDIT_NUMBER, 115, 250, "     Resistor     Count", "", display.NFORMAT_INTEGER, 1,1,1000)
+    tolerance_id = display.create(resistance_meter_main, display.OBJ_EDIT_NUMBER, 645, 170, " Tolerance Value", "", display.NFORMAT_PREFIX , 5, 0, 50, "%",4)
+    retest_flag = display.create(resistance_meter_main,  display.OBJ_EDIT_CHECK , 450, 250,  "Retest on Fail", "", 0)
+    save_data_btn = display.create(resistance_meter_main, display.OBJ_BUTTON, 220, 350, "Save Data")
+    start_btn = display.create(resistance_meter_main, display.OBJ_BUTTON, 420, 350, "Start")
+    help_btn = display.create(resistance_meter_main, display.OBJ_BUTTON, 645, 250, "Help")
+	-- create a timer to get the trigger test result 
+	timer_id_1 = display.create(resistance_meter_main, display.OBJ_TIMER, 0.25, display.TIMER_FOREVER, "Timer_update()")
+    
+    --event handling
+    display.setevent(target_id, display.EVENT_PRESS, "target_press_event(%value)")
+	display.setevent(wire2_4_opt, display.EVENT_PRESS, "wire_press_event(%value)")
+	display.setevent(tolerance_id, display.EVENT_PRESS, "tolerance_press_event(%value)")
+	display.setevent(retest_flag, display.EVENT_PRESS, "retest_press_event(%value)")
+	display.setevent(sample_id, display.EVENT_PRESS, "sample_press_event(%value)")
+	display.setevent(save_data_btn, display.EVENT_PRESS, "save_data_btn_press_event()")
+	display.setevent(start_btn, display.EVENT_PRESS, "start_btn_press_event()")
+	display.setevent(help_btn, display.EVENT_PRESS, "help_btn_press_event()")
+	while(1) do
+		flag = check_rear_terminal()
+		if flag ==  1 then
+			break
+		end
+		delay(1)
+	end
+end
+
+reset()
+time = 0
+start = 0 
+target_val = 10000
+sense_opt = 1  --2W or 4W, 1:2W,2:4W
+retest = 0  -- retest if fail_txt
+tolerance_val = 5
+run_stop_flag = 0   --0: stop, 1: run
+sample_count = 1
+sample_index = 1
+pass_fail_flag = -1    ---0:fail, 1:pass, -1: none test
+dmm.measure.func = dmm.FUNC_RESISTANCE
+main()
+endscript
+
+loadimage resistance_tolerance_icon resistance_tolerance
+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
+endimage
