@@ -28,7 +28,7 @@ Brad Odhner: [Brad-O](https://github.com/Brad-O)
 
 ## License
 
-Licensed under Apache 2.0
+Licensed under the [Tektronix Sample License](https://www.tek.com/sample-license).
 
 ## Contributing
 
