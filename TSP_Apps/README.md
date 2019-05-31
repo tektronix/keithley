@@ -21,6 +21,9 @@ A simple, unoptimized holiday app to put falling snow right on the front panel o
 This app adds a swipe screen to the home screen that detects stable readings and displays them on screen. The big reading is still what the DMM is currently measuring. There is a delete button to remove the last reading and a settings button. All readings ever displayed are stored in a separate buffer, called App_buffer, that can be exported just like any other buffer. defbuffer1 holds all the readings the DMM takes, like normal, so you can go back and review the exact measurements taken (though defbuffer1 clears when you change functions). Most functions are supported, the ones NOT supported are digitizing, temperature, continuity, or diode. You can swipe off the probe hold, but no measurements will take place while you’re away from it.  
 Full description [here](https://forum.tek.com/viewtopic.php?f=617&t=141115)
 
+* **[Resistance Tolerance Meter](./Resistance_Tolerance_Meter.tspa)**  
+Turns the DMM6500 or DAQ6510 into a dedicated resistor tolerance meter. You can set the expected value, number of resistors to be tested, and several other options. The app gives you an option to export the data when you're done. This is basically a wrapper of the limit test functionality.
+
 ## About TSP
 
 The TSP language is largely based on Lua 5.0 with instrument specific commands and some features of later Lua versions. Check the Reference Manual of your instrument for more information on TSP and for supported instrument specific commands.  
