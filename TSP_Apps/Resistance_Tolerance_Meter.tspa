@@ -5,7 +5,7 @@ loadscript resistance_tolerance
 -- $Description: Adds a Home Screen which measures target resistors, check with specific tolerance % and displays the PASS/FAIL result.
 -- $Requires: v1.0.04b
 -- $Icon: resistance_tolerance_icon
--- Last Updated: $Date: 2019/05/20 $  $Change: 153316 $ $Revision: #7 $
+-- Last Updated: $Date: 2019/06/03 $  $Change: 153316 $ $Revision: #8 $
 
 --[[
 ***********************************************************
@@ -210,7 +210,7 @@ function check_pass_fail()
 				--retest again
 				trigger.model.initiate()
 			else
-				buffer.write.reading(resistance_result,last_reading,target_val, time)
+				buffer.write.reading(resistance_result,last_reading,target_val, time, 0, buffer.STAT_TERMINAL)
 			end
 		else
 		    buffer.write.reading(resistance_result,last_reading,target_val, time)
@@ -316,14 +316,14 @@ function main()
     create_buffer()
     --menu
     menu_res = display.create(display.ROOT, display.OBJ_SCREEN_MENU, "Measure", "Table", "System")
-	display.create(menu_res, display.OBJ_BUTTON_MENU, 1, 1, display.SCREEN_MEAS_SETTINGS)
-	display.create(menu_res, display.OBJ_BUTTON_MENU, 1, 2, display.SCREEN_MEAS_CALCULATIONS)
-	display.create(menu_res, display.OBJ_BUTTON_MENU, 1, 3, display.SCREEN_MEAS_RBUFFERS)
-	display.create(menu_res, display.OBJ_BUTTON_MENU, 2, 2, display.SCREEN_GRAPH)
-	display.create(menu_res, display.OBJ_BUTTON_MENU, 2, 1, display.SCREEN_READING_TABLE)
-	display.create(menu_res, display.OBJ_BUTTON_MENU, 3, 1, display.SCREEN_SYS_EVENT_LOG)
-	display.create(menu_res, display.OBJ_BUTTON_MENU, 3, 2, display.SCREEN_SYS_SETTINGS)
-	display.create(menu_res, display.OBJ_BUTTON_MENU, 3, 3, display.SCREEN_SYS_INFO_MANAGE)
+	display.create(menu_res, display.OBJ_BUTTON_MENU, 0, 0, display.SCREEN_MEAS_SETTINGS)
+	display.create(menu_res, display.OBJ_BUTTON_MENU, 0, 1, display.SCREEN_MEAS_CALCULATIONS)
+	display.create(menu_res, display.OBJ_BUTTON_MENU, 0, 2, display.SCREEN_MEAS_RBUFFERS)
+	display.create(menu_res, display.OBJ_BUTTON_MENU, 1, 1, display.SCREEN_GRAPH)
+	display.create(menu_res, display.OBJ_BUTTON_MENU, 1, 0, display.SCREEN_READING_TABLE)
+	display.create(menu_res, display.OBJ_BUTTON_MENU, 2, 0, display.SCREEN_SYS_EVENT_LOG)
+	display.create(menu_res, display.OBJ_BUTTON_MENU, 2, 1, display.SCREEN_SYS_SETTINGS)
+	display.create(menu_res, display.OBJ_BUTTON_MENU, 2, 2, display.SCREEN_SYS_INFO_MANAGE)
 	--home
     resistance_meter_main = display.create(display.ROOT, display.OBJ_SCREEN_HOME, "Resistance Tolerance Meter")  --main GUI screen
     resistance_val_txt = display.create(resistance_meter_main, display.OBJ_TEXT, 60, 100, "-\21-\21.\21-\21-\21-\21-\21\18",0x0000ff00, display.FONT_HUGE)
