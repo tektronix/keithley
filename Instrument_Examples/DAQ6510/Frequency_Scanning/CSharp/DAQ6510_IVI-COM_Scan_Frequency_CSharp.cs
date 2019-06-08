@@ -4,6 +4,18 @@
     See www.tek.com/sample-license for licensing terms. 
 
 ================================================================================*/
+
+/* ================================================================================
+
+       This program is a brief example of how a DAQ6510 user might add
+       a frequency measurement to their programmed scan. Only one channel
+       is defined and we provide two different means for triggering, monitoring
+       and extracting the scan measurement data. 
+
+       This example will work any of the following multiplexer card
+       models: 7700, 7701, 7702, 7703, 7706, 7707, 7708, 7710
+
+================================================================================ */
 using System;
 using System.Collections.Generic;
 using System.Linq;
