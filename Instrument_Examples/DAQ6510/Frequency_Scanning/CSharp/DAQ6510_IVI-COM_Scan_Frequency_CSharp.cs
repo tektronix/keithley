@@ -35,8 +35,14 @@ namespace DAQ6510_IVI_COM_Scan_with_Frequency_CSharp
             myStpWtch.Start();
 
             // Start by instantiating a DAQ6510 control object and printing the model info to the console.
+            String resource_name = "USB0::0x05E6::0x6510::04340543::INSTR";
             KeithleyDMM6500 daq6510 = new KeithleyDMM6500();
-            daq6510.Initialize("USB0::0x05E6::0x6510::04340543::INSTR", true, false, "");
+            daq6510.Initialize(resource_name, true, false, "");
+            // Instrument ID String examples...
+            //       LAN -> TCPIP0::134.63.71.209::inst0::INSTR
+            //       USB -> USB0::0x05E6::0x2450::01419962::INSTR
+            //       GPIB -> GPIB0::16::INSTR
+            //       Serial -> ASRL4::INSTR
             string id = daq6510.Identity.InstrumentModel;
             Console.WriteLine("ID is {0}", id);
 
