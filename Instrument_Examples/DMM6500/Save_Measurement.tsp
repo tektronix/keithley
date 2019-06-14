@@ -1,5 +1,5 @@
 -- Save defbuffer1 + basic statistics to USB flash drive. 
-if file.usbdriveexists() == 0 then   --
+if file.usbdriveexists() == 0 then   -- Check if USB drive is inserted
 	display.prompt(display.BUTTONS_OK, "Please insert a USB flash drive into the front-panel USB port.")	   
 	result = display.waitevent()  -- result isn't used, always button 'ok'
 	loopcount = 0
@@ -9,13 +9,14 @@ if file.usbdriveexists() == 0 then   --
 		delay(0.5)
 	end
 end
-sep=","  -- separator ',' used in the csv file.
---sep="	" --tab may be preferred.
+
 if defbuffer1.n > 0 and file.usbdriveexists() != 0 then
 	statsVar = buffer.getstats(defbuffer1)
 	description = display.input.string("Description",display.SFORMAT_ANY)
+	sep=","  -- separator ',' used in the csv file.
+	--sep="	" --tab may be preferred.
 	fileVar = file.open("/usb1/"..description ..".csv", file.MODE_WRITE)
-	strunit=defbuffer1.units[1]
+	strunit = defbuffer1.units[1]
 	file.write(fileVar, "Relative Time"..sep.."Reading ("..strunit..")"..sep..sep..description .."\n")
 	if defbuffer1.n > 4 then
 		starti = 5
