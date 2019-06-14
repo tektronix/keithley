@@ -1,10 +1,12 @@
--- Save defbuffer1 + basic statistics to USB flash drive. 
+--[[
+	Save defbuffer1 + basic statistics to USB flash drive. 
+]]
+
 if file.usbdriveexists() == 0 then   -- Check if USB drive is inserted
 	display.prompt(display.BUTTONS_OK, "Please insert a USB flash drive into the front-panel USB port.")	   
 	result = display.waitevent()  -- result isn't used, always button 'ok'
 	loopcount = 0
-	while (file.usbdriveexists() == 0 and loopcount<8) -- Wait up to 4 sec for the USB to be mounted after 'ok'
-		do
+	while (file.usbdriveexists() == 0 and loopcount<8) do-- Wait up to 4 sec for the USB to be mounted after 'ok'
 		loopcount = loopcount + 1
 		delay(0.5)
 	end
@@ -12,13 +14,13 @@ end
 
 if defbuffer1.n > 0 and file.usbdriveexists() != 0 then
 	statsVar = buffer.getstats(defbuffer1)
-	description = display.input.string("Description",display.SFORMAT_ANY)
-	sep=","  -- separator ',' used in the csv file.
-	--sep="	" --tab may be preferred.
+	description = display.input.string("Description (file name)",display.SFORMAT_ANY)
 	fileVar = file.open("/usb1/"..description ..".csv", file.MODE_WRITE)
 	strunit = defbuffer1.units[1]
+	sep=","  -- separator ',' used in the csv file.
+	--sep="	" -- tab may be preferred.
 	file.write(fileVar, "Relative Time"..sep.."Reading ("..strunit..")"..sep..sep..description .."\n")
-	if defbuffer1.n > 4 then
+	if defbuffer1.n >= 4 then -- If not more than 4 readings, don't print statistics
 		starti = 5
 		file.write(fileVar, defbuffer1.relativetimestamps[1]..sep..defbuffer1.readings[1]..sep..sep.."Mean:"..sep..statsVar.mean.."\n")
 		file.write(fileVar, defbuffer1.relativetimestamps[2]..sep..defbuffer1.readings[2]..sep..sep.."StdDev:"..sep..statsVar.stddev.."\n")
