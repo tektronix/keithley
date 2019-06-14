@@ -21,3 +21,6 @@ Examples include those from the module card manuals (7700, 7701, 7702, 7703, 770
 
 * **[Series_2280S](./Series_2280S)**  
 TSP-Net examples can be run from any TSP-Net enabled instrument.
+
+* **[Instructables](./Instructables)** 
+Quick generic tutorials for controlling instruments but not dedicated to any one specific model. 
