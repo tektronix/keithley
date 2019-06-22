@@ -17,7 +17,7 @@ function RangeResistance(Range)
  elseif Range == 0.00001  then
  	return 10130
  elseif Range ==10  then
- 	return 0.137
+ 	return 0.0137
  else return 10130
  end
 end
