@@ -5,7 +5,7 @@ LeadsResistance = 0.04 --ohm
 function RangeResistance(Range)
 
  if Range == 3 or Range==1 then
- 	return 0.299
+ 	return 0.270
  elseif Range == 0.1  then
  	return 1.235
  elseif Range == 0.01  then
