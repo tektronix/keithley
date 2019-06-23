@@ -29,7 +29,6 @@ if defbuffer1.n > 0 then
 	DMMResistance=RangeResistance(Range)
 	TotalResistance=DMMResistance+LeadsResistance
 	BurdenMaxRange=Range*TotalResistance
-	BurdenMaxMeas=statsVar.max.reading*TotalResistance
 	if statsVar.max.reading==9.9e+37 then -- in case of overflow in buffer 
 		BurdenLastMeas=defbuffer1[defbuffer1.endindex]*TotalResistance
 		display.settext(display.TEXT1, math.floor(BurdenLastMeas*1000).." mV (Last Meas.)")
