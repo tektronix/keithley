@@ -1,6 +1,6 @@
 -- Burden Voltage Check
 -- Check voltage drop on selected current range of max current in default buffer.
-LeadsResistance=0.04 --ohm
+LeadsResistance = 0.04 --ohm
 
 function RangeResistance(Range)
 
@@ -25,17 +25,17 @@ end
 
 if defbuffer1.n > 0 then
 	statsVar = buffer.getstats(defbuffer1)
-	Range=dmm.measure.range	
-	DMMResistance=RangeResistance(Range)
-	TotalResistance=DMMResistance+LeadsResistance
-	BurdenMaxRange=Range*TotalResistance
-	if statsVar.max.reading==9.9e+37 then -- in case of overflow in buffer 
-		BurdenLastMeas=defbuffer1[defbuffer1.endindex]*TotalResistance
-		display.settext(display.TEXT1, math.floor(BurdenLastMeas*1000).." mV (Last Meas.)")
+	Range = dmm.measure.range	
+	DMMResistance = RangeResistance(Range)
+	TotalResistance = DMMResistance + LeadsResistance
+	BurdenMaxRange = Range * TotalResistance
+	if statsVar.max.reading == 9.9e+37 then -- in case of overflow in buffer 
+		BurdenLastMeas = defbuffer1[defbuffer1.endindex] * TotalResistance
+		display.settext(display.TEXT1, math.floor(BurdenLastMeas * 1000).." mV (Last Meas.)")
 	else
-		BurdenMaxMeas=statsVar.max.reading*TotalResistance	
-		display.settext(display.TEXT1, math.floor(BurdenMaxMeas*1000).." mV (Max.)")
+		BurdenMaxMeas=statsVar.max.reading * TotalResistance	
+		display.settext(display.TEXT1, math.floor(BurdenMaxMeas * 1000).." mV (Max.)")
 	end
-	display.settext(display.TEXT2, math.floor(BurdenMaxRange*1000).." mV Full Range")
+	display.settext(display.TEXT2, math.floor(BurdenMaxRange * 1000).." mV Full Range")
 	display.changescreen(display.SCREEN_USER_SWIPE)
 end
