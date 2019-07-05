@@ -162,10 +162,6 @@ namespace Series_3706A_Speed_Scanning
                 status = -1;
                 Console.WriteLine(e.Message);
             }
-            finally
-            {
-                // Nothing to close
-            }
             return status;
         }
 
