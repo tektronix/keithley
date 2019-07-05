@@ -131,5 +131,5 @@ print("Elapsed Data Extraction Time: {0:0.3f} s".format(t4-t3))
 print("Calculated Scan Rate: {0:0.3f} chan/s".format(1000/(t3-t2)))
 print("Calculated Scan Rate with Data Extraction: {0:0.3f} chan/s".format(1000/(t4-t2)))
 
-input("\nPress Enter to continue...")
+raw_input("\nPress Enter to continue...")
 exit()
