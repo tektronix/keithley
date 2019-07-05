@@ -57,7 +57,7 @@ t2 = time.time()
 # Notify the user of completion and the test time achieved. 
 print("done")
 print("{0:.6f} s".format(t2-t1))
-input("Press Enter to continue...")
+raw_input("Press Enter to continue...")
 exit()
 
 
