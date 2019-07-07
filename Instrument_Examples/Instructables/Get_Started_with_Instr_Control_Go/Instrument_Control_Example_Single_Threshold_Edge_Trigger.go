@@ -145,8 +145,7 @@ func instrument_read(conn *net.TCPConn, anticipated_receive_size int) (string){
 }
 
 /*********************************************************************************
-	Function: instrument_query(conn *net.TCPConn, my_command string, 
-	                           anticipated_receive_size int) (string)
+	Function: instrument_query(conn *net.TCPConn, my_command string, anticipated_receive_size int) (string)
 	
 	Purpose: Break the LAN/Ethernet connection between the controlling computer
 			 and the target instrument.
@@ -164,8 +163,7 @@ func instrument_read(conn *net.TCPConn, anticipated_receive_size int) (string){
 	Revisions:
 		2019-07-04    JJB    Initial revision.
 *********************************************************************************/
-func instrument_query(conn *net.TCPConn, my_command string, 
-                      anticipated_receive_size int) (string) {
+func instrument_query(conn *net.TCPConn, my_command string, anticipated_receive_size int) (string) {
 	// A query is the same as a question: send an "ask" and receive
 	// a reply. 
 	instrument_write(conn, my_command + "\n")
@@ -173,26 +171,50 @@ func instrument_query(conn *net.TCPConn, my_command string,
 }
 
 
+
+func load_script_file_onto_keithley_instrument(my_script_file string, conn *net.TCPConn){
+	var my_response_receive_size = 128
+	
+	// Read the entire script file into the computer's memory...
+	dat, err := ioutil.ReadFile(my_script_file)
+	check(err)
+	
+	instrument_write(conn, "if loadfuncs ~= nil then script.delete('loadfuncs') end")
+	instrument_write(conn, "loadscript loadfuncs\n" + string(dat) + "\nendscript")
+	println("Reply from instrument = ", string(instrument_query(conn, "loadfuncs()", my_response_receive_size)))
+}
+
+func check(e error) {
+    if e != nil {
+        panic(e)
+    }
+}
+
 /*********************************************************************************
-	This example copies the contents of a script file on the host computer and
-	sends to the LAN-connected instrument. 
+	This example triggers on the channel 2 waveform when the waveform crosses 
+	below a threshold of 1.4 volts. Note that SCPI command set used here is
+	compatible with the Tektronix 3 Series MDO Oscilloscopes, but may be 
+	applicable to other makes/models. 
 *********************************************************************************/
 func main() {
-	var my_ip_address string = "192.168.1.26"
+	var my_ip_address string = "192.168.1.03"
 	var my_port int = 5025
 	var my_id_receive_size = 128
-	var my_script_file = "user_functions.lua"
+
 	
 	// Connect to the target instrument....
 	conn, _ := instrument_connect(my_ip_address, my_port)
 	
 	// Ask the instrument to identify itself....
-    println("Reply from instrument = ", string(instrument_query(conn, 
-	        "*IDN?", my_id_receive_size)))
+    println("Reply from instrument = ", string(instrument_query(conn, "*IDN?",
+			my_id_receive_size)))
 	
-	load_script_file_onto_keithley_instrument(my_script_file, conn)
-	
-	instrument_write(conn, "do_beep(1.0, 4500)")
+	instrument_write(conn, "*RST")
+	instrument_write(conn, ":SEL:CH2 1")
+	instrument_write(conn, ":TRIG:A:TYP EDGE")
+	instrument_write(conn, ":TRIG:A:EDGE:SOU CH2")
+	instrument_write(conn, ":TRIG:A:LOW:CH2 1.4")
+	instrument_write(conn, ":TRIG:A:EDGE:SLO FALL")
 	
 	// Close the connection to the instrument
     instrument_disconnect(conn)

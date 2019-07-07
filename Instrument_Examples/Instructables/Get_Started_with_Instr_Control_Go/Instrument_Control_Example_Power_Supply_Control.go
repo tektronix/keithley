@@ -10,6 +10,7 @@ import (
 	"strings"		// added for string formatting and manipulation
     "io/ioutil"		// added for file read/write activities
 	"fmt"			// added for string formatting and manipulation
+	"time"			// added for applying delays
 )
 
 var echo_commands int = 0	// Used for debugging
@@ -174,14 +175,56 @@ func instrument_query(conn *net.TCPConn, my_command string,
 
 
 /*********************************************************************************
-	This example copies the contents of a script file on the host computer and
-	sends to the LAN-connected instrument. 
+	Function: load_script_file_onto_keithley_instrument(my_script_file string,
+                                                        conn *net.TCPConn)
+	
+	Purpose: Copy the contents of a specific script file off of the computer 
+	         and upload onto the target instrument. 
+
+	Parameters:
+		my_script_file (string) - The script file/path (ASCII text format) that 
+								  will be read from the computer and sent to the
+								  instrument. 
+		conn (*net.TCPConn) - The TCP instrument connection object used for 
+							  sending and receiving data. 
+	Returns:
+		None
+
+	Revisions:
+		2019-07-04    JJB    Initial revision.
+*********************************************************************************/
+func load_script_file_onto_keithley_instrument(my_script_file string,
+                                               conn *net.TCPConn){
+	var my_response_receive_size = 128
+	
+	// Read the entire script file into the computer's memory...
+	dat, err := ioutil.ReadFile(my_script_file)
+	check(err)
+	
+	instrument_write(conn, "if loadfuncs ~= nil then script.delete('loadfuncs') end")
+	instrument_write(conn, "loadscript loadfuncs\n" + string(dat) + "\nendscript")
+	println("Reply from instrument = ", string(instrument_query(conn, "loadfuncs()",
+           	 my_response_receive_size)))
+}
+
+func check(e error) {
+    if e != nil {
+        panic(e)
+    }
+}
+
+/*********************************************************************************
+	This example configures the power supply to source constant voltage and loops
+	to increase from 0 to 10V, returning the voltage, current and power measured
+	at each step. Note that the SCPI command set used here is compatible with the 
+	Keithley Series 2260B power supplies, but may be applicable to other 
+	makes/models.
 *********************************************************************************/
 func main() {
-	var my_ip_address string = "192.168.1.26"
-	var my_port int = 5025
+	var my_ip_address string = "192.168.1.22"
+	var my_port int = 2268
 	var my_id_receive_size = 128
-	var my_script_file = "user_functions.lua"
+	var command_string string = ""
 	
 	// Connect to the target instrument....
 	conn, _ := instrument_connect(my_ip_address, my_port)
@@ -190,9 +233,27 @@ func main() {
     println("Reply from instrument = ", string(instrument_query(conn, 
 	        "*IDN?", my_id_receive_size)))
 	
-	load_script_file_onto_keithley_instrument(my_script_file, conn)
+	instrument_write(conn, "OUTPut:MODE 0")	// set for constant voltage
+	instrument_write(conn, "VOLT 0.0")		// set voltage level to start at 0V
+	instrument_write(conn, "CURR 1.0")		// set current limit to 1A
+	instrument_write(conn, "DISP:MENU 2")	// set the display to show measured
+											// power and current
+	instrument_write(conn, "OUTP ON")		// turn the output on
 	
-	instrument_write(conn, "do_beep(1.0, 4500)")
+	// Step the voltage up 1V at a time; delay; then measure voltage,  
+	// current, and power.  
+	for i := 0; i < 10; i++ {
+		command_string = "VOLT " +strconv.Itoa(i)
+		instrument_write(conn, command_string)
+		time.Sleep(1 * time.Second)
+		
+		println("Voltage = ", string(instrument_query(conn, 
+				"MEAS:VOLT?", my_id_receive_size)))
+		println("Voltage = ", string(instrument_query(conn, 
+				"MEAS:CURR?", my_id_receive_size)))
+		println("Voltage = ", string(instrument_query(conn, 
+				"MEAS:POW?", my_id_receive_size)))
+	}
 	
 	// Close the connection to the instrument
     instrument_disconnect(conn)
