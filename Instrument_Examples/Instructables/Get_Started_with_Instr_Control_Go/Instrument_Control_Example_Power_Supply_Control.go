@@ -255,6 +255,8 @@ func main() {
 				"MEAS:POW?", my_id_receive_size)))
 	}
 	
+	instrument_write(conn, "OUTP OFF")		// turn the output off
+	
 	// Close the connection to the instrument
     instrument_disconnect(conn)
 }
