@@ -246,7 +246,7 @@ class DMM6500:
         #   For channel scan measurements:
         #       1. Channel string
         #       2. Input impedance
-        if (args):
+        if not (args):
             self.SendCmd("dmm.measure.func = dmm.FUNC_DC_VOLTAGE")
         else:
             if (type(args[0]) != str):
@@ -272,7 +272,7 @@ class DMM6500:
                     self.SendCmd(sndBuffer)
 
     def SetFunction_2W_Resistance(self, *args):
-        if (args):
+        if not (args):
             self.SendCmd("dmm.measure.func = dmm.FUNC_RESISTANCE")  #FUNC_4W_RESISTANCE
         else:
             if (type(args[0]) != str):
@@ -283,7 +283,7 @@ class DMM6500:
         return
 
     def SetFunction_4W_Resistance(self, *args):
-        if (args):
+        if not (args):
             self.SendCmd("dmm.measure.func = dmm.FUNC_4W_RESISTANCE")  
         else:
             if (type(args[0]) != str):
@@ -336,7 +336,7 @@ class DMM6500:
         #       1. Channel string
         #       2. Transducer
         #       3. Transducer type
-        if (args):
+        if not (args):
             self.SendCmd("dmm.measure.func = dmm.FUNC_TEMPERATURE")
         else:
             if (type(args[0]) != str):
