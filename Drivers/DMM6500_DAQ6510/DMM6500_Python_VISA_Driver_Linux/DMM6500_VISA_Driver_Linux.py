@@ -182,7 +182,7 @@ class DMM6500:
         #       1. Channel string
         #       2. Transducer
         #       3. Transducer type
-        if (args):
+        if not (args):
             self.Write("dmm.measure.func = dmm.FUNC_TEMPERATURE")
         else:
             if (type(args[0]) != str):
