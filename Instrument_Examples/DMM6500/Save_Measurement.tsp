@@ -35,7 +35,6 @@ if defbuffer1.n > 0 and file.usbdriveexists() != 0 then
 	strunit = defbuffer1.units[1]
 	sep=","  -- separator ',' used in the csv file.
 	--sep="	" -- tab may be preferred.
-	-- TODO: Save the buffer with the first position being the oldest measurement, not position 1, using defbuffer1.startindex
 	file.write(fileVar, "Relative Time"..sep.."Reading ("..strunit..")"..sep..sep..description .."\n")
 	if defbuffer1.n >= 4 then -- If not more than 4 readings, don't print statistics
 		index1=defbuffer1.startindex		
