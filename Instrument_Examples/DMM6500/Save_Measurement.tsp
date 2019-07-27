@@ -3,7 +3,7 @@
 ]]
 
 function indexofmeasurement(buffer ,seqnumber)
-	if seqnumber < buffer.n and seqnumber > 0 then -- check out of range
+	if seqnumber <= buffer.n and seqnumber > 0 then -- check out of range
 		if buffer.startindex == 1 then   -- check if index number and sequence number is the same
 			return seqnumber
 		else
