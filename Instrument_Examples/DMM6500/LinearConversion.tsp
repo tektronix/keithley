@@ -16,7 +16,7 @@ repeat
 until X1 != X2
 Y2 = display.input.number("Enter Y2 "..displayunit.." related to X2 "..X2..":" , display.NFORMAT_PREFIX, 100)
 
--- prcoess input and set m, b and unit
+-- process input and set m, b and unit
 m = (Y2-Y1) / (X2-X1)
 dmm.measure.math.format = dmm.MATH_MXB
 dmm.measure.math.mxb.mfactor = m
