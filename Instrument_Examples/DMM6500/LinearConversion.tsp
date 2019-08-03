@@ -41,7 +41,7 @@ function GetX1Y1X2Y2_0to100percent()
 	repeat
 		X2 = display.input.number("Value representing 100%:", display.NFORMAT_PREFIX)
 		if X2 == 0 then
-			warningprompt = display.prompt(display.BUTTONS_NONE, "The value mist be different from 0, try again.")
+			warningprompt = display.prompt(display.BUTTONS_NONE, "The value must be different from 0, try again.")
 			delay(2)
 			display.delete(warningprompt)
 		end 
