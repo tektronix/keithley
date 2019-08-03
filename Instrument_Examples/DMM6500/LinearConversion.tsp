@@ -84,7 +84,7 @@ elseif optionID == display.BUTTON_OPTION4 then
 	SetLinearConversion(0,0,10,10,displayunit)
 elseif optionID == display.BUTTON_CANCEL or optionID == nil then
 	buffer.unit(buffer.UNIT_CUSTOM1, "X")
-	warningprompt = display.prompt(display.BUTTONS_NONE, "OK, linear is not your thing ;)")
+	warningprompt = display.prompt(display.BUTTONS_NONE, "OK, linear is not your thing now ;)")
 	delay(3)
 	display.delete(warningprompt)
 end
