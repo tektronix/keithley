@@ -3,7 +3,7 @@
 
 function GetX1Y1X2Y2_custom()
 	displayunit = display.input.string("The unit of Y: ('Pa' or ...)", display.SFORMAT_ANY)
-	displayunit = string.sub(displayunit, 1, 2)
+	displayunit = string.sub(displayunit, 1, 3)
 	X1 = display.input.number("Enter measured value X1:", display.NFORMAT_PREFIX, 0.004)
 	Y1 = display.input.number("Enter Y1 "..displayunit.." related to X1 "..X1..":" , display.NFORMAT_PREFIX, 0)
 	repeat
@@ -57,6 +57,7 @@ function SetLinearConversion(X1,Y1,X2,Y2,displayunit)
 	dmm.measure.math.mxb.mfactor = m
 	dmm.measure.math.mxb.bfactor = Y1 - (m * X1)
 	dmm.measure.math.enable = dmm.ON
+	displayunit = string.sub(displayunit, 1, 2) -- more than 2 not supported
 	buffer.unit(buffer.UNIT_CUSTOM1, displayunit)
 	defbuffer1.clear()  --try not to mix units in one buffer
 	--dmm.digitize.math.format = dmm.MATH_MXB   --maybe added later
