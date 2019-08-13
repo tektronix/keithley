@@ -5,7 +5,7 @@ function GetX1Y1X2Y2_custom()
 	displayunit = display.input.string("The unit of Y: ('Pa' or ...)", display.SFORMAT_ANY)
 	displayunit = string.sub(displayunit, 1, 3)
 	X1 = display.input.number("Enter measured value X1:", display.NFORMAT_PREFIX, 0.004)
-	Y1 = display.input.number("Enter Y1 "..displayunit.." related to X1 "..X1..":" , display.NFORMAT_PREFIX, 0)
+	Y1 = display.input.number("Y1 "..displayunit.." related to X1 "..X1..":" , display.NFORMAT_PREFIX, 0)
 	repeat
 		X2 = display.input.number("Enter measured value X2:", display.NFORMAT_PREFIX, 0.020)
 		if X1 == X2 then
@@ -14,7 +14,7 @@ function GetX1Y1X2Y2_custom()
 			display.delete(warningprompt)
 		end 
 	until X1 != X2
-	Y2 = display.input.number("Enter Y2 "..displayunit.." related to X2 "..X2..":" , display.NFORMAT_PREFIX, 100)
+	Y2 = display.input.number("Y2 "..displayunit.." related to X2 "..X2..":" , display.NFORMAT_PREFIX, 100)
 	return X1,Y1,X2,Y2,displayunit
 end
 
