@@ -20,7 +20,7 @@ Inst_1 = "GPIB0::6::INSTR"
 #       Serial -> ASRL4::INSTR
 timeout = 20000
 bucketName = time.strftime("CR123A_Discharge_%Y-%m-%d_%H-%M-%S")
-myAccessKey = "ist_nQyQRT8qhhCZ3mOlVDfxsqVaX4QJLzLd"
+myAccessKey = "" # insert your own access key here...
 streamer = Streamer(bucket_name=bucketName,
                     access_key=myAccessKey)
 
