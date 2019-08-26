@@ -7,7 +7,7 @@ import struct
 import math
 import time
 
-echo_cmd = 0
+echo_cmd = 1
 
 
 """*********************************************************************************
@@ -34,7 +34,7 @@ def instrument_connect(my_socket, my_address, my_port, timeout, do_reset, do_id_
     my_socket.connect((my_address, my_port)) # input to connect must be a tuple
     my_socket.settimeout(timeout)
     if do_reset == 1:
-        instrument_write(my_socket, "reset()")
+        instrument_write(my_socket, "*RST")
     if do_id_query == 1:
         tmp_id = instrument_query(my_socket, "*IDN?", 100)
         print(tmp_id)
@@ -80,7 +80,7 @@ def instrument_disconnect(my_socket):
 *********************************************************************************"""
 def instrument_write(my_socket, my_command):
     if echo_cmd == 1:
-        print(cmd)
+        print(my_command)
     cmd = "{0}\n".format(my_command)
     my_socket.send(cmd.encode())
     return
@@ -135,65 +135,49 @@ def instrument_query(my_socket, my_command, receive_size):
 
 
 """*********************************************************************************
-	Function: load_script_file_onto_keithley_instrument(my_script_file, my_socket)
-	
-	Purpose: Copy the contents of a specific script file off of the computer 
-	         and upload onto the target instrument. 
+	This application example demonstrates how to use the DAQ6510 to log
+	thermocouple-based temperature measurement scans, using internal
+	cold-junction compensation (CJC) correction, over a 24-hour period.
 
-	Parameters:
-		my_script_file (string) - The script file/path (ASCII text format) that 
-					  will be read from the computer and sent to the
-					  instrument. 
-		my_socket - The TCP instrument connection object used for 
-				      sending and receiving data. 
-	Returns:
-		None
-
-	Revisions:
-		2019-07-30    JJB    Initial revision.
+        This type of test is typically performed when a device under test (DUT)
+        is placed in an environmental chamber and exposed to extreme conditions.
+        The system captures data at different locations on the DUT. The data is
+        then exported from the DAQ6510 to a computer where a thermal profile is
+        generated. This thermal profile provides designers and consumers with a
+        thorough understanding of the thermal operating characteristics of their
+        device or product. 
 *********************************************************************************"""
-def load_script_file(my_script_file, my_socket):
-    # This function opens the functions.lua file in the same directory as
-    # the Python script and trasfers its contents to the DMM7510's internal
-    # memory. All the functions defined in the file are callable by the
-    # controlling program. 
-    func_file = open(my_script_file, "r")
-    contents = func_file.read()
-    func_file.close()
-
-    send_buffer = "if loadfuncs ~= nil then script.delete('loadfuncs') end"
-    instrument_write(my_socket, send_buffer)
-    send_buffer = "loadscript loadfuncs\n{0}\nendscript".format(contents)
-    instrument_write(my_socket, send_buffer)
-    send_buffer = "loadfuncs()"
-    print(instrument_query(my_socket, send_buffer, 100))
-    return    
-
-
-"""*********************************************************************************
-	This example copies the contents of a script file on the host computer and
-	sends to the LAN-connected instrument. 
-*********************************************************************************"""
-ip_address = "192.168.1.2"     # Place your instrument's IP address here.
+ip_address = "192.168.1.65"     # Place your instrument's IP address here.
 my_port = 5025
-output_data_path = time.strftime("data_%Y-%m-%d_%H-%M-%S.csv")   # This is the output file that is created which
-                                                                 # will hold your readings provided in ASCII
-                                                                 # format in a text file. """
-functions_path = "functions_V4.lua" # This file holds the set of TSP (Lua-
-                                    # based) functions that are called by
-                                    # the Python script to help minimize the
-                                    # amount of bytes needed to setup up and
-                                    # more importantly, extract readings from
-                                    # the instrument. The file is opened and """
+
+functions_path = "functions_V4.lua"
 
 s = socket.socket()                 # Establish a TCP/IP socket object
 # Open the socket connection
-instrument_connect(s, ip_address, my_port, 20000, 1, 1)
-
-load_script_file(functions_path, s)
+instrument_connect(s, ip_address, my_port, 20000, 0, 1)
 
 t1 = time.time()                    # Start the timer...
-instrument_write(s, "do_beep(0.5, 4000)")
+
+instrument_write(s, "*RST")                                     # Reset the DAQ6510
+instrument_write(s, ":FUNCtion 'TEMPerature',(@101:110)")                       # Set up channel settings for Slot 1
+                                                                                # temperature measurements for
+                                                                                # channels 101 through 110.
+instrument_write(s, ":SENSe:TEMPerature:TRANsducer TCouple,(@101:110)")
+instrument_write(s, ":SENSe:TEMPerature:TCouple:TYPE K,(@101:110)")
+instrument_write(s, ":SENSe:TEMPerature:TCouple:RJUNction:RSELect INTernal,(@101:110)")
+instrument_write(s, ":SENSe:TEMPerature:ODETector ON,(@101:110)")
+instrument_write(s, ":ROUTe:SCAN:CREAte (@101:110)")             # Set up Scan
+
+instrument_write(s, ":ROUTe:SCAN:COUNt:SCAN 1440")              # Set the scan count to 24 hrs * 60 min/hr = 1440
+instrument_write(s, ":ROUTe:SCAN:INTerval 60.0")                # Se the time between scans to 60 s
+write_to_usb_drive = True
+if write_to_usb_drive == True:
+    my_output_file = time.strftime("scan24hr%Y%m%d.csv")
+    instrument_write(s, ":ROUTe:SCAN:EXPORT \"/usb1/{0}\", SCAN, ALL".format(my_output_file)) # Ensure data gets written to a USB drive
+                                                                                              # after each scan
+instrument_write(s, ":ROUTe:SCAN:RESTart ON")                   # Enable scan restart after power failure
+instrument_write(s, "*WAI")
+instrument_write(s, ":INIT")
 
 # Close the socket connection
 instrument_disconnect(s)
