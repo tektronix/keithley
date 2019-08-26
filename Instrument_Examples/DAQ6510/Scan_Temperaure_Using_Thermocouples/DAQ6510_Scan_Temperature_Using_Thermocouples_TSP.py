@@ -158,7 +158,7 @@ instrument_connect(s, ip_address, my_port, 20000, 0, 1)
 
 t1 = time.time()                    # Start the timer...
 
-instrument_write(s, "*RST")                                     # Reset the DAQ6510
+instrument_write(s, "reset()")                                     # Reset the DAQ6510
 instrument_write(s, "channel.setdmm(\"101:110\", dmm.ATTR_MEAS_FUNCTION, dmm.FUNC_TEMPERATURE)")  # Set up channel settings for Slot 1
                                                                                                 # temperature measurements for
                                                                                                 # channels 101 through 110.
