@@ -34,7 +34,7 @@ def instrument_connect(my_socket, my_address, my_port, timeout, do_reset, do_id_
     my_socket.connect((my_address, my_port)) # input to connect must be a tuple
     my_socket.settimeout(timeout)
     if do_reset == 1:
-        instrument_write(my_socket, "*RST")
+        instrument_write(my_socket, "reset()")
     if do_id_query == 1:
         tmp_id = instrument_query(my_socket, "*IDN?", 100)
         print(tmp_id)
@@ -135,22 +135,34 @@ def instrument_query(my_socket, my_command, receive_size):
 
 
 """*********************************************************************************
-	This application example demonstrates how to use the DAQ6510 to log
-	thermocouple-based temperature measurement scans, using internal
-	cold-junction compensation (CJC) correction, over a 24-hour period.
+	This example application demonstrates how to use the DAQ6510 to accurately measure resistance
+        across multiple devices. To obtain the best results, the 4-wire (Kelvin) measurement method and
+        offset compensation are used for this test.
 
-        This type of test is typically performed when a device under test (DUT)
-        is placed in an environmental chamber and exposed to extreme conditions.
-        The system captures data at different locations on the DUT. The data is
-        then exported from the DAQ6510 to a computer where a thermal profile is
-        generated. This thermal profile provides designers and consumers with a
-        thorough understanding of the thermal operating characteristics of their
-        device or product. 
+        Typical resistance measurements made using the 2-wire method source current through the test
+        leads and the device under test (DUT). The voltage is measured, and the resistance is calculated.
+        It is difficult to obtain accurate 2-wire resistance measurements when the DUT is lower than 100 Ω.
+        Typical lead resistances lie in the range of 1 mΩ to 10 mΩ. When the 2-wire method is applied to lowresistance
+        measurements, there is a small but significant voltage drop across the resistance of each
+        test lead. The voltage measured by the instrument is not the same as the voltage directly across the
+        DUT.
+
+        The 4-wire method is preferred for low-resistance measurements. With this configuration, the test
+        current is sourced through the DUT using one set of test leads, while a second set of SENSE leads
+        measures the voltage across the DUT. The voltage-sensing leads are connected as close to the
+        device under test as possible to avoid including the resistance of the test leads in the measurement.
+
+        Thermoelectric voltages (EMFs) can seriously affect low-resistance measurement accuracy. The
+        DAQ6510 can apply the offset-compensated ohms method (OCOMP), which makes one normal
+        resistance measurement and one using the lowest current source setting to eliminate EMFs.
+
+        For this example, you will use resistors of different low values across multiple channels of a 7700
+        multiplexer module and examine how the 4-wire measurement method provides a more accurate
+        reading than the 2-wire method. Fixed measurement ranges are applied in order to optimize scanning
+        speed and OCOMP is applied to correct for any EMF effects.
 *********************************************************************************"""
 ip_address = "192.168.1.65"     # Place your instrument's IP address here.
 my_port = 5025
-
-functions_path = "functions_V4.lua"
 
 s = socket.socket()                 # Establish a TCP/IP socket object
 # Open the socket connection
@@ -158,26 +170,32 @@ instrument_connect(s, ip_address, my_port, 20000, 0, 1)
 
 t1 = time.time()                    # Start the timer...
 
-instrument_write(s, "*RST")                                     # Reset the DAQ6510
-instrument_write(s, ":FUNCtion 'TEMPerature',(@101:110)")                       # Set up channel settings for Slot 1
-                                                                                # temperature measurements for
-                                                                                # channels 101 through 110.
-instrument_write(s, ":SENSe:TEMPerature:TRANsducer TCouple,(@101:110)")
-instrument_write(s, ":SENSe:TEMPerature:TCouple:TYPE K,(@101:110)")
-instrument_write(s, ":SENSe:TEMPerature:TCouple:RJUNction:RSELect INTernal,(@101:110)")
-instrument_write(s, ":SENSe:TEMPerature:ODETector ON,(@101:110)")
-instrument_write(s, ":ROUTe:SCAN:CREate (@101:110)")             # Set up Scan
+instrument_write(s, "reset()")                                     # Reset the DAQ6510
+channel_count = 6
+scan_count = 10
+buffer_size = channel_count * scan_count
 
-instrument_write(s, ":ROUTe:SCAN:COUNt:SCAN 1440")              # Set the scan count to 24 hrs * 60 min/hr = 1440
-instrument_write(s, ":ROUTe:SCAN:INTerval 60.0")                # Se the time between scans to 60 s
-write_to_usb_drive = True
-if write_to_usb_drive == True:
-    my_output_file = time.strftime("scan24hr%Y%m%d.csv")
-    instrument_write(s, ":ROUTe:SCAN:EXPORT \"/usb1/{0}\", SCAN, ALL".format(my_output_file)) # Ensure data gets written to a USB drive
-                                                                                              # after each scan
-instrument_write(s, ":ROUTe:SCAN:RESTart ON")                   # Enable scan restart after power failure
-instrument_write(s, "*WAI")
-instrument_write(s, ":INIT")
+instrument_write(s, "scan.scancount = {0}".format(scan_count))      # Set the number of times the scan is repeated
+# Set up each channels function, range and offset compensation
+instrument_write(s, "channel.setdmm(\"101, 102\", dmm.ATTR_MEAS_FUNCTION, dmm.FUNC_4W_RESISTANCE, dmm.ATTR_MEAS_RANGE, 100, dmm.ATTR_MEAS_OFFCOMP_ENABLE, dmm.OCOMP_ON)")
+instrument_write(s, "channel.setdmm(\"103, 104\", dmm.ATTR_MEAS_FUNCTION, dmm.FUNC_4W_RESISTANCE, dmm.ATTR_MEAS_RANGE, 10, dmm.ATTR_MEAS_OFFCOMP_ENABLE, dmm.OCOMP_ON)")
+instrument_write(s, "channel.setdmm(\"105, 106\", dmm.ATTR_MEAS_FUNCTION, dmm.FUNC_4W_RESISTANCE, dmm.ATTR_MEAS_RANGE, 1, dmm.ATTR_MEAS_OFFCOMP_ENABLE, dmm.OCOMP_ON)") 
+instrument_write(s, "scan.add(\"101,102,103,104,105,106\")")        # Setup the scan list
+instrument_write(s, "trigger.model.initiate()")                     # Initiate the scan
+
+j = 1
+start_index = 1
+end_index = channel_count
+accumulated_readings = 0
+while accumulated_readings < buffer_size:
+    #time.sleep(0.1)
+    readings_count = int(instrument_query(s, "print(defbuffer1.n)", 16).rstrip())
+    if readings_count >= end_index:
+        print(instrument_query(s, "printbuffer({0}, {1}, defbuffer1.readings)".format(start_index, end_index), 128))
+        start_index += channel_count
+        end_index += channel_count
+        accumulated_readings += channel_count
+
 
 # Close the socket connection
 instrument_disconnect(s)
