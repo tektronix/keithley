@@ -135,22 +135,23 @@ def instrument_query(my_socket, my_command, receive_size):
 
 
 """*********************************************************************************
-	This application example demonstrates how to use the DAQ6510 to log
-	thermocouple-based temperature measurement scans, using internal
-	cold-junction compensation (CJC) correction, over a 24-hour period.
+	This example application demonstrates how to use the DAQ6510 to perform
+	complex multi-channel, mixed function scanning in a production-test
+	environment. The DAQ6510 can perform more than one function in a multichannel
+	scan, providing a range of dataacquisition options in a single test.
 
-        This type of test is typically performed when a device under test (DUT)
-        is placed in an environmental chamber and exposed to extreme conditions.
-        The system captures data at different locations on the DUT. The data is
-        then exported from the DAQ6510 to a computer where a thermal profile is
-        generated. This thermal profile provides designers and consumers with a
-        thorough understanding of the thermal operating characteristics of their
-        device or product. 
+	In this production environment the DAQ6510 is:
+        - Integrated into a test stand.
+        - Wired to a fixture that is connected to an active device under test (DUT).
+        - Quickly capturing DC volts and current, temperature, and AC volts and current.
+        
+        Prior to the start of the scan, you can step through each of the configured
+        channels on the DAQ6510, which allows you to troubleshoot the test
+        configuration. This allows you to view the readings of individually closed
+        channels to ensure that connections to the DUT are secure. 
 *********************************************************************************"""
 ip_address = "192.168.1.65"     # Place your instrument's IP address here.
 my_port = 5025
-
-functions_path = "functions_V4.lua"
 
 s = socket.socket()                 # Establish a TCP/IP socket object
 # Open the socket connection
@@ -159,25 +160,42 @@ instrument_connect(s, ip_address, my_port, 20000, 0, 1)
 t1 = time.time()                    # Start the timer...
 
 instrument_write(s, "*RST")                                     # Reset the DAQ6510
-instrument_write(s, ":FUNCtion 'TEMPerature',(@101:110)")                       # Set up channel settings for Slot 1
-                                                                                # temperature measurements for
-                                                                                # channels 101 through 110.
-instrument_write(s, ":SENSe:TEMPerature:TRANsducer TCouple,(@101:110)")
-instrument_write(s, ":SENSe:TEMPerature:TCouple:TYPE K,(@101:110)")
-instrument_write(s, ":SENSe:TEMPerature:TCouple:RJUNction:RSELect INTernal,(@101:110)")
-instrument_write(s, ":SENSe:TEMPerature:ODETector ON,(@101:110)")
-instrument_write(s, ":ROUTe:SCAN:CREate (@101:110)")             # Set up Scan
+# Establish channel settings for the scan card configuration...
+instrument_write(s, "SENS:FUNC 'VOLT:AC',(@101)")               # Set channel 101 for ACV
+instrument_write(s, "SENS:VOLT:AC:DET:BAND 30, (@101)")         # Set channel 101, low-end bandwidth to 30Hz
+instrument_write(s, "SENS:FUNC 'VOLT:DC', (@102:110)")          # Set channels 102-110 for DCV
 
-instrument_write(s, ":ROUTe:SCAN:COUNt:SCAN 1440")              # Set the scan count to 24 hrs * 60 min/hr = 1440
-instrument_write(s, ":ROUTe:SCAN:INTerval 60.0")                # Se the time between scans to 60 s
-write_to_usb_drive = True
-if write_to_usb_drive == True:
-    my_output_file = time.strftime("scan24hr%Y%m%d.csv")
-    instrument_write(s, ":ROUTe:SCAN:EXPORT \"/usb1/{0}\", SCAN, ALL".format(my_output_file)) # Ensure data gets written to a USB drive
-                                                                                              # after each scan
-instrument_write(s, ":ROUTe:SCAN:RESTart ON")                   # Enable scan restart after power failure
-instrument_write(s, "*WAI")
-instrument_write(s, ":INIT")
+# Set channels 111-114 for Temperature measurement using Type K
+# thermocouples with a simulated reference junction set to 23°C
+instrument_write(s, "SENS:FUNCtion 'TEMPerature', (@111:114)")
+instrument_write(s, "SENS:TEMP:TRAN TC, (@111:114)")
+instrument_write(s, "SENS:TEMP:TC:TYPE K, (@111:114)")
+instrument_write(s, "SENS:TEMP:TC:RJUN:RSEL SIM, (@111:114)")
+instrument_write(s, "SENS:TEMP:TC:RJUN:SIM 23, (@111:114)")
+
+instrument_write(s, "SENS:FUNC 'CURR:AC', (@121)")      # Set channel 121 to measure ACI
+instrument_write(s, "SENS:FUNC 'CURR:DC', (@122)")      # Set channel 122 to measure DCI
+
+instrument_write(s, "ROUT:CHAN:LAB \"ACSource\", (@101)")   # Apply a label to channel 101
+instrument_write(s, "ROUT:CHAN:LAB \"Reg12VTemp\", (@111)") # Apply a label to channel 111
+instrument_write(s, "ROUT:CHAN:LAB \"Reg5VTemp\", (@112)")  # Apply a label to channel 112
+instrument_write(s, "ROUT:CHAN:LAB \"LoadTemp1\", (@113)")  # Apply a label to channel 113
+instrument_write(s, "ROUT:CHAN:LAB \"LoadTemp2\", (@114)")  # Apply a label to channel 114
+
+instrument_write(s, "ROUTe:SCAN:CREate (@101:114,121,122)") # Generate the scan...
+instrument_write(s, ":DISPlay:WATCh:CHANnels (@101:114,121,122)") # Define which channels are shown on the display readback and progress bar
+
+scan_count = 10
+channel_count = 16
+instrument_write(s, "ROUTe:SCAN:COUNt:SCAN {0}".format(scan_count)) # Set the number scans
+instrument_write(s, "TRACe:CLEar")                                  # Clear and size the buffer
+instrument_write(s, "TRACe:POINts {0}, \"defbuffer1\"".format(scan_count*channel_count))
+instrument_write(s, "INIT")                                         # Initiate the scan
+instrument_write(s, "*WAI")                                         # Wait for scan completion
+time.sleep(45.0)
+
+# Extract the data...
+print(instrument_query(s, "TRAC:DATA? 1, 160, \"defbuffer1\", READ, CHAN", 2048))
 
 # Close the socket connection
 instrument_disconnect(s)
