@@ -135,22 +135,31 @@ def instrument_query(my_socket, my_command, receive_size):
 
 
 """*********************************************************************************
-	This application example demonstrates how to use the DAQ6510 to log
-	thermocouple-based temperature measurement scans, using internal
-	cold-junction compensation (CJC) correction, over a 24-hour period.
+	This application example demonstrates how to use the DAQ6510 to accurately
+	measure DC voltage in a variety of ranges. To ensure accurate data, the
+	NPLC (Number of Power Line Cycles) and autozero options are used for
+	this test.
 
-        This type of test is typically performed when a device under test (DUT)
-        is placed in an environmental chamber and exposed to extreme conditions.
-        The system captures data at different locations on the DUT. The data is
-        then exported from the DAQ6510 to a computer where a thermal profile is
-        generated. This thermal profile provides designers and consumers with a
-        thorough understanding of the thermal operating characteristics of their
-        device or product. 
+        The NPLC setting can be used to help reduce the induced noise originating
+        from nearby AC power-conditioning circuits. A desktop power supply or
+        power-transmission lines would generate this type of noise. Increasing NPLC
+        cancels out this noise by integrating all sampled data collected in
+        multiples of AC signal periods (n * 1/(transmission line frequency) seconds).
+        The more AC line cycles used in the measurement, the more accurate the
+        reading. The time required to conduct the scan also increases.
+        
+        The autozero function removes offset voltages that result from thermal
+        EMFs. Thermal EMFs occur when there is a temperature difference at junctions
+        consisting of different materials. For example, leads, instrument inputs,
+        or card terminals. These EMFs adversely affect DCV measurement accuracy by
+        offsetting the measured voltage.
+
+        This example shows how to measure voltage in different ranges. To optimize
+        scanning speed, you should set a fixed range. If speed is not an issue,
+        the measurement range can be set to auto.
 *********************************************************************************"""
 ip_address = "192.168.1.65"     # Place your instrument's IP address here.
 my_port = 5025
-
-functions_path = "functions_V4.lua"
 
 s = socket.socket()                 # Establish a TCP/IP socket object
 # Open the socket connection
@@ -158,26 +167,33 @@ instrument_connect(s, ip_address, my_port, 20000, 0, 1)
 
 t1 = time.time()                    # Start the timer...
 
-instrument_write(s, "*RST")                                     # Reset the DAQ6510
-instrument_write(s, "channel.setdmm(\"101:110\", dmm.ATTR_MEAS_FUNCTION, dmm.FUNC_TEMPERATURE)")  # Set up channel settings for Slot 1
+instrument_write(s, "reset()")                                     # Reset the DAQ6510
+channel_count = 6
+scan_count = 10
+buffer_size = channel_count * scan_count
+
+instrument_write(s, "defbuffer1.capacity = {0}".format(buffer_size))  # Set up channel settings for Slot 1
                                                                                                 # temperature measurements for
                                                                                                 # channels 101 through 110.
-instrument_write(s, "channel.setdmm(\"101:110\", dmm.ATTR_MEAS_TRANSDUCER, dmm.TRANS_THERMOCOUPLE)")
-instrument_write(s, "channel.setdmm(\"101:110\", dmm.ATTR_MEAS_THERMOCOUPLE, dmm.THERMOCOUPLE_K)")
-instrument_write(s, "channel.setdmm(\"101:110\", dmm.ATTR_MEAS_REF_JUNCTION, dmm.REFJUNCT_INTERNAL)")
-instrument_write(s, "channel.setdmm(\"101:110\", dmm.ATTR_MEAS_OPEN_DETECTOR, dmm.ON)")
-instrument_write(s, "scan.create(\"101:110\")")                 # Set up Scan
-
-instrument_write(s, "scan.scancount = 1440")                    # Set the scan count to 24 hrs * 60 min/hr = 1440
-instrument_write(s, "scan.scaninterval = 60.0")                # Se the time between scans to 60 s
-write_to_usb_drive = True
-if write_to_usb_drive == True:
-    my_output_file = time.strftime("scan24hr%Y%m%d.csv")
-    instrument_write(s, "scan.export(\"/usb1/{0}\", scan.WRITE_AFTER_SCAN, buffer.SAVE_RELATIVE_TIME)".format(my_output_file)) # Ensure data gets written to a USB drive
-                                                                                              # after each scan
-instrument_write(s, "scan.restart = scan.ON")                   # Enable scan restart after power failure
-instrument_write(s, "waitcomplete()")
+nplc = 5
+instrument_write(s, "channel.setdmm(\"101:106\", dmm.ATTR_MEAS_FUNCTION, dmm.FUNC_DC_VOLTAGE, dmm.ATTR_MEAS_RANGE_AUTO, dmm.ON, dmm.ATTR_MEAS_AUTO_ZERO, dmm.ON, dmm.ATTR_MEAS_NPLC, {0})".format(nplc))
+instrument_write(s, "scan.add(\"101:106\")")                    # Set up Scan
+instrument_write(s, "scan.scancount = {0}".format(scan_count))
 instrument_write(s, "trigger.model.initiate()")
+
+j = 1
+start_index = 1
+end_index = channel_count
+accumulated_readings = 0
+while accumulated_readings < buffer_size:
+    time.sleep(0.5)
+    readings_count = int(instrument_query(s, "print(defbuffer1.n)", 16).rstrip())
+    if readings_count >= end_index:
+        print(instrument_query(s, "printbuffer({0}, {1}, defbuffer1.readings)".format(start_index, end_index), 128))
+        start_index += channel_count
+        end_index += channel_count
+        accumulated_readings += channel_count
+
 
 # Close the socket connection
 instrument_disconnect(s)
