@@ -1,7 +1,7 @@
 
 ### Pull Request Checklist
 
-Please review the [Contribution Guidelines](../README.md#contributing) before submitting.
+Please review the [Contribution Guidelines](https://github.com/tektronix/keithley#contributing) before submitting.
 
 - [ ] Pulling against the `dev` branch (left side).
 - [ ] You have previously submitted a Contributor License Agreement or have contacted a maintainer to request one.
