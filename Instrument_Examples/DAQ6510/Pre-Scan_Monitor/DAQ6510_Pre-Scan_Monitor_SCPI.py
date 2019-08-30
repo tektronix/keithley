@@ -222,7 +222,12 @@ instrument_write(s, "TEMP:TC:RJUN:RSEL INT, (@{0})".format(monitor_channel))    
 instrument_write(s, "ROUT:SCAN:MON:CHAN (@{0})".format(monitor_channel))        # Establish the monitor channel
 instrument_write(s, "ROUT:SCAN:MON:LIM:UPP 30")                         # Set upper limit to 30 Celsius degree
 instrument_write(s, "ROUT:SCAN:MON:LIM:UPP 25")                         # Set lower limit to 25 Celsius degree
-instrument_write(s, "ROUT:SCAN:MON:MODE UPP")                           # Set monitor mode to upper                             
+instrument_write(s, "ROUT:SCAN:MON:MODE UPP")                           # Set monitor mode to UPPER. Note that your full set of options are:
+                                                                        #   UPPER - Scans execute when the monitor channel reads greater than the upper limit
+                                                                        #   LOWER - Scans execute when the monitor channel reads less than the lower limint
+                                                                        #   WINDOW - Scans execute when the monitor channel reads between the upper and lower limits
+                                                                        #   OUTSIDE - Scan execute when the monitor channel reads only when above the upper limit
+                                                                        #             or below the lower limit. 
 instrument_write(s, "FUNC \"RES\", (@102:105)")                         # Scan resistance on channel 102 through 105
 instrument_write(s, "RES:RANG:AUTO ON, (@102:105)")                     # Set auto range
 instrument_write(s, "ROUT:CHAN:DEL 1.0, (@{0},102:105)".format(monitor_channel))# Apply a per-channel delay within the scan

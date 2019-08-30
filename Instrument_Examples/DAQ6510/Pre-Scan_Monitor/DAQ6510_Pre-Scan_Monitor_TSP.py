@@ -231,8 +231,13 @@ instrument_write(s, "channel.setdmm(\"{0}\", dmm.ATTR_MEAS_UNIT, dmm.UNIT_CELSIU
 instrument_write(s, "channel.setdmm(\"{0}\", dmm.ATTR_MEAS_REF_JUNCTION, dmm.REFJUNCT_INTERNAL)".format(monitor_channel))   # Set internal reference
 instrument_write(s, "scan.monitor.channel = \"{0}\"".format(monitor_channel))                                               # Establish the monitor channel
 instrument_write(s, "scan.monitor.limit.high.value = 30")                                                                   # Set upper limit to 30 Celsius degree
-instrument_write(s, "scan.monitor.limit.low.value = 25")                # Set upper limit to 25 Celsius degree
-instrument_write(s, "scan.monitor.mode = scan.MODE_HIGH")               # Set monitor mode to upper
+instrument_write(s, "scan.monitor.limit.low.value = 25")                    # Set upper limit to 25 Celsius degree
+instrument_write(s, "scan.monitor.mode = scan.MODE_WINDOW")                 # Set monitor mode to UPPER. Note that your full set of options are:
+                                                                            #   UPPER - Scans execute when the monitor channel reads greater than the upper limit
+                                                                            #   LOWER - Scans execute when the monitor channel reads less than the lower limint
+                                                                            #   WINDOW - Scans execute when the monitor channel reads between the upper and lower limits
+                                                                            #   OUTSIDE - Scan execute when the monitor channel reads only when above the upper limit
+                                                                            #             or below the lower limit. 
 instrument_write(s, "channel.setdmm(\"102:105\", dmm.ATTR_MEAS_FUNCTION, dmm.FUNC_RESISTANCE)")     # Scan resistance on channel 102 through 105
 instrument_write(s, "channel.setdmm(\"102:105\", dmm.ATTR_MEAS_RANGE_AUTO, dmm.ON)")                # Set auto range
 instrument_write(s, "channel.setdelay(\"{0},102:105\", 1.0)".format(monitor_channel))               # Apply a per-channel delay within the scan
