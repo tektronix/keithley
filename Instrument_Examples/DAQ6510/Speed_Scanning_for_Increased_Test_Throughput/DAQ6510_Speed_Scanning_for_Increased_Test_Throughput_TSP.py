@@ -66,7 +66,7 @@ def instrument_disconnect(my_socket):
 """*********************************************************************************
 	Function: instrument_write(my_socket, my_command)
 	
-	Purpose: Issue controlling commands to the target instrument.
+	This function issues control commands to the target instrument.
 
 	Parameters:
 		my_socket - The TCP instrument connection object used for sending
@@ -90,8 +90,9 @@ def instrument_write(my_socket, my_command):
 """*********************************************************************************
 	Function: instrument_read(my_socket, receive_size)
 	
-	Purpose: Break the LAN/Ethernet connection between the controlling computer
-			 and the target instrument.
+	Purpose: This function asks the connected instrument to reply with some
+                 previously requested information, typically queued up from a call
+                 to instrument_write().
 
 	Parameters:
 		my_socket - The TCP instrument connection object used for sending
@@ -113,14 +114,18 @@ def instrument_read(my_socket, receive_size):
 """*********************************************************************************
 	Function: instrument_query(my_socket, my_command, receive_size)
 	
-	Purpose: Break the LAN/Ethernet connection between the controlling computer
-		 and the target instrument.
+	Purpose: This function issues control commands to the target instrument with
+                 the expectation that data will be returned. For this function
+                 instance, the returned data is (typically) in string format. 
 
 	Parameters:
 		my_socket - The TCP instrument connection object used for sending
 			    and receiving data.
 		my_command (string) - The command issued to the instrument to make it 
-				      perform some action or service. 
+				      perform some action or service.
+		receive_size (int) - The approximate number of bytes of data the caller
+                                     expects to be returned in the response from the
+                                     instrument. 
 	Returns:
 		reply_string (string) - The requested information returned from the 
 					target instrument. Obtained by way of a caller
@@ -138,8 +143,19 @@ def instrument_query(my_socket, my_command, receive_size):
 """*********************************************************************************
 	Function: instrument_query_binary(my_socket, my_command, expected_number_of_readings)
 	
-	Purpose: Break the LAN/Ethernet connection between the controlling computer
-		 and the target instrument.
+	Purpose: This function issues control commands to the target instrument with
+                 the expectation that data will be returned. For this function
+                 instance, the returned data is specifically) expected to be in
+                 binary format. Note that this function does not handle directing
+                 the target instrument to return its data in binary format - it is
+                 the user's responsibility to understand/issue the commands that
+                 manage the binary formats.
+
+                 Binary formatting can promote either single or double floating point
+                 format of IEEE Std 754. This function assumes the following defaults:
+                     * Normal byte order (non-swapped)
+                     * Single precision format
+                     * Little endian byte order
 
 	Parameters:
 		my_socket - The TCP instrument connection object used for sending
