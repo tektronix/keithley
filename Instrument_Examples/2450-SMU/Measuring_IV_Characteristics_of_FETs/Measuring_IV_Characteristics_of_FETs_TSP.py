@@ -10,7 +10,7 @@ import sys
 import matplotlib
 import matplotlib.pyplot as myplot
 
-echo_cmd = 0
+echo_cmd = 1
 
 
 """*********************************************************************************
@@ -86,7 +86,7 @@ def instrument_write(my_socket, my_command):
         print(my_command)
     cmd = "{0}\n".format(my_command)
     my_socket.send(cmd.encode())
-    time.sleep(0.02) # for some reason we need to slow down comms for TSP commands to solidify
+    time.sleep(0.05) # for some reason we need to slow down comms for TSP commands to solidify
     return
 
 
