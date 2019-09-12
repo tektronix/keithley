@@ -35,7 +35,7 @@ def instrument_connect(my_socket, my_address, my_port, timeout, do_reset, do_id_
     my_socket.connect((my_address, my_port)) # input to connect must be a tuple
     my_socket.settimeout(timeout)
     if do_reset == 1:
-        instrument_write(my_socket, "*RST")
+        instrument_write(my_socket, "reset()")
     if do_id_query == 1:
         tmp_id = instrument_query(my_socket, "*IDN?", 100)
         print(tmp_id)
@@ -84,6 +84,7 @@ def instrument_write(my_socket, my_command):
         print(my_command)
     cmd = "{0}\n".format(my_command)
     my_socket.send(cmd.encode())
+    time.sleep(0.1)
     return
 
 
@@ -189,19 +190,19 @@ def instrument_query_binary(my_socket, my_command, expected_number_of_readings):
     return altResp
 
 
-"""*********************************************************************************
-	This application example demonstrates how to use the Model 2450 to measure a low-resistance
-        device.
+def write_data_to_file(file_and_path, write_string):
+    ofile = open(output_data_path, "a")  # Open/create the target data
+    ofile.write(write_string)
+    ofile.close()                       # Close the data file.
+    return
 
-        You may need to make low-resistance measurements (<10 Ω) in a number of applications. Typical
-        applications include continuity testing of cables and connectors, substrate vias, and resistors.
-        Typically, you make these resistance measurements by forcing a current and measuring the resulting
-        voltage drop. The Model 2450 automatically calculates the resistance. The measured voltage is
-        usually in the mV range or less. Built-in features of the Model 2450 optimize low-resistance
-        measurements, such as remote sensing and offset compensation.
+"""*********************************************************************************
+	This example application demonstrates how to use a single 2460 to perform automated 
+        battery discharge and charge cycle testing.
 *********************************************************************************"""
-ip_address = "192.168.1.25"     # Place your instrument's IP address here.
+ip_address = "192.168.1.26"     # Place your instrument's IP address here.
 my_port = 5025
+output_data_path = time.strftime("NMH_AA_%Y-%m-%d_%H-%M-%S.csv")
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)                 # Establish a TCP/IP socket object
 # Open the socket connection
@@ -209,38 +210,50 @@ instrument_connect(s, ip_address, my_port, 20000, 0, 1)
 
 t1 = time.time()                    # Start the timer...
 
-instrument_write(s, "*RST")                                             # Reset the SMU
-instrument_write(s, "TRIG:LOAD \"SimpleLoop\", 100")                    # Configure Simple Loop trigger model template to make 100 readings.
-instrument_write(s, "SENS:FUNC \"RES\"")                                # Set to measure resistance.
-instrument_write(s, "SENS:RES:RANG:AUTO ON")                            # Turn on auto range.
-instrument_write(s, "SENS:RES:OCOM ON")                                 # Enable offset compensation.
-instrument_write(s, "SENS:RES:RSEN ON")                                 # Set to use 4-wire sense mode.
-instrument_write(s, "DISP:SCR SWIPE_GRAPh")                             # Show the GRAPH swipe screen.
-instrument_write(s, "OUTP ON")                                          # Turn on the output.
-instrument_write(s, "INIT")                                             # Initiate readings
-instrument_write(s, "*WAI")                                             # Allow time for all measurements to complete.
-readings_1 = instrument_query(s, "TRAC:DATA? 1, 50, \"defbuffer1\", READ, REL", (16*100)).rstrip()
-readings_2 = instrument_query(s, "TRAC:DATA? 51, 100, \"defbuffer1\", READ, REL", (16*100)).rstrip()
-instrument_write(s, "OUTP OFF")                                          # Turn off the output.
+instrument_write(s, "reset()")                                              # Reset the SMU
+instrument_write(s, "defbuffer1.clear()")                                   # Clear the buffer
+instrument_write(s, "smu.source.offmode = smu.OFFMODE_HIGHZ")               # Turn on high-impedance output mode.
+instrument_write(s, "smu.measure.sense = smu.SENSE_4WIRE")                  # Set to 4-wire sense mode.
+instrument_write(s, "smu.source.func = smu.FUNC_DC_VOLTAGE")                # Set to source voltage.
+instrument_write(s, "smu.source.level = 0.9")                               # Set source level to 0.9 V.
+#instrument_write(s, "smu.terminals = smu.TERMINALS_REAR")                  # Select the rear-panel connections.
+instrument_write(s, "smu.source.readback = smu.ON")                         # Turn on source readback.
+instrument_write(s, "smu.source.range = 0.9")                               # Set source range to 2 V.
+instrument_write(s, "smu.source.ilimit.level = 2.5")                        # Set the source limit to 2.5 A.
+instrument_write(s, "smu.measure.func = smu.FUNC_DC_CURRENT")               # Set to measure current.
+instrument_write(s, "smu.measure.range = 4.0")                              # Set current range to 4 A.
+instrument_write(s, "smu.source.output = smu.ON")                           # Turn on the output.
+instrument_write(s, "waitcomplete()")
+instrument_write(s, "display.changescreen(display.SCREEN_USER_SWIPE)")      # Change to the user swipe screen
 
-#print(readings_1)
-#print(readings_2)
-rdgs_list_1 = readings_1.split(',')
-rdgs_list_2 = readings_2.split(',')
+iteration = 1
+voltage_limit = 0.9001
+current = []
+voltage = []
+seconds = []
+hours = []
 
-counter = 1
-index = 0
-print("{0:10} | {1:<10} | {2:<10}".format("Rdg.Num.", "Resistance", "Time"))
-while counter <= 50:
-    print("{0:10} | {1:0.4E} | {2:0.4f}".format(counter, float(rdgs_list_1[index]), float(rdgs_list_1[index+1])))
-    counter += 1
-    index += 2
+while True:
+    instrument_write(s, "smu.measure.read(defbuffer1)")
+    current.append(float(instrument_query(s, "printnumber(defbuffer1.readings[{0}])".format(iteration), (64)).rstrip()))
+    print(current[iteration-1])
+    voltage.append(float(instrument_query(s, "printnumber(defbuffer1.sourcevalues[{0}])".format(iteration, iteration), 64).rstrip()))
+    print(voltage[iteration-1])
+    seconds.append(float(instrument_query(s, "printnumber(defbuffer1.relativetimestamps[{0}])".format(iteration, iteration), 64).rstrip()))
+    print(seconds[iteration-1])
+    hours.append(seconds[iteration-1]/3600)
+    log_string = "Voltage = {0}; Current = {1}; Hours = {2:0.3f}\n".format(voltage[iteration-1], current[iteration-1], hours[iteration-1])
+    print(log_string)
+    write_data_to_file(output_data_path, log_string)
 
-index = 0      
-while counter <= 100:
-    print("{0:10} | {1:0.4E} | {2:0.4f}".format(counter, float(rdgs_list_2[index]), float(rdgs_list_2[index+1])))
-    counter += 1
-    index += 2
+    instrument_write(s, "display.settext(display.TEXT1, string.format(\"Voltage = %.4fV\", {0}))".format(voltage[iteration-1]))
+    instrument_write(s, "display.settext(display.TEXT2, string.format(\"Current = %.2fA, Time = %.2fHrs\", {0}, {1}))".format(current[iteration-1], hours[iteration-1]))
+    if voltage[iteration-1] <= voltage_limit:
+        break
+    time.sleep(10)
+    iteration += 1
+
+instrument_write(s, "smu.source.output = smu.OFF")                                          # Turn off the output.
     
 # Close the socket connection
 instrument_disconnect(s)

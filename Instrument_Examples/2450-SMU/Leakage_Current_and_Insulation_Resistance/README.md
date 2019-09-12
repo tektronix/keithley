@@ -21,4 +21,4 @@ In other cases, only one reading is made at the end of the soak period.
 
 You will find examples for both the SPCI and the TSP command set implementations. 
 * Each is written in Python 3
-* Each uses sockets-based communications to control the DAQ6510
+* Each uses sockets-based communications to control the SourceMeters

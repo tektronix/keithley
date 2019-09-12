@@ -190,7 +190,7 @@ def instrument_query_binary(my_socket, my_command, expected_number_of_readings):
 
 
 """*********************************************************************************
-	This application example demonstrates how to use the Model 2450 to measure a low-resistance
+	This application example demonstrates how to use a Model 2450, 2460, or 2461 to measure a low-resistance
         device.
 
         You may need to make low-resistance measurements (<10 Ω) in a number of applications. Typical
