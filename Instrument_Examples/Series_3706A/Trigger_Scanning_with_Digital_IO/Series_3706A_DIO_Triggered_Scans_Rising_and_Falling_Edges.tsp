@@ -10,7 +10,7 @@ function scan_dio_trigger(scan_list, my_range, scan_count)
 	-- armed and waiting for the scan start trigger event. Additionally, line
 	-- 1 is configured such that when scan execution completes a response 
 	-- trigger event is issued to the controller. 
-	digio.trigger[2].mode = digio.TRIG_FALLING					-- Configure Digital I/O line for falling edge input
+	digio.trigger[2].mode = digio.TRIG_EITHER					-- Configure Digital I/O line for falling edge input
 	digio.trigger[2].clear()									-- Clear Digital line 2
 	digio.trigger[1].stimulus = scan.trigger.EVENT_MEASURE_COMP	-- Configure Digital line[1] to scan channel ready output
 	digio.trigger[1].mode = digio.TRIG_FALLING					-- Configure Digital I/O line for falling edge output
@@ -23,18 +23,20 @@ function scan_dio_trigger(scan_list, my_range, scan_count)
 	scan.bypass = scan.OFF										-- Turns scan bypass off, it is on by default
 	--scan.trigger.channel.stimulus = digio.trigger[2].EVENT_ID	-- Configure Scan Channel Stimulus to Digital [2]
 	scan.trigger.arm.stimulus = digio.trigger[2].EVENT_ID
-	scan.create(scan_list)										-- Create Scan
+	print(scan_list .. "," .. scan_list)
+	scan.create(scan_list .. "," .. scan_list)										-- Create Scan
 	scan.scancount = scan_count									-- Pass scan count from function call
 	
 	number_of_channels = scan.stepcount							-- Extract the number of channels in the established scan lis
 	reading_buffer = dmm.makebuffer(scan_count * number_of_channels)	-- Configure Buffer
 	
-	scan.execute(reading_buffer)								-- Execute Scan
+	--scan.execute(reading_buffer)								-- Execute Scan
+	scan.background(reading_buffer)
 	
 end
 
 function extract_readings(start_index, end_index)
-	printbuffer(start_index,end_index, reading_buffer.readings)	-- Print readings/measurements in buffer
+	printbuffer(start_index,end_index, reading_buffer.readings, reading_buffer.channels)	-- Print readings/measurements in buffer
 																-- Note that other elements can be included
 																-- such as:
 																--	1. .relativetiimestamps
@@ -45,8 +47,38 @@ function extract_readings(start_index, end_index)
 																-- options listed in the Reference Manual. 
 end
 
+function extract_readings2()
+	start_index = 1
+	end_index = scan.stepcount
+	accumulated_readings = 0
+	j = 1
+	while reading_buffer.n ~= reading_buffer.capacity do
+		accumulated_readings = reading_buffer.n
+		while accumulated_readings < end_index do
+			accumulated_readings = reading_buffer.n
+			delay(0.5)		-- delay n seconds
+		end
+		print("\nCaptured scan " .. j .. "\n")
+		j = j+1
+		printbuffer(start_index,end_index, reading_buffer.readings, reading_buffer.channels)	-- Print readings/measurements in buffer
+																-- Note that other elements can be included
+																-- such as:
+																--	1. .relativetiimestamps
+																--	2. .channels
+																--  3. .units
+																--
+																-- For a full list of options, see the bufferVar
+																-- options listed in the Reference Manual. 
+		start_index = start_index + scan.stepcount
+		end_index = end_index + scan.stepcount
+	end
+	
+end
+
 -- Test the script function
 myrange = 200
 scancount = 30
 res2w_scan_list = "1001:1020"
 scan_dio_trigger(res2w_scan_list, myrange, scancount)
+--extract_readings(1, 40)
+extract_readings2()
