@@ -141,8 +141,8 @@ scanchannels = "1001:1060"          # Define the channels to scan here. Note the
                                     #   1007:1010,1021,1031:1040 - Channels 1007 through 1010, channel 1021, and channels 1031 through 1040
 rangedcv = 10                       # Define the DCV range. If auto-ranging is desired, pass 0
 useinputdivider = 1                 # 1 = True; 0 = False
-scancount = 100                     # Number of times to run the scan
-scaninterval = 0                    # Delay between the start of each scan (if needed)
+scancount = 10                     # Number of times to run the scan
+scaninterval = 5                    # Delay between the start of each scan (if needed)
 
 Configure_DCV_Scan(s, scanchannels, rangedcv, useinputdivider, scancount, scaninterval)
 
