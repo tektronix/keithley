@@ -18,3 +18,6 @@ Python, C#, and TSP code examples from the appendices of the white paper "Three 
 
 * **[Increase 4-Wire Resistance Measurement Capability with Common-side Ohms](./Increase_4-Wire_Resistance_Measurement_Capability_with_Common-side_Ohms)**  
 C# and Python code examples to target increased 4-wire measurement bandwidth per multiplexer card using the Common-side Ohms functionality. 
+
+* **[Custom Thermistor](./Custom_Thermistor)**
+Allows the usage of custom Steinhart–Hart coefficients to compute the temperature of a thermistor.
