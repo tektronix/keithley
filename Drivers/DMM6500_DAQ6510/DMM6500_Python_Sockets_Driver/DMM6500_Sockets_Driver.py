@@ -12,6 +12,22 @@ class DMM6500:
         self.echoCmd = 1
         self.mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.stubComms = 0
+
+        self.measurement_functions = ["dmm.FUNC_DC_VOLTAGE",
+                             "dmm.FUNC_DC_CURRENT",
+                             "dmm.FUNC_AC_VOLTAGE",
+                             "dmm.FUNC_AC_CURRENT",
+                             "dmm.FUNC_RESISTANCE",
+                             "dmm.FUNC_4W_RESISTANCE",
+                             "dmm.FUNC_DIODE",
+                             "dmm.FUNC_CAPACITANCE",
+                             "dmm.FUNC_TEMPERATURE",
+                             "dmm.FUNC_CONTINUITY",
+                             "dmm.FUNC_ACV_FREQUENCY",
+                             "dmm.FUNC_ACV_PERIOD",
+                             "dmm.FUNC_DCV_RATIO",
+                             "dmm.FUNC_DIGITIZE_VOLTAGE",
+                             "dmm.FUNC_DIGITIZE_CURRENT"]
         
     # ======================================================================
     #      DEFINE INSTRUMENT CONNECTION AND COMMUNICATIONS FUNCTIONS HERE
@@ -83,6 +99,65 @@ class DMM6500:
     # ======================================================================
     #      DEFINE MEASUREMENT FUNCTIONS HERE
     # ======================================================================
+    def configure_measurement(self, measure_function = None, measure_range = None, use_nplc = None, integration_time = None, channel_list = None):
+        if channel_list == None:
+            # Configure as front terminal, non-scanning
+            # Set the measure function
+            cmd = "dmm.measure.func = {0}".format(self.measurement_functions[measure_function.value])
+            self.SendCmd(cmd)
+            
+            # Set the range or auto
+            if measure_range != None:
+                if measure_range == 0:
+                    # Apply auto ranging
+                    self.SendCmd("dmm.measure.autorange = dmm.ON")
+                else:
+                    # Set the fixed range
+                    self.SendCmd("dmm.measure.autorange = dmm.OFF")
+                    self.SendCmd("dmm.measure.range = {}".format(measure_range))
+                    
+            # Apply the aperture or NPLC
+            if use_nplc != None:
+                if use_nplc == 1:
+                    # Program integration time with NPLC
+                     self.SendCmd("dmm.measure.nplc = {}".format(integration_time))
+                else:
+                    # Program integration time with Aperture
+                    self.SendCmd("dmm.measure.aperture = {}".format(integration_time))
+        else:
+            # Configure for rear terminal scanning
+            # Set the measure function
+            cmd = "channel.setdmm(\"{0}\", dmm.ATTR_MEAS_FUNCTION, {1})".format(channel_list, self.measurement_functions[measure_function.value])
+            self.SendCmd(cmd)
+            
+            # Set the range or auto
+            if measure_range != None:
+                if measure_range == 0:
+                    # Apply auto ranging
+                    self.SendCmd("channel.setdmm(\"{0}\", dmm.ATTR_MEAS_RANGE_AUTO, dmm.ON)".format(channel_list))
+                else:
+                    # Set the fixed range
+                    self.SendCmd("channel.setdmm(\"{0}\", dmm.ATTR_MEAS_RANGE_AUTO, dmm.OFF)".format(channel_list))
+                    self.SendCmd("channel.setdmm(\"{0}\", dmm.ATTR_MEAS_RANGE, {1})".format(channel_list, measure_range))
+                    
+            # Apply the aperture or NPLC
+            if use_nplc != None:
+                if use_nplc == 1:
+                    # Program integration time with NPLC
+                    self.SendCmd("channel.setdmm(\"{0}\", dmm.ATTR_MEAS_NPLC, {1})".format(channel_list, integration_time))
+                else:
+                    # Program integration time with Aperture
+                    self.SendCmd("channel.setdmm(\"{0}\", dmm.ATTR_MEAS_APERTURE, {1})".format(channel_list, integration_time))
+        return
+
+    def configure_digitize(self, digitize_function = None , measure_range = None, sample_rate = None, sample_count = None, channel_list = None):
+        # Set the measure function
+
+        # Set the range
+
+        # Apply the aperture or NPLC
+        return
+    
     def SetMeasure_Function(self, myFunc):
         if myFunc == self.MeasFunc.DCV:
             funcStr = "dmm.FUNC_DC_VOLTAGE"
@@ -453,7 +528,21 @@ class DMM6500:
     class MeasFunc(Enum):
         DCV = 0
         DCI = 1
+        ACV = 2
+        ACI = 3
+        RES2W = 4
+        RES4W = 5
+        DIODE = 6
+        CAP = 7
+        TEMP = 8
+        CONT = 9
+        FREQ = 10
+        PER = 11
+        RATIO = 12
+        DIGI_V = 13
+        DIGI_I = 14
 
+    
     class InputZ(Enum):
         Z_AUTO = 0
         Z_10M = 1
