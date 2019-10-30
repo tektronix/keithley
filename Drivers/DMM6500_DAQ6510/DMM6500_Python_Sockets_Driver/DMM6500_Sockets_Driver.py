@@ -150,12 +150,44 @@ class DMM6500:
                     self.SendCmd("channel.setdmm(\"{0}\", dmm.ATTR_MEAS_APERTURE, {1})".format(channel_list, integration_time))
         return
 
-    def configure_digitize(self, digitize_function = None , measure_range = None, sample_rate = None, sample_count = None, channel_list = None):
-        # Set the measure function
+    def configure_digitize(self, digitize_function = None , digitize_range = None, sample_rate = None, sample_count = None, channel_list = None):
+        if channel_list == None:
+            # Configure as front terminal, non-scanning
+            # Set the measure function
+            cmd = "dmm.digitize.func = {0}".format(self.measurement_functions[digitize_function.value])
+            self.SendCmd(cmd)
+            
+            # Set the range or auto
+            if digitize_range != None:
+                # Set the fixed range
+                self.SendCmd("dmm.digitize.range = {}".format(digitize_range))
+                    
+            # Set the sample rate
+            if sample_rate != None:
+                self.SendCmd("dmm.digitize.samplerate = {}".format(sample_rate))
 
-        # Set the range
+            # Set the sample count
+            if sample_rate != None:
+                self.SendCmd("dmm.digitize.count = {}".format(sample_count))
+        else:
+            # Configure for rear terminal scanning
+            # Set the measure function
+            cmd = "channel.setdmm(\"{0}\", dmm.ATTR_DIGI_FUNCTION, {1})".format(channel_list, self.measurement_functions[digitize_function.value])
+            self.SendCmd(cmd)
+            
+            # Set the range or auto
+            if digitize_range != None:
+                # Set the fixed range
+                self.SendCmd("channel.setdmm(\"{0}\", dmm.ATTR_DIGI_RANGE, {1})".format(channel_list, digitize_range))
+                    
+            # Set the sample rate
+            if sample_rate != None:
+                # Program integration time with Aperture
+                self.SendCmd("channel.setdmm(\"{0}\", dmm.ATTR_DIGI_SAMPLE_RATE, {1})".format(channel_list, sample_rate))
 
-        # Apply the aperture or NPLC
+            # Set the sample count
+            if sample_rate != None:
+                self.SendCmd("channel.setdmm(\"{0}\", dmm.ATTR_DIGI_COUNT, {1})".format(channel_list, sample_count))
         return
     
     def SetMeasure_Function(self, myFunc):
