@@ -19,4 +19,4 @@ jobs:
           ISS_ACCESS_KEY:  ${{ secrets.ISS_ACCESS_KEY }}
       run: |
         pip install -r ./iss/requirements.txt
-        python ./iss/maintainer_stats.py --debug --small-terminal -n "Tektronix Open Source :ambulance: Health Monitor :ambulance:" -b CW37LU8VCTQH -r keithley
+        python ./iss/maintainer_stats.py --debug --small-terminal -n "Tektronix Open Source :ambulance: Health Monitor :ambulance:" -k CW37LU8VCTQH -r keithley
