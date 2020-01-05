@@ -15,6 +15,6 @@ These examples demonstrates different means on how to conduct scanning using the
 	   the use of traditional style scanning but using a single scan at a time. This 
 	   method was preferred for the potential for flexibility of the interval between scans.
 	
-You will find examples for both the SPCI and the TSP command set implementations. 
+You will find examples all using the SPCI command set implementations. 
 * Each is written in Python 3
 * Each uses sockets-based communications to control the DAQ6510
