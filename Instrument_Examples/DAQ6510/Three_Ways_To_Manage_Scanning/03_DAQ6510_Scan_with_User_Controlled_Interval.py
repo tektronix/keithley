@@ -250,11 +250,6 @@ def write_data(output_data_path, data_str):
 	but using a single scan at a time. This method was preferred for the potential
 	for flexibility of the interval between scans.
 
-	iteration scanning
-	with binary data transfer.
-
-	This example application demonstrates the tradition means of scanning
-	channels to capture multiple data points.
             A. All channels of interest are configured for their measurement
                function with desired attributes.
             B. Labels per channel are added. This makes the channel definitions
