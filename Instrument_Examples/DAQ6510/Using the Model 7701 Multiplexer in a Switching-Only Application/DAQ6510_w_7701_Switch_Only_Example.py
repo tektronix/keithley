@@ -32,7 +32,7 @@ echo_cmd = 0
 		do_clear (int) - Determines whether the instrument is to be cleared
 
 
-        do_id_query (int) - Deterines when the instrument is to echho its
+        do_id_query (int) - Determines when the instrument is to echo its
                             identification string after it is initialized. 
 
 	Returns:
@@ -180,7 +180,7 @@ def instrument_query(my_socket, my_command, receive_size):
 	       open to allow for subsequent channel measurements. 
 
 *********************************************************************************"""
-my_ip_address = "192.168.1.165"  # Define your instrument's IP address here.
+my_ip_address = "192.168.1.67"  # Define your instrument's IP address here.
 my_port = 5025  # Define your instrument's port number here.
 
 do_instr_reset = 1
@@ -199,29 +199,32 @@ measure_channel_list = (["101", "102", "103", "104", "105", "106"])
 
 # open channels 134 and 135 to supplement isolation from the DAQ6510
 # internal input and sense terminals
-instrument_write("channel.multiple.open(\"134,135\")")
+instrument_write(my_daq, "channel.multiple.open(\"134,135\")")
 
 # close channel 133 to ensure the disconnect between the MUX1 and MUX2
 # multiplexer banks
-instrument_write("channel.multiple.close(\"133\")")
+instrument_write(my_daq, "channel.multiple.close(\"133\")")
 
 for s_chan in source_channel_list:
     # close the source channel
-    instrument_write("channel.multiple.close(\"{0}\"".format(s_chan))
+    instrument_write(my_daq, "channel.multiple.close(\"{0}\")".format(s_chan))
     for m_chan in measure_channel_list:
         # close the test point measurement channel
-        instrument_write("channel.multiple.close(\"{0}\")".format(m_chan))
+        instrument_write(my_daq, "channel.multiple.close(\"{0}\")".format(m_chan))
 
         # insert a delay representative of the measurement activity performed
         # by the external instrument
         time.sleep(0.5)
 
         # open the test point measurement channel
-        instrument_write("channel.multiple.open(\"{0}\")".format(m_chan))
+        instrument_write(my_daq, "channel.multiple.open(\"{0}\")".format(m_chan))
 
     # open the source channel
-    instrument_write("channel.multiple.open(\"{0}\"".format(s_chan))
+    instrument_write(my_daq, "channel.multiple.open(\"{0}\")".format(s_chan))
 
+    # add another delay representative of the external source management
+    #commands
+    time.sleep(0.5)
 
 instrument_disconnect(my_daq)
 
