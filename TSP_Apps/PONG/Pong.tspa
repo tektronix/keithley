@@ -1,0 +1,554 @@
+loadscript pong
+-- $Title: Pong
+-- $Description: Classic game of Pong
+-- $Version: 2
+-- $Requires: v1.7.0
+-- $Tag: Game, Two player
+-- $Icon: pong_icon
+-- $Product: DAQ6510, DMM6500, DMM7510, 2450, 2460, 2461, 2470
+
+--[[
+Three play modes:
+* One Player against computer
+* Two Player
+* Computer
+
+Designed to be connected to up to two input controllers (4 axes momentary switch).
+These joysticks are then connected to the instrument's 9-pin digital I/O port.
+
+Player 1
+Down, digital i/o pin 1
+Up, digital i/o pin 2
+Left, digital i/o pin 3 (not used)
+Right, digital i/o pin 4 (not used)
+Common, Digital i/o pin 9 (ground)
+
+Player 2
+Down, digital i/o pin 5
+Up, digital i/o pin 6
+Common, Digital i/o pin 9 (ground)
+]]
+
+local play_screen
+local title_screen
+
+local function digio_available()
+    if available(digio) then 
+        return true
+    else
+        return false
+    end
+end
+
+local function knob_available() -- For future use when knob is available
+    local model = localnode.model
+    if model == "DAQ6510" then
+        return false
+    elseif model == "DMM6500" then
+        return false
+    elseif model == "DMM7510" then
+        return true
+    elseif model == "2450" then
+        return true
+    elseif model == "2460" then
+        return true
+    elseif model == "2461" then
+        return true
+    elseif model == "2461-SYS" then
+        return true
+    elseif model == "2470" then
+        return true
+    else
+        return false
+    end
+end
+
+local function get_active_control() -- For future use when knob is available
+  if digio_available() then
+    return "Joystick"
+  elseif (not digio_available() and knob_available()) then
+    return "None" -- Return None since knob isnt supported in code yet, although available
+  else return "None"
+  end
+end
+
+local active_control = get_active_control()
+
+--[[ TODO: Add in knob support
+function knob_event_handler(event_id, value)
+
+    beeper.beep(0.3, 2000)
+	local velocityMultiplier = math.min(31.25, math.max(1, -129.07 * (timer.gettime() - lastKnobChange) + 33.267))
+	lastKnobChange = timer.gettime()
+	new = 0 + 1 * velocityMultiplier
+end
+]]
+
+local games = { played = 0,
+                limit = 5,
+              }
+
+local options = {
+    sound = true,
+    color = true,
+}
+
+local screen = { width = 800,
+                 height = 430,
+               }
+
+local score = { x = 275,
+                offset = 180,
+              }
+
+local ball = { position  = { x = 100,     y = 300 },
+               direction = { x = "RIGHT", y = "DOWN" },
+               speed = { actual = 0, default = 3 },
+               bounces = { count = 0, threshold = 5 },
+               id = "",
+               shape = "square", -- Use this to make the ball be a "square" or "circle"
+               radius = 15,
+               color = 0xffff00,
+               }
+local paddle = { left =  { id = "", x =   0, y = 0, color = 0xff0000 },
+                 right = { id = "", x = 780, y = 0, color = 0x0000ff },
+                 width = 20,
+                 height = 80,
+                 initial_y = 230,
+                 increment = 5,
+               }
+local sounds = { wall =   { duration = 0.01, frequency = 226 },
+                 paddle = { duration = 0.01, frequency = 459 },
+                 point =  { duration = 0.2, frequency = 257 },
+               }
+local players = { one = { down = 0b0001,     -- digital i/o pin 1
+                            up = 0b0010,     -- digital i/o pin 2
+                          left = 0b0100,      -- digital i/o pin 3
+                         right = 0b1000,     -- digital i/o pin 4
+                        points = 0 },
+                  two = { down = 0b010000,   -- digital i/o pin 5
+                              up = 0b100000, -- digital i/o pin 6
+                          points = 0 },
+                  number = 0, -- computer= 0, one player= 1, and two players= 2
+                  state = "IDLE",
+               }
+local title = { id = { },
+                char = { },
+                x = { },
+                y = { },
+               }
+local elapsed_time = 0
+
+local function update_score(reset, winner) -- bool, string for winner
+    if (reset == false) then
+        if winner == "one" then 
+            players.one.points = players.one.points + 1
+        else
+            players.two.points = players.two.points + 1
+        end
+        games.played = games.played + 1
+    elseif reset == true then
+        games.played = 0
+        players.one.points = 0
+        players.two.points = 0
+    end
+    display.settext(paddle_left_score_text, tostring(players.one.points))
+    display.settext(paddle_right_score_text, tostring(players.two.points))
+end
+
+local function create_title(screen, str, posX, posY, size)
+    for i = 1, string.len(str) do -- split string into individual characters
+        title.char[i] = string.sub(str, i, i)
+    end
+
+    local function pickColor()
+        local color = 0xffffff -- default white
+        if options.color then 
+            color = math.random(0, 255)*65536 + math.random(0, 255)*256 + math.random(0, 255)
+        end
+        return color
+    end
+
+    local position = posX
+    for i = 1, table.getn(title.char) do
+        local spacing
+        if size == display.FONT_LARGE then
+            if i > 1  and (title.char[i-1] == "i" or title.char[i-1] == "l") then
+                spacing = 10
+            else
+                spacing = 20
+            end
+        else
+            spacing = 60
+        end
+        position = position + spacing
+        title.x[i] = position -- space out characters
+        title.y[i] = posY
+        title.id[i] = display.create(screen, display.OBJ_TEXT, title.x[i], title.y[i], title.char[i], pickColor(), size)
+    end
+end
+
+local function anim_title()
+    if elapsed_time < os.time() then -- periodically run
+        elapsed_time = os.time() + 0.2
+        local randX = math.random(-20, 20)
+        for i = 1, table.getn(title.id) do
+            if title.char[i] ~= " " then -- don't move a space
+                display.setposition(title.id[i], title.x[i] + randX, math.random(30)+title.y[i]) -- Jiggle the letters
+            end
+        end
+    end
+end
+
+local function init()
+
+    if display.setkeyenable then
+        display.setkeyenable(display.KEY_FUNCTION, display.OFF)
+        display.setkeyenable(display.KEY_HELP, display.OFF)
+        display.setkeyenable(display.KEY_TRIGGER, display.OFF)
+        display.setkeyenable(display.KEY_QUICKSET_APPS, display.OFF)
+    end
+
+    if title_screen then
+        update_score(true, nil)
+        display.changescreen(title_screen)
+        return
+    end
+
+    title_screen = display.create(display.ROOT, display.OBJ_SCREEN, "Pong")
+    menu = display.create(display.ROOT, display.OBJ_SCREEN_MENU, "Press HOME key")
+    create_title(title_screen, "Play Pong", 100, 125, display.FONT_HUGE)
+    
+    if display.EVENT_ENDAPP then
+        display.setevent(title_screen, display.EVENT_ENDAPP, "")
+    end
+
+    one_player_button = display.create(title_screen, display.OBJ_BUTTON, 250, 185, "1 Player")
+    two_player_button = display.create(title_screen, display.OBJ_BUTTON, 450, 185, "2 Players")
+    no_players_button = display.create(title_screen, display.OBJ_BUTTON, 300, 260, "Computer Only")
+
+    local sound_str = "Sound: Off"
+    if options.sound then sound_str = "Sound: On" end
+    sound_button = display.create(title_screen, display.OBJ_BUTTON, 350, 335, sound_str)
+
+    if ball.shape == "circle" then 
+            ball.id = display.create(title_screen, display.OBJ_CIRCLE, ball.position.x, ball.position.y, ball.radius)
+    elseif ball.shape == "square" then
+        ball.id = display.create(title_screen, display.OBJ_RECT, ball.position.x, ball.position.y, ball.radius, ball.radius, 100, display.FILL_DOWN)
+    end
+
+
+
+    if options.color then display.setcolor(ball.id, ball.color) end
+
+    paddle.left.y, paddle.right.y = paddle.initial_y, paddle.initial_y
+    
+    paddle.left.id = display.create(title_screen, display.OBJ_RECT, paddle.left.x, paddle.initial_y, paddle.width, paddle.height, 100)
+    paddle.right.id = display.create(title_screen, display.OBJ_RECT, paddle.right.x, paddle.initial_y, paddle.width, paddle.height, 100)
+    if options.color then display.setcolor(paddle.left.id, paddle.left.color, paddle.left.color) end
+    if options.color then display.setcolor(paddle.right.id, paddle.right.color, paddle.right.color) end
+
+    display.changescreen(title_screen)
+end
+
+local function start_playing()
+    players.state = "PLAYING"
+
+    ball.speed.actual = ball.speed.default
+    ball.bounces.count = 0
+
+    if play_screen then
+        display.changescreen(play_screen)
+    return end
+
+	play_screen = display.create(display.ROOT, display.OBJ_SCREEN, "Pong")
+
+    display.changescreen(title_screen)
+
+    for i = 0, 20 do
+        display.create(play_screen, display.OBJ_RECT, 399, (i * 20) + 10, 2, 12, 100)
+    end
+
+    paddle_left_score_text = display.create(play_screen, display.OBJ_TEXT, score.x, 100, tostring(players.one.points), 0xFFFFFF, display.FONT_HUGE)
+    paddle_right_score_text = display.create(play_screen, display.OBJ_TEXT, score.x + score.offset, 100, tostring(players.two.points), 0xFFFFFF, display.FONT_HUGE)
+
+    if ball.shape == "circle" then 
+        ball.id = display.create(play_screen, display.OBJ_CIRCLE, ball.position.x, ball.position.y, ball.radius)
+    elseif ball.shape == "square" then
+        ball.id = display.create(play_screen, display.OBJ_RECT, ball.position.x, ball.position.y, ball.radius, ball.radius, 100)
+    end
+
+    if options.color then display.setcolor(ball.id, ball.color) end
+
+    paddle.left.id = display.create(play_screen, display.OBJ_RECT, paddle.left.x, paddle.initial_y, paddle.width, paddle.height, 100)
+    paddle.right.id = display.create(play_screen, display.OBJ_RECT, paddle.right.x, paddle.initial_y, paddle.width, paddle.height, 100)
+    if options.color then display.setcolor(paddle.left.id, paddle.left.color, paddle.left.color) end
+    if options.color then display.setcolor(paddle.right.id, paddle.right.color, paddle.right.color) end
+    display.changescreen(play_screen)
+
+    if display.setknobaction and knob_available() then
+        display.setknobaction(play_screen, display.ACTION_EVENTS)
+    end
+end
+
+local function play(action)
+    if options.sound and action ~= nil then
+        beeper.beep(action.duration, action.frequency)
+    end
+end
+
+local function update_ball_pos()
+    if (active_control == "Joystick") then
+        if ball.direction.x == "RIGHT" then
+            ball.position.x = ball.position.x + ball.speed.actual
+        else
+            ball.position.x = ball.position.x - ball.speed.actual
+        end
+
+        if ball.position.x >= screen.width - ball.radius*2 then
+            ball.position.x = screen.width - ball.radius*2
+            ball.direction.x = "LEFT"
+            ball.bounces.count = ball.bounces.count + 1
+            if ball.bounces.count > ball.bounces.threshold then
+                ball.speed.actual = ball.speed.actual + 1
+                ball.bounces.count = 0
+            end
+        elseif ball.position.x <= ball.radius*2 then
+            ball.position.x = ball.radius*2
+            ball.direction.x = "RIGHT"
+            ball.bounces.count = ball.bounces.count + 1
+            if ball.bounces.count > ball.bounces.threshold then
+                ball.speed.actual = ball.speed.actual + 1
+                ball.bounces.count = 0
+            end
+        end
+        if ball.direction.y == "UP" then
+            ball.position.y = ball.position.y + ball.speed.actual
+        else
+            ball.position.y = ball.position.y - ball.speed.actual
+        end
+
+        if ball.position.y >= screen.height - ball.radius then
+            ball.position.y = screen.height - ball.radius
+            ball.direction.y = "DOWN"
+            play(sounds.wall)
+        elseif ball.position.y <= ball.radius then
+            ball.position.y = ball.radius
+            ball.direction.y = "UP"
+            play(sounds.wall)
+        end
+    else 
+        if ball.direction.x == "RIGHT" then
+            ball.position.x = ball.position.x + ball.speed.actual
+        else
+            ball.position.x = ball.position.x - ball.speed.actual
+        end
+                    
+        if ball.direction.y == "UP" then
+            ball.position.y = ball.position.y + ball.speed.actual
+        else
+            ball.position.y = ball.position.y - ball.speed.actual
+        end
+            
+        if ball.position.y >= screen.height then
+            ball.position.y = screen.height
+            ball.direction.y = "DOWN"
+            play(sounds.wall)
+        elseif ball.position.y <= 0 then
+            ball.position.y = 0
+            ball.direction.y = "UP"  
+            play(sounds.wall)      
+        end     
+    end
+end
+
+local function check_joystick(port, player)
+    local position = ""
+    if port & player.up == 0 then
+        position = "UP"
+    elseif port & player.down == 0 then
+        position = "DOWN"
+    end
+    return position
+end
+
+local function correct_bounds(position)
+    if (position > screen.height - paddle.height) then
+        position = screen.height - paddle.height
+    elseif position < 0 then
+        position = 0
+    end
+    return position
+end
+
+local function update_player_pos()
+    if active_control == "Joystick" then 
+        local port = digio.readport()
+        if players.number >= 1 and port < 65 then -- joystick actuated
+            local position = check_joystick(port, players.one)
+            if position == "UP" then
+                paddle.left.y = paddle.left.y + paddle.increment
+                paddle.left.y = correct_bounds(paddle.left.y)
+            elseif position == "DOWN" then
+                paddle.left.y = paddle.left.y - paddle.increment
+                paddle.left.y = correct_bounds(paddle.left.y)
+            end
+            if players.number > 1 then
+                position = check_joystick(port, players.two)
+                if position == "UP" then
+                    paddle.right.y = paddle.right.y + paddle.increment
+                    paddle.right.y = correct_bounds(paddle.right.y)
+                elseif position == "DOWN" then
+                    paddle.right.y = paddle.right.y - paddle.increment
+                    paddle.right.y = correct_bounds(paddle.right.y)
+                end
+            end
+        end
+    end
+    if players.number <= 1 then
+        if ball.direction.x == "RIGHT" then
+            if (paddle.right.y < ball.position.y) then
+                paddle.right.y = paddle.right.y + 3 * 1.5
+            elseif (paddle.right.y > ball.position.y) then
+                paddle.right.y = paddle.right.y - 3 * 1.5
+            end
+            paddle.right.y = correct_bounds(paddle.right.y)
+        end
+    end
+
+    if players.number == 0 then
+        if ball.direction.x == "LEFT" then
+            if (paddle.left.y < ball.position.y) then
+                paddle.left.y = paddle.left.y + 3 * 1.5
+            elseif (paddle.left.y > ball.position.y) then
+                paddle.left.y = paddle.left.y - 3 * 1.5
+            end
+            paddle.left.y = correct_bounds(paddle.left.y)
+        end
+    end
+end
+
+local function check_collisions()
+    local state = "PLAYING"
+    if (ball.position.x <= paddle.left.x + paddle.width * 2) then
+        if (ball.position.y - ball.radius <= paddle.left.y + paddle.height
+            and ball.position.y + ball.radius >= paddle.left.y) then
+            ball.direction.x = "RIGHT"
+            play(sounds.paddle)
+        else
+            play(sounds.point)
+            update_score(false, "two")
+            state = "ENDED"
+        end
+    elseif (ball.position.x >= paddle.right.x - paddle.width) then
+        if (ball.position.y - ball.radius <= paddle.right.y + paddle.height
+            and ball.position.y + ball.radius >= paddle.right.y) then
+            ball.direction.x = "LEFT"
+            play(sounds.paddle)
+        else
+            play(sounds.point)
+            update_score(false, "one")
+            state = "ENDED"
+        end
+    end
+    return state
+end
+
+local function draw_objects()
+    display.setposition(ball.id, ball.position.x, ball.position.y)
+    display.setposition(paddle.left.id, paddle.left.x, paddle.left.y)
+    display.setposition(paddle.right.id, paddle.right.x, paddle.right.y)
+end
+
+local function main()
+    eventlog.clear()
+    init()
+    while true do
+        local event_id = display.waitevent(0.01)     
+        if players.state == "IDLE" then
+        anim_title()
+            if event_id == one_player_button then
+                if active_control != "None" then -- can only be none on nighthawk  
+                  players.number = 1
+                  start_playing()
+                else
+                    local error_prompt = display.prompt(display.BUTTONS_OK, "To use this mode, power off Instrument, plug in Digital IO Card, and install joysticks.")
+                    display.setstate(one_player_button, display.STATE_DISABLE)
+                end
+            elseif event_id == two_player_button then
+                if digio_available() then -- Two player mode can only be done using joysticks with digitial IO
+                  players.number = 2
+                  start_playing()
+                else 
+                  local error_prompt = display.prompt(display.BUTTONS_OK, "To use this mode, power off Instrument, plug in Digital IO Card, and install joysticks.")
+                  display.setstate(two_player_button, display.STATE_DISABLE)
+                end
+            elseif event_id == no_players_button then
+                players.number = 0
+                start_playing()
+            elseif event_id == sound_button then
+                if options.sound then
+                    display.settext(sound_button, "Sound: Off")
+                    options.sound = false
+                else
+                    display.settext(sound_button, "Sound: On")
+                    beeper.beep(0.1, 3600)
+                    options.sound = true
+                end
+            end
+        elseif players.state == "PLAYING" then
+            update_ball_pos()
+            update_player_pos()
+            players.state = check_collisions()
+            draw_objects()
+            if games.played == games.limit then 
+                players.state = "ENDED"
+                delay(2) -- Delay for how long the score is shown at the end of the series
+            elseif (games.played < games.limit) and (players.state == "ENDED") then
+                start_playing()
+                ball.position.x = 200
+                ball.position.y = 400
+                delay(1) -- Delay for how long there a pause after a point is scored and before the next round begins
+            end
+        elseif players.state == "ENDED" then
+            update_score(true, nil)
+            init()
+            players.state = "IDLE"
+        end
+    -- if eventlog.getcount(eventlog.SEV_ERROR | eventlog.SEV_WARN) > 0 then beeper.beep(0.1, 100) exit() end
+    end
+end
+
+main()
+
+endscript
+
+loadimage pong_icon pong
+iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAMAAAANIilAAAAAAXNSR0IArs4c6QAAAARnQU1B
+AACxjwv8YQUAAAMAUExURQAAAAAAAQEBAgICAgMDAwQEBAUFBQYGBgcHBwgICAoKCgsLCwwM
+DA0NDQ8PDxAQEBERERISEhMTExQUFBUVFRYWFhcXFxgYGBkZGRoaGhsbGxwbHBwcHB0dHR4e
+Hh8fHyAgICIiIiMjIyQkJCYmJicnJygoKCgoKSoqKisrKy0tLS4uLi8vLzExMTMzMzc3Nzo6
+Oj4+PkFBQUJCQkNDQ0VFRUZGRkhISElJSUpKSktLS0xMTE9PT1BQUFJSUlNTU1RUVFZWVllZ
+WVtbW19fX2FhYWJiYmVlZWdnZ2tra21tbW9vb3FxcXJycnNzc3R0dHV1dXd3d3h3eHh4eHx8
+fH19fX9/f4CAgIGBgYODg4SEhImJiYqKiouLi46OjpCQkJGRkZqampubm5ycnJ6enqGhoaqq
+qqysrK+vr7Ozs7S0tLe3t7u7u7y8vL29vb6+vr+/v8LCwsPDw8XFxcbGxsfHx8jIyMrKyszM
+zM3Nzc7Ozs/Pz9DP0NDQ0NHR0dfX19jY2NnZ2dra2tzc3N3d3d/f3+Li4uPj4+Tk5Ozs7O/v
+7/Ly8vPz8/b29vv7+/39/f7+/gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMNizTQAAAAJcEhZcwAADsMAAA7DAcdvqGQA
+AAAZdEVYdFNvZnR3YXJlAHBhaW50Lm5ldCA0LjAuMjHxIGmVAAACFUlEQVRIS9WU+VPTQBhA
+E9IDaCu0QKmAtKDcVC65RA4LyKFylhsUOVorN6iAipwil4U/2XT3S5xpurshNczwftn3ZeZN
+m2+ScDQ8FyBa0BA73/jLsEmx8HRgtq8YO4PRo5OX2Aw5+Cz98G3v/KMLD1S8n1d22sGBB08K
+mle/lsNEwbAwP7UeFfMC37CznAEThefbjV1rELuW8Sne/fT3bgM4hbmjxaXTQCVyeds5o5v+
+NHAaneMjgZMFL3Ipdgz+DDQW2PFAI/1R7uutHivy5CZ0cJWhP782glGLIOCpcYMBrmc+n+9F
+CUx3gWMGRAsqnm1B4MGiYce2V/3VKeBRpPpBYoB/MOvH1XQesluB4+yD6/f5yDSQdXhDiq3M
+54ISsxemV+wMghChxGz0ik3MF0mvhcUV5x6DKBFMRl58QjUtzJxfX5WuNXYMX+/XJmiNh8SY
+/svu3yAKHEM3B4yYvG2VsSHZW+EU4IKMitj0mOOM3V+OxzxwQUaKs/fD7ygLSwpehpeqYZCR
+YmtLR4UNrsUgKXQVXquFQUaKBastUTxikRkS77n38GJG8c9QHBFCKYK2/bChpdCM53/IMRkU
+82azYtlqYksbiAIVMRm9Y/sEiAK1C4uJ3rF9EkSB3gsjY397uVsDTsDSCqLAUjfrLyI/1xHI
+CxNfCD7y6aVAidlkfgK5Xxgp3zYmcS0srth9BvL/4bi/QvODFh+N6HYAAAAASUVORK5CYII=
+endimage
