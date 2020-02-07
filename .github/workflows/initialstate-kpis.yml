@@ -1,0 +1,22 @@
+name: initialstate-kpis
+on:
+  push:
+    branches:
+    - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout iss streamer
+      run: git clone "https://${{ secrets.ACCESS_TOKEN }}:x-oauth-basic@github.com/tektronix/initialstate-kpi-streamer.git" iss
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+    - name: get-maintainer-stats
+      env:
+          GITHUB_TOKEN:    ${{ secrets.ACCESS_TOKEN }}
+          ISS_ACCESS_KEY:  ${{ secrets.ISS_ACCESS_KEY }}
+      run: |
+        pip install -r ./iss/requirements.txt
+        python ./iss/maintainer_stats.py --debug --small-terminal -n "Tektronix Open Source :ambulance: Health Monitor :ambulance:" -k CW37LU8VCTQH -r keithley
