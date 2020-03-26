@@ -22,6 +22,9 @@ Examples include those from the module card manuals (7700, 7701, 7702, 7703, 770
 * **[Series_2280S](./Series_2280S)**  
 TSP-Net examples can be run from any TSP-Net enabled instrument.
 
+* **[Series_2260B](./Series_2260B)**  
+General examples to show basic and advanced features.
+
 * **[Series_3706A](./Series_3706A)**  
 A variety of scanning and switching examples to choose from. 
 
