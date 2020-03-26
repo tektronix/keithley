@@ -29,4 +29,7 @@ General examples to show basic and advanced features.
 A variety of scanning and switching examples to choose from. 
 
 * **[Instructables](./Instructables)** 
-Quick generic tutorials for controlling instruments but not dedicated to any one specific model. 
+Quick generic tutorials for controlling instruments but not dedicated to any one specific model.
+
+* **[General](./General)** 
+Instrument examples which might be applicable to across an instrument platform, series, or instrument independent.  
