@@ -9,7 +9,7 @@ using System.IO;
 using System.Text;
 using System.Threading;     // for delays
 
-namespace Send_TSP_Script_File_to_DAQ6510_Sockets_CSharp
+namespace Send_Script_File_to_a_Keithley_Touchscreen_Instrument_Sockets_CSharp
 {
     class Program
     {
