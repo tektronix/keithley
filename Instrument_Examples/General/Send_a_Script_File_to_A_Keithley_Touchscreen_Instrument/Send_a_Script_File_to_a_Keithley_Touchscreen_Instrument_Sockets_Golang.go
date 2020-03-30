@@ -174,53 +174,14 @@ func instrument_query(conn *net.TCPConn, my_command string,
 
 
 /*********************************************************************************
-	Function: load_script_file_onto_keithley_instrument(my_script_file string,
-                                                        conn *net.TCPConn)
-	
-	Purpose: Copy the contents of a specific script file off of the computer 
-	         and upload onto the target instrument. 
-
-	Parameters:
-		my_script_file (string) - The script file/path (ASCII text format) that 
-								  will be read from the computer and sent to the
-								  instrument. 
-		conn (*net.TCPConn) - The TCP instrument connection object used for 
-							  sending and receiving data. 
-	Returns:
-		None
-
-	Revisions:
-		2019-07-04    JJB    Initial revision.
-*********************************************************************************/
-func load_script_file_onto_keithley_instrument(my_script_file string,
-                                               conn *net.TCPConn){
-	var my_response_receive_size = 128
-	
-	// Read the entire script file into the computer's memory...
-	dat, err := ioutil.ReadFile(my_script_file)
-	check(err)
-	
-	instrument_write(conn, "if loadfuncs ~= nil then script.delete('loadfuncs') end")
-	instrument_write(conn, "loadscript loadfuncs\n" + string(dat) + "\nendscript")
-	println("Reply from instrument = ", string(instrument_query(conn, "loadfuncs()",
-           	 my_response_receive_size)))
-}
-
-func check(e error) {
-    if e != nil {
-        panic(e)
-    }
-}
-
-/*********************************************************************************
 	This example copies the contents of a script file on the host computer and
 	sends to the LAN-connected instrument. 
 *********************************************************************************/
 func main() {
-	var my_ip_address string = "192.168.1.104"
+	var my_ip_address string = "192.168.1.26"
 	var my_port int = 5025
 	var my_id_receive_size = 128
-	var my_script_file = "functions2.tsp"
+	var my_script_file = "user_functions.lua"
 	
 	// Connect to the target instrument....
 	conn, _ := instrument_connect(my_ip_address, my_port)
@@ -231,7 +192,7 @@ func main() {
 	
 	load_script_file_onto_keithley_instrument(my_script_file, conn)
 	
-	instrument_write(conn, "do_beep(1.0, 4500, 3)")
+	instrument_write(conn, "do_beep(1.0, 4500)")
 	
 	// Close the connection to the instrument
     instrument_disconnect(conn)
