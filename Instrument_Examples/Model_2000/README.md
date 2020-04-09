@@ -1,15 +1,13 @@
 
-# General Examples
+# Model 2000 Programming Examples
 
-These examples are targeted for use with the Model 2000 digital multimeter and, where applicable, with the various supplemental scan cards that can be added for multi-point measurements. 
+These examples are targeted for use with the Model 2000 digital multimeter. 
 
 ## Directory
 
-[comment]: **[General](./directory)**  
+* **[Using the Scan Card](./Using_the_Scan_Card)** 
+Series of examples to help illustrate how the user can program the Model 2000 to perform multi-point measurements with the various supplemental scan cards. This includes:
+** 2000-SCAN
+** 2001-TCSCN
 
-* **[Send as Script File to a Keithley Touchscreen Instrument](./Send_a_Script_File_to_A_Keithley_Touchscreen_Instrument)** 
-Series of examples in different programming languages, showing how you can upload a custom script file to your TSP-enabled instrument. 
-
-* **[Synchronize Internal Clock with NTP Server](./Synchronize_Internal_Clock_with_NTP_Server)**
-Example script used to synchronize your Keithley touchscreen instrument time to NTP server time. 
 
