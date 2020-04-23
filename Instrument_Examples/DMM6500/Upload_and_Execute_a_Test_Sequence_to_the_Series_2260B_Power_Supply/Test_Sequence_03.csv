@@ -1,0 +1,5 @@
+step,voltage,current,duration,priority,slew,is_rising
+1,40,4,20,1,MAX,1
+2,40,20,200,1,MAX,0
+3,35,20,500,2,10,0
+4,0,4,200,1,MAX,0
