@@ -16,5 +16,5 @@ which allows you to troubleshoot the test configuration. This allows you to view
 individually closed channels to ensure that connections to the DUT are secure.
 
 You will find examples for both the SPCI and the TSP command set implementations. 
-* Programming languages used: Python 3 and VB.NET
+* Programming languages used: https://www.python.org/ and VB.NET
 * Connections supported: raw sockets and VISA 
