@@ -1,4 +1,9 @@
-﻿Imports NationalInstruments.Visa
+﻿' ***********************************************************
+' *** Copyright Tektronix, Inc.                           ***
+' *** See www.tek.com/sample-license for licensing terms. ***
+' ***********************************************************
+
+Imports NationalInstruments.Visa
 ' Make sure to include the following assemblies...
 '   NationalInstruments.Common
 '   NationalInstruments.MStudio.CLM
@@ -23,7 +28,7 @@
 ' individually closed channels to ensure that connections to the DUT are secure.
 ' ====================================================================================================
 
-Module Module1
+Module Mixed_Channel_Multifunction_Scan
 
     Dim echo_cmd As Boolean = False
 
@@ -102,8 +107,6 @@ Module Module1
         ' Format and display the elapsed test time
         Dim elapsed_time As String = String.Format("{0:00}:{1:00}:{2:00}:{3:00}.{4:000}", ts.Days, ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds)
         Console.WriteLine("Run Time: " + elapsed_time)
-
-
 
         Console.WriteLine("Press any key to continue...")
         Dim k As Char = Console.ReadKey().KeyChar
