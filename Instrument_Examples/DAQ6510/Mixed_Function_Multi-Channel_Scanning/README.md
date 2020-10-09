@@ -16,5 +16,5 @@ which allows you to troubleshoot the test configuration. This allows you to view
 individually closed channels to ensure that connections to the DUT are secure.
 
 You will find examples for both the SPCI and the TSP command set implementations. 
-* Each is written in Python 3
-* Each uses sockets-based communications to control the DAQ6510
+* Programming languages used: Python 3 and VB.NET
+* Connections supported: raw sockets and VISA 
