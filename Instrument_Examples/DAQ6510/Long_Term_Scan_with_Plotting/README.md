@@ -14,3 +14,8 @@ the thermal operating characteristics of their device or product.
 You will find examples for both the SPCI and the TSP command set implementations. 
 * Each is written in Python 3
 * Each uses sockets-based communications to control the DAQ6510
+
+| Example                                                | Language                                                     |
+| ------------------------------------------------------ | ------------------------------------------------------------ |
+| **[Long Term Scanning with Plotting]** | [![Python 3.6](https://img.shields.io/badge/python-3.6-&?labelColor=3E434A&colorB=006281&logo=python)](https://www.python.org/downloads/release/python-360/) |
+
