@@ -1,9 +1,11 @@
 loadscript MatrixApp
 -- $Title: Matrix CTRL
--- $Product: DAQ6510,7709
+-- $Product: DAQ6510
+-- $Tag: Control
 -- $Description: Provides hands-on front panel cross-point control of the Model 7709 6x8 matrix module. 
+-- $Requires: v1.7.3b
 -- $Icon: MatrixApp_icon
--- $Version: 1.0.0b
+-- $Version: 1.0
 
 LoadedAppName = "Matrix Cross-point Control"
 
