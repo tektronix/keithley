@@ -3,7 +3,7 @@ loadscript MatrixApp
 -- $Product: DAQ6510,7709
 -- $Description: Provides hands-on front panel cross-point control of the Model 7709 6x8 matrix module. 
 -- $Icon: MatrixApp_icon
--- $Version: 1.1a
+-- $Version: 1.2a
 
 LoadedAppName = "Matrix Cross-point Control"
 
@@ -763,7 +763,7 @@ txt_dmm_in = display.create(id, display.OBJ_TEXT, x1+xd*8+row_dmm_buff-18, y1+63
 chk_dmm_sense = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*8+row_dmm_buff, y1+yd, "", "")
 txt_dmm_sns = display.create(id, display.OBJ_TEXT, x1+xd*8+row_dmm_buff-18, y1+yd+63, "SNS", display.COLOR_VALUE_LABEL, display.FONT_SMALL)
 
--- Create functions for row 6 check buttons...
+-- Create functions for the DMM check buttons...
 display.setevent(chk_dmm_input, display.EVENT_PRESS, "chk_dmm_input_press_event(%value)")
 display.setevent(chk_dmm_sense, display.EVENT_PRESS, "chk_dmm_sense_press_event(%value)")
 
@@ -771,15 +771,15 @@ display.setevent(chk_dmm_sense, display.EVENT_PRESS, "chk_dmm_sense_press_event(
 if closed_channels != nil then
 	for key, value in pairs(closed_channels) do
 		if value == (slot_adder + 49) then
-			display.setvalue(chk_dmm_input, display.ON)
-		elseif value == (slot_adder + 50) then
 			display.setvalue(chk_dmm_sense, display.ON)
+		elseif value == (slot_adder + 50) then
+			display.setvalue(chk_dmm_input, display.ON)
 		end
 	end
 end
 
 function chk_dmm_input_press_event(v)
-	local chn = string.format("%s", slot_adder + 49)
+	local chn = string.format("%s", slot_adder + 50)
     if (v == 1) then 
     	channel.multiple.close(chn) 
     else
@@ -788,7 +788,7 @@ function chk_dmm_input_press_event(v)
 end
 
 function chk_dmm_sense_press_event(v)
-	local chn = string.format("%s", slot_adder + 50)
+	local chn = string.format("%s", slot_adder + 49)
     if (v == 1) then 
     	channel.multiple.close(chn) 
     else
