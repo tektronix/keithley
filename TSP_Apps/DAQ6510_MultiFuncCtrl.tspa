@@ -1,0 +1,547 @@
+loadscript MultiFuncApp
+-- $Title: Multi-func Ctrl
+-- $Product: DAQ6510
+-- $Description: Provides hands-on front panel control of the Model 7706 multi-function module. The operator is able to manipulate the digital and analog output as well as the totalizer. 
+-- $Icon: MultiFuncApp_icon
+-- $Version: 1.0
+-- $Requires: 1.7.3
+
+LoadedAppName = "Multi-function Module Control"
+
+local ch_21_value = 0	-- anticipated range 0 - 255
+local ch_22_value = 0	-- anticipated range 0 - 255
+local ch_23_value = 0.0	-- anticipated range -10.0 to +10.0
+local ch_24_value = 0.0	-- anticipated range -10.0 to +10.0
+local ch_25_mode = nil
+local ch_25_count = nil
+
+local slot_adder = 0
+slotinfo = slot[1].idn
+ind1, ind2 = string.find(slotinfo, "7706")
+if ind1 != nil then
+	slot_adder = slot_adder + 1
+end
+slotinfo = slot[2].idn
+ind1, ind2 = string.find(slotinfo, "7706")
+if ind1 != nil then
+	slot_adder = slot_adder + 2
+end
+
+local display_title = ""
+local slot_str = "slot1"
+if slot_adder == 1 then
+	slot_adder = 100	-- Only slot 1 populated
+	display_title = "Model 7706 - Slot 1"
+elseif slot_adder == 2 then
+	slot_adder = 200	-- Only slot 2 populated
+	display_title = "Model 7706 - Slot 2"
+	slot_str = "slot2"
+elseif slot_adder == 3 then
+	-- Provide the operator the choice of controlling either the slot 1 or slot 2 7709.
+	local option_id = display.input.option("Slot to control", "Slot 1", "Slot 2")
+	if option_id == display.BUTTON_OPTION1 then
+		slot_adder = 100
+		display_title = "Model 7706 - Slot 1"
+	else
+		slot_adder = 200
+		display_title = "Model 7706 - Slot 2"
+		slot_str = "slot2"
+	end
+end
+
+-- Acquire the values at each digital output
+ch_21_value = channel.read(string.format("%s", slot_adder + 21)) -- reading returns the value in a table????
+ch_22_value = channel.read(string.format("%s", slot_adder + 22))
+
+-- Acquire the values at each analog output
+ch_23_value = channel.read(string.format("%s", slot_adder + 23))
+ch_24_value = channel.read(string.format("%s", slot_adder + 24))
+
+-- Acquire the active totalizer mode and present count
+ch_25_mode = channel.getmode(string.format("%s", slot_adder + 25))
+ch_25_count = channel.read(string.format("%s", slot_adder + 25))
+
+id = display.create(display.ROOT, display.OBJ_SCREEN, display_title, 60, 700) -- 500 original
+
+--################################################################################
+-- Create the Digital Output section
+--################################################################################
+-- Define the text identifying the section
+header_text = display.create(id, display.OBJ_TEXT, 0, 40, "Multi-function Control", display.COLOR_EDIT_TITLE, display.FONT_LARGE)
+dig_out_text = display.create(id, display.OBJ_TEXT, 0, 85, "Digital Outputs", display.COLOR_VALUE_LABEL, display.FONT_LARGE)
+dig_out_line_id = display.create(id, display.OBJ_LINE, 225, 85, 765, 85)
+
+-- Define the channel 21 digital output controls
+local ybase = 120
+local y1 = ybase+10
+local yd = 70
+local x1 = 40
+local xd = 95
+
+dig_out_text = display.create(id, display.OBJ_TEXT, 30, ybase, "Channel 21", display.COLOR_VALUE_LABEL, display.FONT_SMALL)
+ln1_id = display.create(id, display.OBJ_LINE, 15, ybase-5, 20, ybase-5)	-- add decorator lines before
+ln2_id = display.create(id, display.OBJ_LINE, 120, ybase-5, 125, ybase-5) -- and after the above label
+
+chk_id11 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*0, y1, "", "0")
+chk_id12 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*1, y1, "", "1")
+chk_id13 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*2, y1, "", "2")
+chk_id14 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*3, y1, "", "3")
+chk_id15 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*4, y1, "", "4")
+chk_id16 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*5, y1, "", "5")
+chk_id17 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*6, y1, "", "6")
+chk_id18 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*7, y1, "", "7")
+
+-- Create functions for row 1 check buttons...
+display.setevent(chk_id11, display.EVENT_PRESS, "chk_id11_press_event(%value)")
+display.setevent(chk_id12, display.EVENT_PRESS, "chk_id12_press_event(%value)")
+display.setevent(chk_id13, display.EVENT_PRESS, "chk_id13_press_event(%value)")
+display.setevent(chk_id14, display.EVENT_PRESS, "chk_id14_press_event(%value)")
+display.setevent(chk_id15, display.EVENT_PRESS, "chk_id15_press_event(%value)")
+display.setevent(chk_id16, display.EVENT_PRESS, "chk_id16_press_event(%value)")
+display.setevent(chk_id17, display.EVENT_PRESS, "chk_id17_press_event(%value)")
+display.setevent(chk_id18, display.EVENT_PRESS, "chk_id18_press_event(%value)")
+
+-- Set the state of the controls based on the closed channel list
+if (ch_21_value[1] & 1) == 1 then 
+	display.setvalue(chk_id11, display.ON)
+else
+	display.setvalue(chk_id11, display.OFF)
+end
+
+if (ch_21_value[1] & 2) == 2 then 
+	display.setvalue(chk_id12, display.ON)
+else
+	display.setvalue(chk_id12, display.OFF)
+end
+
+if (ch_21_value[1] & 4) == 4 then 
+	display.setvalue(chk_id13, display.ON)
+else
+	display.setvalue(chk_id13, display.OFF)
+end
+
+if (ch_21_value[1] & 8) == 8 then 
+	display.setvalue(chk_id14, display.ON)
+else
+	display.setvalue(chk_id14, display.OFF)
+end
+
+if (ch_21_value[1] & 16) == 16 then 
+	display.setvalue(chk_id15, display.ON)
+else
+	display.setvalue(chk_id15, display.OFF)
+end
+
+if (ch_21_value[1] & 32) == 32 then 
+	display.setvalue(chk_id16, display.ON)
+else
+	display.setvalue(chk_id16, display.OFF)
+end
+
+if (ch_21_value[1] & 64) == 64 then 
+	display.setvalue(chk_id17, display.ON)
+else
+	display.setvalue(chk_id17, display.OFF)
+end
+
+if (ch_21_value[1] & 128) == 128 then 
+	display.setvalue(chk_id18, display.ON)
+else
+	display.setvalue(chk_id18, display.OFF)
+end
+
+-- Define check events
+function chk_id11_press_event(v)
+	local chn = string.format("%s", slot_adder + 21)
+    if (v == 1) then 
+    	ch_21_value[1] = ch_21_value[1] + 1
+    	channel.write(chn, tonumber(ch_21_value[1]))
+    else
+    	ch_21_value[1] = ch_21_value[1] - 1
+    	channel.write(chn, tonumber(ch_21_value[1]))
+    end
+end
+
+function chk_id12_press_event(v)
+	local chn = string.format("%s", slot_adder + 21)
+    if (v == 1) then 
+    	ch_21_value[1] = ch_21_value[1] + 2
+    	channel.write(chn, tonumber(ch_21_value[1]))
+    else
+    	ch_21_value[1] = ch_21_value[1] - 2
+    	channel.write(chn, tonumber(ch_21_value[1]))
+    end
+end
+
+function chk_id13_press_event(v)
+	local chn = string.format("%s", slot_adder + 21)
+    if (v == 1) then 
+    	ch_21_value[1] = ch_21_value[1] + 4
+    	channel.write(chn, tonumber(ch_21_value[1]))
+    else
+    	ch_21_value[1] = ch_21_value[1] - 4
+    	channel.write(chn, tonumber(ch_21_value[1]))
+    end
+end
+
+function chk_id14_press_event(v)
+	local chn = string.format("%s", slot_adder + 21)
+    if (v == 1) then 
+    	ch_21_value[1] = ch_21_value[1] + 8
+    	channel.write(chn, tonumber(ch_21_value[1]))
+    else
+    	ch_21_value[1] = ch_21_value[1] - 8
+    	channel.write(chn, tonumber(ch_21_value[1]))
+    end
+end
+
+function chk_id15_press_event(v)
+	local chn = string.format("%s", slot_adder + 21)
+    if (v == 1) then 
+    	ch_21_value[1] = ch_21_value[1] + 16
+    	channel.write(chn, tonumber(ch_21_value[1])) 
+    else
+    	ch_21_value[1] = ch_21_value[1] - 16
+    	channel.write(chn, tonumber(ch_21_value[1]))
+    end
+end
+
+function chk_id16_press_event(v)
+	local chn = string.format("%s", slot_adder + 21)
+    if (v == 1) then 
+    	ch_21_value[1] = ch_21_value[1] + 32
+    	channel.write(chn, tonumber(ch_21_value[1]))
+    else
+    	ch_21_value[1] = ch_21_value[1] - 32
+    	channel.write(chn, tonumber(ch_21_value[1]))
+    end
+end
+
+function chk_id17_press_event(v)
+	local chn = string.format("%s", slot_adder + 21)
+    if (v == 1) then 
+    	ch_21_value[1] = ch_21_value[1] + 64
+    	channel.write(chn, tonumber(ch_21_value[1]))
+    else
+    	ch_21_value[1] = ch_21_value[1] - 64
+    	channel.write(chn, tonumber(ch_21_value[1]))
+    end
+end
+
+function chk_id18_press_event(v)
+	local chn = string.format("%s", slot_adder + 21)
+    if (v == 1) then 
+    	ch_21_value[1] = ch_21_value[1] + 128
+    	channel.write(chn, tonumber(ch_21_value[1]))
+    else
+    	ch_21_value[1] = ch_21_value[1] - 128
+    	channel.write(chn, tonumber(ch_21_value[1]))
+    end
+end
+
+-- Define the channel 22 digital ouput controls
+local ybase2 = 220
+local y2 = ybase2+10
+local y2d = 70
+
+dig_out_text = display.create(id, display.OBJ_TEXT, 30, ybase2, "Channel 22", display.COLOR_VALUE_LABEL, display.FONT_SMALL)
+ln3_id = display.create(id, display.OBJ_LINE, 15, ybase2-5, 20, ybase2-5)	-- add decorator lines before
+ln4_id = display.create(id, display.OBJ_LINE, 120, ybase2-5, 125, ybase2-5) -- and after the above label
+
+chk_id21 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*0, y2, "", "0")
+chk_id22 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*1, y2, "", "1")
+chk_id23 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*2, y2, "", "2")
+chk_id24 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*3, y2, "", "3")
+chk_id25 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*4, y2, "", "4")
+chk_id26 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*5, y2, "", "5")
+chk_id27 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*6, y2, "", "6")
+chk_id28 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*7, y2, "", "7")
+
+-- Create functions for row 1 check buttons...
+display.setevent(chk_id21, display.EVENT_PRESS, "chk_id21_press_event(%value)")
+display.setevent(chk_id22, display.EVENT_PRESS, "chk_id22_press_event(%value)")
+display.setevent(chk_id23, display.EVENT_PRESS, "chk_id23_press_event(%value)")
+display.setevent(chk_id24, display.EVENT_PRESS, "chk_id24_press_event(%value)")
+display.setevent(chk_id25, display.EVENT_PRESS, "chk_id25_press_event(%value)")
+display.setevent(chk_id26, display.EVENT_PRESS, "chk_id26_press_event(%value)")
+display.setevent(chk_id27, display.EVENT_PRESS, "chk_id27_press_event(%value)")
+display.setevent(chk_id28, display.EVENT_PRESS, "chk_id28_press_event(%value)")
+
+-- Set the state of the controls based on the closed channel list
+local temp_val = 0
+if (ch_22_value[1] & 1) == 1 then 
+	display.setvalue(chk_id21, display.ON)
+else
+	display.setvalue(chk_id21, display.OFF)
+end
+
+if (ch_22_value[1] & 2) == 2 then 
+	display.setvalue(chk_id22, display.ON)
+else
+	display.setvalue(chk_id22, display.OFF)
+end
+
+if (ch_22_value[1] & 4) == 4 then 
+	display.setvalue(chk_id23, display.ON)
+else
+	display.setvalue(chk_id23, display.OFF)
+end
+
+if (ch_22_value[1] & 8) == 8 then 
+	display.setvalue(chk_id24, display.ON)
+else
+	display.setvalue(chk_id24, display.OFF)
+end
+
+if (ch_22_value[1] & 16) == 16 then 
+	display.setvalue(chk_id25, display.ON)
+else
+	display.setvalue(chk_id25, display.OFF)
+end
+
+if (ch_22_value[1] & 32) == 32 then 
+	display.setvalue(chk_id26, display.ON)
+else
+	display.setvalue(chk_id26, display.OFF)
+end
+
+if (ch_22_value[1] & 64) == 64 then 
+	display.setvalue(chk_id27, display.ON)
+else
+	display.setvalue(chk_id27, display.OFF)
+end
+
+if (ch_22_value[1] & 128) == 128 then 
+	display.setvalue(chk_id28, display.ON)
+else
+	display.setvalue(chk_id28, display.OFF)
+end
+
+-- Define check events
+function chk_id21_press_event(v)
+    local chn = string.format("%s", slot_adder + 22)
+    if (v == 1) then 
+    	ch_22_value[1] = ch_22_value[1] + 1
+    	channel.write(chn, tonumber(ch_22_value[1]))
+    else
+    	ch_22_value[1] = ch_22_value[1] - 1
+    	channel.write(chn, tonumber(ch_22_value[1]))
+    end
+end
+
+function chk_id22_press_event(v)
+    local chn = string.format("%s", slot_adder + 22)
+    if (v == 1) then 
+    	ch_22_value[1] = ch_22_value[1] + 2
+    	channel.write(chn, tonumber(ch_22_value[1]))
+    else
+    	ch_22_value[1] = ch_22_value[1] - 2
+    	channel.write(chn, tonumber(ch_22_value[1]))
+    end
+end
+
+function chk_id23_press_event(v)
+    local chn = string.format("%s", slot_adder + 22)
+    if (v == 1) then 
+    	ch_22_value[1] = ch_22_value[1] + 4
+    	channel.write(chn, tonumber(ch_22_value[1]))
+    else
+    	ch_22_value[1] = ch_22_value[1] - 4
+    	channel.write(chn, tonumber(ch_22_value[1]))
+    end
+end
+
+function chk_id24_press_event(v)
+    local chn = string.format("%s", slot_adder + 22)
+    if (v == 1) then 
+    	ch_22_value[1] = ch_22_value[1] + 8
+    	channel.write(chn, tonumber(ch_22_value[1]))
+    else
+    	ch_22_value[1] = ch_22_value[1] - 8
+    	channel.write(chn, tonumber(ch_22_value[1]))
+    end
+end
+
+function chk_id25_press_event(v)
+    local chn = string.format("%s", slot_adder + 22)
+    if (v == 1) then 
+    	ch_22_value[1] = ch_22_value[1] + 16
+    	channel.write(chn, tonumber(ch_22_value[1]))
+    else
+    	ch_22_value[1] = ch_22_value[1] - 16
+    	channel.write(chn, tonumber(ch_22_value[1]))
+    end
+end
+
+function chk_id26_press_event(v)
+	local chn = string.format("%s", slot_adder + 22)
+    if (v == 1) then 
+    	ch_22_value[1] = ch_22_value[1] + 32
+    	channel.write(chn, tonumber(ch_22_value[1]))
+    else
+    	ch_22_value[1] = ch_22_value[1] - 32
+    	channel.write(chn, tonumber(ch_22_value[1]))
+    end
+end
+
+function chk_id27_press_event(v)
+    local chn = string.format("%s", slot_adder + 22)
+    if (v == 1) then 
+    	ch_22_value[1] = ch_22_value[1] + 64
+    	channel.write(chn, tonumber(ch_22_value[1]))
+    else
+    	ch_22_value[1] = ch_22_value[1] - 64
+    	channel.write(chn, tonumber(ch_22_value[1]))
+    end
+end
+
+function chk_id28_press_event(v)
+	local chn = string.format("%s", slot_adder + 22)
+    if (v == 1) then 
+    	ch_22_value[1] = ch_22_value[1] + 128
+    	channel.write(chn, tonumber(ch_22_value[1]))
+    else
+    	ch_22_value[1] = ch_22_value[1] - 128
+    	channel.write(chn, tonumber(ch_22_value[1]))
+    end
+end
+
+--################################################################################
+-- Create the Analog Output section
+--################################################################################
+-- Define the text identifying the section
+local y3 = y2+120
+local ybase3 = y3+30
+ana_out_text = display.create(id, display.OBJ_TEXT, 0, y3, "Analog Outputs", display.COLOR_VALUE_LABEL, display.FONT_LARGE)
+ana_out_line_id = display.create(id, display.OBJ_LINE, 230, y3, 775, y3)
+
+ana_out_text = display.create(id, display.OBJ_TEXT, 30, ybase3, "Channel 23", display.COLOR_VALUE_LABEL, display.FONT_SMALL)
+ln5_id = display.create(id, display.OBJ_LINE, 15, ybase3-5, 20, ybase3-5)	-- add decorator lines before
+ln6_id = display.create(id, display.OBJ_LINE, 120, ybase3-5, 125, ybase3-5) -- and after the above label
+
+local dacx = 125
+local dacy = 410
+local dac_ln_up_x = 120
+local dac_ln_up_d = 155
+dac_1_id = display.create(id, display.OBJ_EDIT_NUMBER, dacx, dacy, "DAC 1", "-10.0 - +10.0", display.NFORMAT_DECIMAL, 0, -10.0, 10.0, "V", 5)
+ln7_id = display.create(id, display.OBJ_LINE, dac_ln_up_x, dacy-10, dac_ln_up_x+dac_ln_up_d, dacy-10) -- upper detail
+ln8_id = display.create(id, display.OBJ_LINE, dac_ln_up_x, dacy+70, dac_ln_up_x+dac_ln_up_d, dacy+70) -- lower detail
+
+ln9_id  = display.create(id, display.OBJ_LINE, dac_ln_up_x+dac_ln_up_d, dacy-10, dac_ln_up_x+dac_ln_up_d+20, dacy+30) -- slant down
+ln10_id = display.create(id, display.OBJ_LINE, dac_ln_up_x+dac_ln_up_d, dacy+70, dac_ln_up_x+dac_ln_up_d+20, dacy+30) -- slant up
+
+ln11_id = display.create(id, display.OBJ_LINE, dac_ln_up_x+dac_ln_up_d+20, dacy+30, dac_ln_up_x+dac_ln_up_d+20+20, dacy+30) -- tag end
+
+crl_1_id = display.create(id, display.OBJ_CIRCLE , dac_ln_up_x+dac_ln_up_d+20+20+10, dacy+30, 10) -- circle detail
+
+local dac_x_adder = 400
+
+ana_out_text = display.create(id, display.OBJ_TEXT, dac_x_adder+30, ybase3, "Channel 24", display.COLOR_VALUE_LABEL, display.FONT_SMALL)
+ln12_id = display.create(id, display.OBJ_LINE, dac_x_adder+15, ybase3-5, dac_x_adder+20, ybase3-5)	-- add decorator lines before
+ln13_id = display.create(id, display.OBJ_LINE, dac_x_adder+120, ybase3-5, dac_x_adder+125, ybase3-5) -- and after the above label
+
+dac_2_id = display.create(id, display.OBJ_EDIT_NUMBER, dac_x_adder+dacx, dacy, "DAC 2", "-10.0 - +10.0", display.NFORMAT_DECIMAL, 0, -10.0, 10.0, "V", 5)
+ln14_id = display.create(id, display.OBJ_LINE, dac_x_adder+dac_ln_up_x, dacy-10, dac_x_adder+dac_ln_up_x+dac_ln_up_d, dacy-10) -- upper detail
+ln15_id = display.create(id, display.OBJ_LINE, dac_x_adder+dac_ln_up_x, dacy+70, dac_x_adder+dac_ln_up_x+dac_ln_up_d, dacy+70) -- lower detail
+
+ln16_id  = display.create(id, display.OBJ_LINE, dac_x_adder+dac_ln_up_x+dac_ln_up_d, dacy-10, dac_x_adder+dac_ln_up_x+dac_ln_up_d+20, dacy+30) -- slant down
+ln17_id  = display.create(id, display.OBJ_LINE, dac_x_adder+dac_ln_up_x+dac_ln_up_d, dacy+70, dac_x_adder+dac_ln_up_x+dac_ln_up_d+20, dacy+30) -- slant up
+
+ln18_id = display.create(id, display.OBJ_LINE, dac_x_adder+dac_ln_up_x+dac_ln_up_d+20, dacy+30, dac_x_adder+dac_ln_up_x+dac_ln_up_d+20+20, dacy+30) -- tag end
+
+crl_2_id = display.create(id, display.OBJ_CIRCLE, dac_x_adder+dac_ln_up_x+dac_ln_up_d+20+20+10, dacy+30, 10) -- circle detail
+
+-- Set the state of the controls based on the closed channel list
+display.setvalue(dac_1_id, ch_23_value[1])
+display.setvalue(dac_2_id, ch_24_value[1])
+
+-- Create functions for row 1 check buttons...
+display.setevent(dac_1_id, display.EVENT_PRESS, "dac_1_id_change_event(%value)")
+display.setevent(dac_2_id, display.EVENT_PRESS, "dac_2_id_change_event(%value)")
+
+-- Define output change events
+function dac_1_id_change_event(v)
+    local chn = string.format("%s", slot_adder + 23)
+    channel.write(chn, v)
+end
+
+function dac_2_id_change_event(v)
+    local chn = string.format("%s", slot_adder + 24)
+    channel.write(chn, v)
+end
+
+--################################################################################
+-- Create the Totalizer section
+--################################################################################
+-- Define the text identifying the section
+local y4 = y3+190
+local ybase4 = y4+30
+totalizer_text = display.create(id, display.OBJ_TEXT, 0, y4, "Totalizer", display.COLOR_VALUE_LABEL, display.FONT_LARGE)
+totalizer_line_id = display.create(id, display.OBJ_LINE, 130, y4, 775, y4)
+
+tot_chan_text = display.create(id, display.OBJ_TEXT, 30, ybase4, "Channel 25", display.COLOR_VALUE_LABEL, display.FONT_SMALL)
+ln19_id = display.create(id, display.OBJ_LINE, 15, ybase4-5, 20, ybase4-5)	-- add decorator lines before
+ln20_id = display.create(id, display.OBJ_LINE, 120, ybase4-5, 125, ybase4-5) -- and after the above label
+
+totalizer_mode_option = display.create(id, display.OBJ_EDIT_OPTION, 150, ybase4+20, "Mode", "Edge & Behavior", 
+																						   "Rise", 
+																						   "Fall", 
+																						   "RReset Rise", 
+																						   "RReset Fall")
+																						   
+totalizer_read_btn = display.create(id, display.OBJ_BUTTON, 150, ybase4+90, "Read")
+totalizer_read_text = display.create(id, display.OBJ_TEXT, 350, ybase4+140, "0", display.COLOR_MEASUREMENT, display.FONT_7)
+
+-- Set the state of the controls based on the closed channel list
+if ch_25_mode[1] == channel.MODE_RISING_EDGE then
+	display.setvalue(totalizer_mode_option, display.BUTTON_OPTION1)
+elseif ch_25_mode[1] == channel.MODE_FALLING_EDGE then
+	display.setvalue(totalizer_mode_option, display.BUTTON_OPTION2)
+elseif ch_25_mode[1] == channel.MODE_RISING_EDGE_READ_RESET then
+	display.setvalue(totalizer_mode_option, display.BUTTON_OPTION3)
+elseif ch_25_mode[1] == channel.MODE_FALLING_EDGE_READ_RESET then
+	display.setvalue(totalizer_mode_option, display.BUTTON_OPTION4)
+end
+
+display.settext(totalizer_read_text, string.format("%s",ch_25_count[1]))
+
+-- Create functions for the totalizer mode and read operations...
+display.setevent(totalizer_mode_option, display.EVENT_PRESS, "totalizer_mode_change_event(%value)")
+display.setevent(totalizer_read_btn, display.EVENT_PRESS, "totalizer_read_event()")
+
+-- Define output change events
+function totalizer_mode_change_event(v)
+    local chn = string.format("%s", slot_adder + 25)
+    local mode = display.getvalue(totalizer_mode_option)
+    
+    -- Determine the selection then apply the mode accordingly
+    if v == 1 then		-- display.BUTTON_OPTION1
+    	--beeper.beep(1, 1000)
+    	channel.setmode(chn, channel.MODE_RISING_EDGE)
+    elseif v == 2 then 	-- display.BUTTON_OPTION2
+    	--beeper.beep(1, 1500)
+    	channel.setmode(chn, channel.MODE_FALLING_EDGE)
+    elseif v == 3 then	-- display.BUTTON_OPTION3
+    	--beeper.beep(1, 2000)
+    	channel.setmode(chn, channel.MODE_RISING_EDGE_READ_RESET)
+    elseif v == 4 then	-- display.BUTTON_OPTION4
+    	--beeper.beep(1, 2500)
+    	channel.setmode(chn, channel.MODE_FALLING_EDGE_READ_RESET)
+    end 
+end
+
+function totalizer_read_event()
+    local chn = string.format("%s", slot_adder + 25)
+    
+    -- Acquire the totalizer reading
+    local tmp_cnt = channel.read(chn)
+    
+    -- Update the text display
+    display.settext(totalizer_read_text, string.format("%s", tmp_cnt[1]))
+end
+
+endscript
+
+loadimage MultiFuncApp_icon MultiFuncApp
+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
+endimage
