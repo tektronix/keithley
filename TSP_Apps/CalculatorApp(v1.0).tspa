@@ -1,0 +1,333 @@
+loadscript CalcApp
+-- $Title: CalculatorApp
+-- $Product: DMM6500, DAQ6510, 2450, 2460, 2461, 2470
+-- $Description: A simple calculator that can utilize a DIO numpad
+-- $Icon: calc_icon
+-- $Version: 1.0
+
+-- Screens
+local loading_screen = 1
+local main_screen = 1
+
+-- States
+local DIO_port = false
+
+-- Global Values
+local valOne
+local valTwo
+local finVal
+local valFunc
+local output
+local historyList = {}
+
+-- Buttons
+local num1
+local num2
+local num3
+local num4
+local num5
+local num6
+local num7
+local num8
+local num9
+local num0
+local numDec
+local NumpadPlus
+local NumpadMinus
+local NumpadMultiply
+local NumpadDivide
+local NumpadPower
+local NumpadSqrt
+local NumpadEquals
+local NumpadClear
+
+-- Checks if a DIO port is avaliable
+local function numpad_available()
+    if available(digio) then 
+        DIO_port = true
+    end
+end
+
+-- Toggles math function buttons
+local function toggleFunctions(buttonState)
+    -- Enable = 0 (true), Disable = 1 (false)
+    display.setstate(NumpadPlus, buttonState)
+    display.setstate(NumpadMinus, buttonState)
+    display.setstate(NumpadDivide, buttonState)
+    display.setstate(NumpadMultiply, buttonState)
+    display.setstate(NumpadPower, buttonState)
+    display.setstate(NumpadSqrt, buttonState)
+end
+
+-- Toggles numpad buttons
+local function toggleNumpad(buttonState)
+    -- Enable = 0 (true), Disable = 1 (false)
+    display.setstate(num1, buttonState)
+    display.setstate(num2, buttonState)
+    display.setstate(num3, buttonState)
+    display.setstate(num4, buttonState)
+    display.setstate(num5, buttonState)
+    display.setstate(num6, buttonState)
+    display.setstate(num7, buttonState)
+    display.setstate(num8, buttonState)
+    display.setstate(num9, buttonState)
+    display.setstate(num0, buttonState)
+    display.setstate(numDec, buttonState)
+end
+
+-- Prints a running history of stream outputs
+local function printHistory(newVal)
+    -- Generates List
+    local history = display.create(main_screen, display.OBJ_LIST, 580, 100, 200, 275, display.LIST_SELECT_CELL);
+    display.setcell(history, display.LIST_ROW_HEADER, 1, "History")
+
+    -- Generates table rows
+    table.insert(historyList, newVal);
+    for i = 1, table.getn(historyList) do
+        display.setcell(history, i, 1, tostring(historyList[table.getn(historyList) - i + 1]))
+    end
+
+end
+
+functionNames = {
+
+    plus = "+",
+    minus = "-",
+    divide = "/",
+    multiply = "*",
+    pow = "^",
+    sqrt = "sqrt",
+    decimal = ".",
+
+}
+
+calculator = {
+
+    -- Resets values
+    clearVals = function()
+        -- Clears values and printline
+        valOne = ""
+        valTwo = ""
+        valFunc = ""
+        finVal = ""
+        display.settext(output, "0")
+        -- Disables functions/equals and enables numpad
+        toggleFunctions(1)
+        toggleNumpad(0)
+        display.setstate(NumpadEquals, display.STATE_DISABLE)
+    end,
+
+    -- Updates the output stream
+     updateNums = function(val)
+        -- Checks if it is the 1st or 2nd input
+        if valFunc != "" then
+            valTwo = valTwo..tostring(val)
+            display.settext(output, valTwo)
+            -- Disables functions and enables equals
+            toggleFunctions(1)
+            display.setstate(NumpadEquals, display.STATE_ENABLE)
+        else
+            valOne = valOne..tostring(val)
+            display.settext(output, tostring(valOne))
+            -- Enables functions
+            toggleFunctions(0)
+        end
+        -- If the input was a decimal
+        if val == "." then
+            -- Disable decimal and functions/equals
+            display.setstate(numDec, display.STATE_DISABLE)
+            toggleFunctions(1)
+            display.setstate(NumpadEquals, display.STATE_DISABLE)
+        end
+    end,
+
+    -- Sets the calculator's function
+    setFunction = function(funcType)
+        -- Sets global variable equal to input
+        valFunc = funcType;
+        -- If the function is a square root, calculate immediately
+        if funcType == "sqrt" then
+            calculator.calculate()
+        else
+            toggleNumpad(0)
+        end
+    end,
+
+    -- Calculates the output
+    calculate = function()
+        -- Determines what function to apply
+        if valFunc == "+" then
+            finVal = tostring(tonumber(valOne) + tonumber(valTwo))
+        elseif valFunc == "-" then
+            finVal = tostring(tonumber(valOne) - tonumber(valTwo))
+        elseif valFunc == "*" then
+            finVal = tostring(tonumber(valOne) * tonumber(valTwo))
+        elseif valFunc == "/" then
+            if tonumber(valTwo) != 0 then
+                finVal = tostring(tonumber(valOne) / tonumber(valTwo))
+            else
+                finVal = "nan"
+            end
+        elseif valFunc == "^" then
+            finVal = tostring(tonumber(valOne) ^ tonumber(valTwo))
+        elseif valFunc == "sqrt" then
+            finVal = math.sqrt(tonumber(valOne))
+        else
+            -- If a math operation fails to be toggled
+            finVal = "nan"
+        end
+        -- Updates values for additional calculations
+        valOne = finVal
+        valTwo = ""
+        -- Disables equals/numpad and enables functions
+        display.setstate(NumpadEquals, display.STATE_DISABLE)
+        toggleFunctions(0)
+        toggleNumpad(1)
+        -- Prints final value
+        display.settext(output, tostring(finVal))
+        -- Adds value to running history
+        printHistory(finVal)
+    end
+
+}
+-- Sets up screen
+local function init()
+
+    -- Generates Main Screen
+    main_screen = display.create(display.ROOT, display.OBJ_SCREEN_HOME, "Calculator") 
+    output = display.create(main_screen, display.OBJ_TEXT, 695, 70, "0", 0xFFFFFF, display.FONT_7, display.JUST_RIGHT)
+
+    -- Generates Loading Screen
+    loading_screen = display.create(display.ROOT, display.OBJ_SCREEN, "Loading, please wait...")
+
+    -- Draws outline for output stream
+
+    local outline_outer_id = display.create(main_screen, display.OBJ_RECT, 10, 10, 700, 80)
+    display.setcolor(outline_outer_id , 0x6495ED)
+    display.setthickness(outline_outer_id, 4) 
+
+    local outline_inner_id = display.create(main_screen, display.OBJ_RECT, 15, 15, 690, 70)
+    display.setcolor(outline_inner_id , 0xD3D3D3)
+    display.setthickness(outline_inner_id, 4)
+
+
+
+    -- Checks for Numpad
+    numpad_available()
+    DIO_state = display.create(main_screen, display.OBJ_TEXT, 10, 410, "DIO Port: ", 0xadd8e6, display.FONT_LARGE, display.JUST_LEFT) 
+    if DIO_port == true then
+        display.settext(DIO_state, "DIO Port: Available")
+        display.setcolor(DIO_state, 0x90ee90)
+    else
+        display.settext(DIO_state, "DIO Port: Not Available")
+        display.setcolor(DIO_state, 0xFF7F7F)
+    end
+
+    -- Generate Numpad
+    num1 = display.create(main_screen, display.OBJ_BUTTON, 10, 100, "1", 60)
+    num2 = display.create(main_screen, display.OBJ_BUTTON, 80, 100, "2", 60)
+    num3 = display.create(main_screen, display.OBJ_BUTTON, 150, 100, "3", 60)
+    num4 = display.create(main_screen, display.OBJ_BUTTON, 10, 170, "4", 60)
+    num5 = display.create(main_screen, display.OBJ_BUTTON, 80, 170, "5", 60)
+    num6 = display.create(main_screen, display.OBJ_BUTTON, 150, 170, "6", 60)
+    num7 = display.create(main_screen, display.OBJ_BUTTON, 10, 240, "7", 60)
+    num8 = display.create(main_screen, display.OBJ_BUTTON, 80, 240, "8", 60)
+    num9 = display.create(main_screen, display.OBJ_BUTTON, 150, 240, "9", 60)
+    num0 = display.create(main_screen, display.OBJ_BUTTON, 10, 310, "0", 130)
+    numDec = display.create(main_screen, display.OBJ_BUTTON, 150, 310, ".", 60)
+
+    -- Generate Functions
+    NumpadPlus = display.create(main_screen, display.OBJ_BUTTON, 260, 100, "+", 120)
+    NumpadMinus = display.create(main_screen, display.OBJ_BUTTON, 410, 100, "-", 120)
+    NumpadMultiply = display.create(main_screen, display.OBJ_BUTTON, 260, 170, "*", 120)
+    NumpadDivide = display.create(main_screen, display.OBJ_BUTTON, 410, 170, "/", 120)
+    NumpadPower = display.create(main_screen, display.OBJ_BUTTON, 260, 240, "^", 120)
+    NumpadSqrt = display.create(main_screen, display.OBJ_BUTTON, 410, 240, "sqrt", 120)
+
+    -- Generate Misc Buttons
+    NumpadEquals = display.create(main_screen, display.OBJ_BUTTON, 260, 310, "=", 270)
+    NumpadClear = display.create(main_screen, display.OBJ_BUTTON, 725, 20, "AC", 60)
+
+    -- Switches screens and deletes loading screen
+    display.waitevent(1)
+    display.changescreen(main_screen)
+    display.delete(loading_screen)
+    loading_screen = nil
+
+end
+
+local function main()
+
+    init()
+    calculator.clearVals()  
+
+    -- Number Buttons
+    display.setevent(num1, display.EVENT_PRESS, "calculator.updateNums(tostring(1))")
+    display.setevent(num2, display.EVENT_PRESS, "calculator.updateNums(tostring(2))")
+    display.setevent(num3, display.EVENT_PRESS, "calculator.updateNums(tostring(3))")
+    display.setevent(num4, display.EVENT_PRESS, "calculator.updateNums(tostring(4))")
+    display.setevent(num5, display.EVENT_PRESS, "calculator.updateNums(tostring(5))")
+    display.setevent(num6, display.EVENT_PRESS, "calculator.updateNums(tostring(6))")
+    display.setevent(num7, display.EVENT_PRESS, "calculator.updateNums(tostring(7))")
+    display.setevent(num8, display.EVENT_PRESS, "calculator.updateNums(tostring(8))")
+    display.setevent(num9, display.EVENT_PRESS, "calculator.updateNums(tostring(9))")
+    display.setevent(num0, display.EVENT_PRESS, "calculator.updateNums(tostring(0))")
+    display.setevent(numDec, display.EVENT_PRESS, "calculator.updateNums(functionNames.decimal)")
+
+    -- Function Buttons
+    display.setevent(NumpadPlus, display.EVENT_PRESS, "calculator.setFunction(functionNames.plus)")
+    display.setevent(NumpadMinus, display.EVENT_PRESS, "calculator.setFunction(functionNames.minus)")
+    display.setevent(NumpadMultiply, display.EVENT_PRESS, "calculator.setFunction(functionNames.multiply)")
+    display.setevent(NumpadDivide, display.EVENT_PRESS, "calculator.setFunction(functionNames.divide)")
+    display.setevent(NumpadPower, display.EVENT_PRESS, "calculator.setFunction(functionNames.pow)")
+    display.setevent(NumpadSqrt, display.EVENT_PRESS, "calculator.setFunction(functionNames.sqrt)")
+
+    -- Calculation/Clear Buttons
+    display.setevent(NumpadEquals, display.EVENT_PRESS, "calculator.calculate()")
+    display.setevent(NumpadClear, display.EVENT_PRESS, "calculator.clearVals()")
+  
+end
+
+main()
+
+endscript
+
+loadimage calc_icon CalcApp
+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
+xKCriTtwAAAABJRU5ErkJggg==
+endimage
