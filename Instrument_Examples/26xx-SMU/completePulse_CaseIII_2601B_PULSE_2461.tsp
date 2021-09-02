@@ -104,7 +104,7 @@ function completePulse_CaseIII_2601B_PULSE_2461(startI,stopI,nPulse,pulsePeriod,
     node[1].tsplink.trigger[1].reset()
     node[1].tsplink.trigger[1].mode = node[1].tsplink.TRIG_FALLING
     node[1].tsplink.trigger[1].pulsewidth = 3e-6     
-    node[1].tsplink.trigger[1].stimulus = trigger.timer[2].EVENT_ID 
+
 
 	-- Set measure delay and aperture
 	if pulseWidth > 500e-6 then	
@@ -116,7 +116,7 @@ function completePulse_CaseIII_2601B_PULSE_2461(startI,stopI,nPulse,pulsePeriod,
 			measAperture = 500e-6  
 			smua.measure.nplc = 0.01
 		end
-		if pulseWidth <2e-3 then
+		if pulseWidth <=1e-3 then
 			measAperture = 50e-6  
 			smua.measure.nplc = 0.001
 		end	
@@ -132,16 +132,18 @@ function completePulse_CaseIII_2601B_PULSE_2461(startI,stopI,nPulse,pulsePeriod,
 			noReadings = math.ceil((1.2*pulseWidth)/measAperture)
 		end
 		smua.measure.count              = noReadings		
+		node[1].tsplink.trigger[1].stimulus = trigger.timer[2].EVENT_ID
 		configPulserShorter500us(startI,stopI,nPulse,pulsePeriod,pulseWidth,measAperture,rangeV,rangeI,protectVsrc,protectVsns,biasCurrent)
 	end
 
+	node[2].smu.source.output = 1
 	local mea_Delay = 0   
 	node[2].tsplink.group = 1
 	node[2].execute("SMU2461_setup("..nPulse..","..measAperture..","..noReadings..","..rangeSMU2461..","..biasSMU2461..","..pulseWidth..")")
 	waitcomplete(1)
                                                     
     -- Turn on the output
-    node[2].smu.source.output = 1
+
 	smua.source.output = smua.OUTPUT_ON
 
 	-- Initiate the Trigger Model and wait for the sweep to complete
@@ -154,6 +156,7 @@ function completePulse_CaseIII_2601B_PULSE_2461(startI,stopI,nPulse,pulsePeriod,
     node[2].smu.source.output = 0
     smua.source.output = smua.OUTPUT_OFF
     smua.pulser.enable = smua.DISABLE
+
 
 	-- Output the data in tab-separated format
 	if printData > 0 then
@@ -190,6 +193,7 @@ function configPulserShorter500us(startI,stopI,nPulse,pulsePeriod,pulseWidth,mea
 	smua.trigger.measure.stimulus 	= trigger.timer[2].EVENT_ID
 	smua.trigger.measure.action 	= smua.ASYNC
 	smua.trigger.measure.iv(smua.nvbuffer1, smua.nvbuffer2)  -- I in nvbuffer1
+	 
 end
 
 function configDcLonger500us(startI,stopI,nPulse,pulsePeriod,pulseWidth,measAperture,rangeV,rangeI,biasCurrent,noPoints)
@@ -222,8 +226,8 @@ function configDcLonger500us(startI,stopI,nPulse,pulsePeriod,pulseWidth,measAper
 	trigger.timer[4].passthrough 	= false
 	trigger.timer[4].stimulus 		= trigger.timer[1].EVENT_ID
 
-    node[1].tsplink.trigger[1].stimulus = trigger.timer[3].EVENT_ID 
-	-- Configure SMU Trigger Model for Sweep
+   	node[1].tsplink.trigger[1].stimulus = trigger.timer[3].EVENT_ID 
+
 	smua.trigger.source.lineari(startI, stopI, nPulse)
 	smua.trigger.source.limitv		= rangeV
 	smua.trigger.measure.action		= smua.ASYNC
@@ -251,33 +255,25 @@ function SMU2461_setup(nReading,measAperture,noReadings,rangeSMU2461,biasSMU2461
 	node[2].smu.source.level = biasSMU2461
 	
 	if pulseWidth > 500e-6 then
-	   	node[2].smu.digitize.func =   node[2].smu.FUNC_DIGITIZE_CURRENT
-    	node[2].smu.digitize.range =  rangeSMU2461                
-    	node[2].smu.digitize.count = noReadings   
-    	           
-		if (20e-3 < pulseWidth) and (pulseWidth <= 500e-3) then 
-			node[2].smu.digitize.samplerate = 1000
-		end
-		if (1e-3 < pulseWidth) and (pulseWidth <=20e-3) then 
-			node[2].smu.digitize.samplerate = math.ceil(1 / (0.01/localnode.linefreq))
-		end
-		if pulseWidth < 2e-3 then 
-			node[2].smu.digitize.samplerate  = math.ceil(1 / (0.001 / localnode.linefreq))
-		end	
-		
+
+    	node[2].smu.digitize.func =   node[2].smu.FUNC_DIGITIZE_CURRENT
+    	node[2].smu.digitize.range =  rangeSMU2461        
+     	node[2].smu.digitize.samplerate =  50000	
+    	node[2].smu.digitize.count = 1          
+
     	-- Create SMU Trigger Model
    		node[2].trigger.model.load("EMPTY") --If the configuration name is set to "EMPTY", any existing trigger model settings are reset.
     	node[2].trigger.model.setblock(1, node[2].trigger.BLOCK_BUFFER_CLEAR, defbuffer1)
     	node[2].trigger.model.setblock(2, node[2].trigger.BLOCK_WAIT, node[2].trigger.EVENT_TSPLINK1, node[2].trigger.CLEAR_NEVER)
-    	node[2].trigger.model.setblock(3, node[2].trigger.BLOCK_DELAY_CONSTANT, 0) -- meas Delay
+    	node[2].trigger.model.setblock(3, node[2].trigger.BLOCK_DELAY_CONSTANT, 0) 
     	node[2].trigger.model.setblock(4, node[2].trigger.BLOCK_DIGITIZE, node[2].defbuffer1, 1)
     	node[2].trigger.model.setblock(5, node[2].trigger.BLOCK_NOTIFY, node[2].trigger.EVENT_NOTIFY1)
-    	node[2].trigger.model.setblock(6, node[2].trigger.BLOCK_BRANCH_COUNTER, nReading * noReadings, 2)    
-    	node[2].trigger.model.setblock(7, node[2].trigger.BLOCK_BRANCH_ALWAYS, 0)        
+    	node[2].trigger.model.setblock(6, node[2].trigger.BLOCK_BRANCH_COUNTER, nReading*noReadings, 2)    
+    	node[2].trigger.model.setblock(7, node[2].trigger.BLOCK_BRANCH_ALWAYS, 0)            	  
 	else
     	node[2].smu.digitize.func =   node[2].smu.FUNC_DIGITIZE_CURRENT
-    	node[2].smu.digitize.range =  rangeSMU2461                
-    	node[2].smu.digitize.samplerate =  1/measAperture	
+    	node[2].smu.digitize.range =  rangeSMU2461        
+     	node[2].smu.digitize.samplerate =  1/measAperture	
     	node[2].smu.digitize.count = noReadings              
 
     	-- Create SMU Trigger Model
@@ -302,8 +298,8 @@ function completePulse()
 	local startI        = 0.1
 	local stopI         = 0.2
 	local nPulse        = 3
-	local pulsePeriod   = 500e-3
-	local pulseWidth    = 500e-6
+	local pulsePeriod   = 100e-3
+	local pulseWidth    = 10e-3
 	local measAperture  = 10e-6
 	local rangeV        = 5
 	local rangeI        = 1
@@ -328,6 +324,7 @@ function initializeTSPLINK()
 	waitcomplete(1)
 	print("TSPLINK is sucessfully linked")
 end
+
 endscript
 print("the script is loaded")
 
