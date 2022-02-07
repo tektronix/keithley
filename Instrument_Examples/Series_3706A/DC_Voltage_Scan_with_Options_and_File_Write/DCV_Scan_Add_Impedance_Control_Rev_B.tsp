@@ -1,3 +1,8 @@
+-- ************************************************************
+-- Copyright 2019 Tektronix, Inc.
+-- See www.tek.com/sample-license for licensing terms.
+-- ************************************************************
+
 function configure_dcv_scan(nplc, dcv_range, use_input_divider, scan_interval, scan_channels, scan_count)
 	reset()
     dmm.func = dmm.DC_VOLTS 			-- Set measurement function

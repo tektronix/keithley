@@ -1,4 +1,19 @@
-﻿using System;
+﻿/*================================================================================
+
+    Copyright 2019 Tektronix, Inc.                      
+    See www.tek.com/sample-license for licensing terms. 
+
+================================================================================*/
+
+/* ================================================================================
+
+       This program is an example used to help show the low level current
+       measuremente performance through use of the preamp paired with the
+       Keithley 6430. 
+
+================================================================================ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

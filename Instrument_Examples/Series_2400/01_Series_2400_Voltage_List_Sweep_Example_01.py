@@ -1,3 +1,19 @@
+""" ================================================================================
+
+*** Copyright 2019 Tektronix, Inc.                      ***
+*** See www.tek.com/sample-license for licensing terms. ***
+
+================================================================================ """
+
+"""
+====================================================================================================
+
+    This example shows how to build and execute a voltage list sweep using
+    a Series 2400 SMU.
+
+====================================================================================================
+"""
+
 import pyvisa as visa
 import pyvisa.constants as pyconst
 import time

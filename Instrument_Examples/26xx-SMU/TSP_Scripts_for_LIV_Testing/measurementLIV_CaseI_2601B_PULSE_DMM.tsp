@@ -21,7 +21,7 @@ Description:
 	Microsoft Excel for graphing and analysis.
 
 Required Equipment: 1 Model 2601B-PULSE System SourceMeter instrument
-					1 DMM 7510 or DMM6510 Multimeter instrument
+					1 DMM 7510 or DMM6500 Multimeter instrument
 
 Note:  The function does not perform any error checking.  It is the user's 
        responsibility to specify settings that are compatible with the 
@@ -200,7 +200,7 @@ function configDcLonger500us(startI,stopI,nPulse,rangeI,rangeV,biasCurrent,measA
 	smua.trigger.source.action		= smua.ENABLE
 end
 
-local setDMM6500 =[[
+local setDMM7510 =[[
 function DMM_setup(nReading,measDelayDMM,measAperture,rangeDMM)
 	
 	-- Configure DMM 1 reading buffer defbuffer1
@@ -268,7 +268,7 @@ function initializeTSPLINK()
 	local DMM_group = 1
 	local DMM_node = node[2]
 	DMM_node.tsplink.group = DMM_group
-	DMM_node.execute(setDMM6500)
+	DMM_node.execute(setDMM7510)
 	waitcomplete(1)
 	print("TSPLINK is successfully linked")
 end

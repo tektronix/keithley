@@ -1,4 +1,19 @@
-﻿using System;
+﻿/*================================================================================
+
+    Copyright 2019 Tektronix, Inc.                      
+    See www.tek.com/sample-license for licensing terms. 
+
+================================================================================*/
+
+/* ================================================================================
+
+       This example shows how to place the channels of the 2230 in series
+       or parallel configuration to achieve higher voltage or higher
+       current ouput, respectively.
+
+================================================================================ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

@@ -1,3 +1,8 @@
+-- ************************************************************
+-- Copyright 2019 Tektronix, Inc.
+-- See www.tek.com/sample-license for licensing terms.
+-- ************************************************************
+
 -- *******************************************Communication Functions**********************************************************
 -- initialize constant value(s) and global vairable(s)
 local F4T_port = 5025				-- F4T default ethernet port

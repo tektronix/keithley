@@ -1,4 +1,18 @@
-﻿Imports Ivi.Visa.Interop
+﻿'================================================================================
+'
+'       Copyright 2019 Tektronix, Inc.
+'       See www.tek.com/sample-license for licensing terms. 
+'
+'================================================================================
+
+'================================================================================
+'
+'       This program is a brief example of how a user can send a TSP/Lua script
+'       file to a Keithley TSP-enabled instrument.
+'
+'================================================================================
+
+Imports Ivi.Visa.Interop
 
 Module KEI_Touchscreen_Instrument_Send_Script_VB
 

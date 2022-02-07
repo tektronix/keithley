@@ -1,4 +1,17 @@
-#The example code given shows how take voltage and current readings & increase the voltage through trials
+""" ================================================================================
+
+*** Copyright 2019 Tektronix, Inc.                      ***
+*** See www.tek.com/sample-license for licensing terms. ***
+
+================================================================================ """
+
+"""
+====================================================================================================
+	The example code given shows how take voltage and current readings & increase 
+        the voltage through trials
+====================================================================================================
+"""
+
 import pyvisa as visa
 import time
 
