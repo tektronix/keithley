@@ -20,7 +20,7 @@ Many will work with non-A and A versions of the 2600 Series
 Examples include those from the module card manuals (7700, 7701, 7702, 7703, 7705, 7706, 7707, 7708, 7709, 7710, 7711, and 7712) where applicable.
 
 * **[Series_2280S](./Series_2280S)**  
-TSP-Net examples can be run from any TSP-Net enabled instrument.
+Assorted examples for remotely operating the PSU in different modes and connecting/controlling as a slave instrument using a Keithley TSP-enabled instrument.
 
 * **[Series_2260B](./Series_2260B)**  
 General examples to show basic and advanced features.
