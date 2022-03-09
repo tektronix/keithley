@@ -153,42 +153,6 @@ def list_mode_setup(instrument, range_val, count, steps, levels, slew, width):
         instrument_write(instrument, "INP OFF")  # once the list is no longer running, turn input off
 
 
-"""*********************************************************************************
-    Function: transient_mode_setup(instrument)
-
-    Purpose: Sets up the 2380 in transient mode and executes with user generated
-             settings.
-
-    Parameters:
-        instrument (object) - Instance of a 2380 instrument object.
-        
-        voltOrCurr (char) - "V" or "C" to select voltage or current mode.
-        
-        tranMode (int) - 1, 2, or 3 to select Continuous, Pulse, and Toggle respectively.
-                         Default is set to Continuous.
-        
-        A (float) - voltage/current level A
-        
-        B (float) - voltage/current level B
-        
-        widA (float) - width for level A
-        
-        widB (float) - width for level B
-        
-        pSlew (float) - positive slew rate setting
-        
-        nSlew (float) - negative slew rate setting
-        
-        runtime (float) - duration of time transient mode spends running
-
-    Returns:
-        None
-
-    Revisions:
-        2022-03-03    JEI    Initial revision.
-*********************************************************************************"""
-
-
 def transient_mode_setup(instrument, volt_or_curr, tran_mode, a, b, wid_a, wid_b, p_slew, n_slew, runtime):
     """
     Sets up the 2380 in transient mode and executes with user generated settings.
