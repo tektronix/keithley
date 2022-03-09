@@ -16,6 +16,9 @@ See the description within the lower directory.
 * **[Measuring Low Resistance Devices](./Measuring_Low_Resistance_Devices)**
 See the description within the lower directory.
 
+* **[Measuring I-V Characteristics of Solar Cells](./Measuring_I-V_Characteristics_of_Solar_Cells)**
+See the description within the lower directory. 
+
 * **[MOSFETs](./MOSFETs)**
 See the description within the lower directory. 
 
