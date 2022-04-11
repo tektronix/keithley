@@ -1,15 +1,16 @@
 #!/usr/bin/python
 
+from pydoc import doc
 import socket
 import struct
 import math
 import time
 
 #settings
-seconds_to_capture = 7 # Modify this value to adjust your run time. 
+seconds_to_capture = 10 # Modify this value to adjust your run time. 
 #minutes_to_capture = seconds_to_capture * 60
 
-sample_rate = 1000000 # NOTE: 60kS/s is the max rate we have observed under
+sample_rate = 10000 # NOTE: 60kS/s is the max rate we have observed under
                     #       certain conditions/circumstances. To attain
                     #       higher sampling and data transfer rates, use
                     #       USB.
@@ -24,7 +25,7 @@ chunkSize = 249     # This value is the max binary format transfer value
                     # many readings to to transfer for a given poll of the
                     # instrument.
                     
-ip_address = "192.168.1.65"     # Place your instrument's IP address here.
+ip_address = "134.63.74.21"     # Place your instrument's IP address here.
 output_data_path = "data.txt"   # This is the output file that is created which
                                 # will hold your readings provided in ASCII
                                 # format in a text file. 
@@ -55,12 +56,12 @@ def load_functions(s):
     s.send("loadfuncs()\n".encode())
     print(s.recv(100).decode())
 
-def send_setup(s, rng, sampRate, buffSize):
+def send_setup(s, rng, sampRate, buffSize, doCurrent):
     # This function sends a string that includes the function
     # call and arguments that set up the DMM7510 for digitizing
     # current for the requested time and sample rate.
-    s.send("do_setup({0}, {1}, {2})\n"
-        .format(rng, sampRate, buffSize)
+    s.send("do_setup({0}, {1}, {2}, {3})\n"
+        .format(rng, sampRate, buffSize, doCurrent)
         .encode())
     s.recv(10)
     
@@ -95,14 +96,14 @@ def change_screen(s, my_screen):
     return
 
 #configure, trigger, transfer
-myRange = 1
+myRange = 10.0
 buffSize = int(sample_rate * seconds_to_capture)
 s = socket.socket()                 # Establish a TCP/IP socket object
 s.connect((ip_address, 5025))       # Connect to the instrument
 ofile = open(output_data_path, "w") # Open/create the target data
 
 load_functions(s)
-send_setup(s, myRange, sample_rate, buffSize)
+send_setup(s, myRange, sample_rate, buffSize, 0)
 change_screen(s, 1)
 send_trigger(s)
 

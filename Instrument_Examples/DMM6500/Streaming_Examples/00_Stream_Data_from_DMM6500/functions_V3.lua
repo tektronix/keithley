@@ -1,12 +1,17 @@
 readings_captured = 0
 
-function do_setup(rng, sample_rate, bufferSize)
+function do_setup(rng, sample_rate, bufferSize, do_current)
     reset()
 	
 	tsplink.line[1].mode = tsplink.MODE_TRIGGER_OPEN_DRAIN
 	trigger.tsplinkout[1].stimulus = trigger.EVENT_NOTIFY1
 	
-    dmm.digitize.func = dmm.FUNC_DIGITIZE_CURRENT
+	if do_current == 1 then
+		dmm.digitize.func = dmm.FUNC_DIGITIZE_CURRENT
+	else
+		dmm.digitize.func = dmm.FUNC_DIGITIZE_VOLTAGE
+	end
+    
     dmm.digitize.range = rng
     dmm.digitize.samplerate = sample_rate
     format.data = format.REAL32
