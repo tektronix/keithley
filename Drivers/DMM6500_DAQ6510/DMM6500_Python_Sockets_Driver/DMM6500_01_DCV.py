@@ -3,7 +3,7 @@ import socket
 import struct
 import math
 import time
-import Keithley_DMM6500_Sockets_Driver as kei
+import DMM6500_Sockets_Driver as kei
 echoCmd = 1
 
 

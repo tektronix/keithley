@@ -1,0 +1,1002 @@
+loadscript MatrixApp
+-- $Title: Matrix CTRL
+-- $Product: DAQ6510,7709
+-- $Description: Provides hands-on front panel cross-point control of the Model 7709 6x8 matrix module. 
+-- $Icon: MatrixApp_icon
+-- $Version: 1.2a
+
+LoadedAppName = "Matrix Cross-point Control"
+
+local slot_adder = 0
+slotinfo = slot[1].idn
+ind1, ind2 = string.find(slotinfo, "7709")
+if ind1 != nil then
+	slot_adder = slot_adder + 1
+end
+slotinfo = slot[2].idn
+ind1, ind2 = string.find(slotinfo, "7709")
+if ind1 != nil then
+	slot_adder = slot_adder + 2
+end
+
+local display_title = ""
+local slot_str = "slot1"
+if slot_adder == 1 then
+	slot_adder = 100	-- Only slot 1 populated
+	display_title = "Model 7709 Matrix - Slot 1"
+elseif slot_adder == 2 then
+	slot_adder = 200	-- Only slot 2 populated
+	display_title = "Model 7709 Matrix - Slot 2"
+	slot_str = "slot2"
+elseif slot_adder == 3 then
+	-- Provide the operator the choice of controlling either the slot 1 or slot 2 7709.
+	local option_id = display.input.option("Slot to control", "Slot 1", "Slot 2")
+	if option_id == display.BUTTON_OPTION1 then
+		slot_adder = 100
+		display_title = "Model 7709 Matrix - Slot 1"
+	else
+		slot_adder = 200
+		display_title = "Model 7709 Matrix - Slot 2"
+		slot_str = "slot2"
+	end
+end
+
+-- capture the actively closed channels
+local closed_channels = channel.getclose(slot_str)
+--print(closed)
+
+id = display.create(display.ROOT, display.OBJ_SCREEN, display_title, 60, 500)
+
+-- Define the text identifying the columns
+txt_id1 = display.create(id, display.OBJ_TEXT, 60, 30, "  C1      C2      C3     C4      C5      C6     C7      C8     DMM", display.COLOR_VALUE_LABEL, display.FONT_LARGE)
+
+local y1 = 58
+local yd = 58
+local x1 = 60
+local xd = 80
+local row_text_y1 = 90
+local row_text_yd = 60
+local row_dmm_buff = 8
+
+-- Define the text identifying the rows
+txt_r1   = display.create(id, display.OBJ_TEXT, 5, row_text_y1+row_text_yd*0, "R1", display.COLOR_VALUE_LABEL, display.FONT_LARGE)
+txt_r2   = display.create(id, display.OBJ_TEXT, 5, row_text_y1+row_text_yd*1, "R2", display.COLOR_VALUE_LABEL, display.FONT_LARGE)
+txt_r3   = display.create(id, display.OBJ_TEXT, 5, row_text_y1+row_text_yd*2, "R3", display.COLOR_VALUE_LABEL, display.FONT_LARGE)
+txt_r4   = display.create(id, display.OBJ_TEXT, 5, row_text_y1+row_text_yd*3, "R4", display.COLOR_VALUE_LABEL, display.FONT_LARGE)
+txt_r5   = display.create(id, display.OBJ_TEXT, 5, row_text_y1+row_text_yd*4, "R5", display.COLOR_VALUE_LABEL, display.FONT_LARGE)
+txt_r6   = display.create(id, display.OBJ_TEXT, 5, row_text_y1+row_text_yd*5, "R6", display.COLOR_VALUE_LABEL, display.FONT_LARGE)
+
+-- Create row 1 check buttons
+chk_id11 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*0, y1, "", "")
+chk_id12 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*1, y1, "", "")
+chk_id13 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*2, y1, "", "")
+chk_id14 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*3, y1, "", "")
+chk_id15 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*4, y1, "", "")
+chk_id16 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*5, y1, "", "")
+chk_id17 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*6, y1, "", "")
+chk_id18 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*7, y1, "", "")
+
+-- Create functions for row 1 check buttons...
+display.setevent(chk_id11, display.EVENT_PRESS, "chk_id11_press_event(%value)")
+display.setevent(chk_id12, display.EVENT_PRESS, "chk_id12_press_event(%value)")
+display.setevent(chk_id13, display.EVENT_PRESS, "chk_id13_press_event(%value)")
+display.setevent(chk_id14, display.EVENT_PRESS, "chk_id14_press_event(%value)")
+display.setevent(chk_id15, display.EVENT_PRESS, "chk_id15_press_event(%value)")
+display.setevent(chk_id16, display.EVENT_PRESS, "chk_id16_press_event(%value)")
+display.setevent(chk_id17, display.EVENT_PRESS, "chk_id17_press_event(%value)")
+display.setevent(chk_id18, display.EVENT_PRESS, "chk_id18_press_event(%value)")
+
+-- Set the state of the controls based on the closed channel list
+if closed_channels != nil then
+	for key, value in pairs(closed_channels) do
+		if value == (slot_adder + 1) then
+			display.setvalue(chk_id11, display.ON)
+		elseif value == (slot_adder + 2) then
+			display.setvalue(chk_id12, display.ON)
+		elseif value == (slot_adder + 3) then
+			display.setvalue(chk_id13, display.ON)
+		elseif value == (slot_adder + 4) then
+			display.setvalue(chk_id14, display.ON)
+		elseif value == (slot_adder + 5) then
+			display.setvalue(chk_id15, display.ON)
+		elseif value == (slot_adder + 6) then
+			display.setvalue(chk_id16, display.ON)
+		elseif value == (slot_adder + 7) then
+			display.setvalue(chk_id17, display.ON)
+		elseif value == (slot_adder + 8) then
+			display.setvalue(chk_id18, display.ON)
+		end
+	end
+end
+
+-- Define check events
+function chk_id11_press_event(v)
+	local chn = string.format("%s", slot_adder + 1)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id12_press_event(v)
+	local chn = string.format("%s", slot_adder + 2)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id13_press_event(v)
+    local chn = string.format("%s", slot_adder + 3)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id14_press_event(v)
+    local chn = string.format("%s", slot_adder + 4)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id15_press_event(v)
+	local chn = string.format("%s", slot_adder + 5)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id16_press_event(v)
+	local chn = string.format("%s", slot_adder + 6)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id17_press_event(v)
+	local chn = string.format("%s", slot_adder + 7)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id18_press_event(v)
+	local chn = string.format("%s", slot_adder + 8)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+-- Create row 2 check buttons
+chk_id21 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*0, y1+yd, "", "")
+chk_id22 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*1, y1+yd, "","")
+chk_id23 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*2, y1+yd, "", "")
+chk_id24 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*3, y1+yd, "", "")
+chk_id25 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*4, y1+yd, "", "")
+chk_id26 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*5, y1+yd, "", "")
+chk_id27 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*6, y1+yd, "", "")
+chk_id28 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*7, y1+yd, "", "")
+
+-- Create functions for row 2 check buttons...
+display.setevent(chk_id21, display.EVENT_PRESS, "chk_id21_press_event(%value)")
+display.setevent(chk_id22, display.EVENT_PRESS, "chk_id22_press_event(%value)")
+display.setevent(chk_id23, display.EVENT_PRESS, "chk_id23_press_event(%value)")
+display.setevent(chk_id24, display.EVENT_PRESS, "chk_id24_press_event(%value)")
+display.setevent(chk_id25, display.EVENT_PRESS, "chk_id25_press_event(%value)")
+display.setevent(chk_id26, display.EVENT_PRESS, "chk_id26_press_event(%value)")
+display.setevent(chk_id27, display.EVENT_PRESS, "chk_id27_press_event(%value)")
+display.setevent(chk_id28, display.EVENT_PRESS, "chk_id28_press_event(%value)")
+
+-- Set the state of the controls based on the closed channel list
+if closed_channels != nil then
+	for key, value in pairs(closed_channels) do
+		if value == (slot_adder + 9) then
+			display.setvalue(chk_id21, display.ON)
+		elseif value == (slot_adder + 10) then
+			display.setvalue(chk_id22, display.ON)
+		elseif value == (slot_adder + 11) then
+			display.setvalue(chk_id23, display.ON)
+		elseif value == (slot_adder + 12) then
+			display.setvalue(chk_id24, display.ON)
+		elseif value == (slot_adder + 13) then
+			display.setvalue(chk_id25, display.ON)
+		elseif value == (slot_adder + 14) then
+			display.setvalue(chk_id26, display.ON)
+		elseif value == (slot_adder + 15) then
+			display.setvalue(chk_id27, display.ON)
+		elseif value == (slot_adder + 16) then
+			display.setvalue(chk_id28, display.ON)
+		end
+	end
+end
+
+function chk_id21_press_event(v)
+	local chn = string.format("%s", slot_adder + 9)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id22_press_event(v)
+	local chn = string.format("%s", slot_adder + 10)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id23_press_event(v)
+	local chn = string.format("%s", slot_adder + 11)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id24_press_event(v)
+	local chn = string.format("%s", slot_adder + 12)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id25_press_event(v)
+	local chn = string.format("%s", slot_adder + 13)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id26_press_event(v)
+	local chn = string.format("%s", slot_adder + 14)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id27_press_event(v)
+	local chn = string.format("%s", slot_adder + 15)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id28_press_event(v)
+	local chn = string.format("%s", slot_adder + 16)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+-- Create row 3 check buttons
+chk_id31 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*0, y1+(yd*2), "", "")
+chk_id32 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*1, y1+(yd*2), "", "")
+chk_id33 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*2, y1+(yd*2), "", "")
+chk_id34 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*3, y1+(yd*2), "", "")
+chk_id35 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*4, y1+(yd*2), "", "")
+chk_id36 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*5, y1+(yd*2), "", "")
+chk_id37 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*6, y1+(yd*2), "", "")
+chk_id38 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*7, y1+(yd*2), "", "")
+
+-- Create functions for row 3 check buttons...
+display.setevent(chk_id31, display.EVENT_PRESS, "chk_id31_press_event(%value)")
+display.setevent(chk_id32, display.EVENT_PRESS, "chk_id32_press_event(%value)")
+display.setevent(chk_id33, display.EVENT_PRESS, "chk_id33_press_event(%value)")
+display.setevent(chk_id34, display.EVENT_PRESS, "chk_id34_press_event(%value)")
+display.setevent(chk_id35, display.EVENT_PRESS, "chk_id35_press_event(%value)")
+display.setevent(chk_id36, display.EVENT_PRESS, "chk_id36_press_event(%value)")
+display.setevent(chk_id37, display.EVENT_PRESS, "chk_id37_press_event(%value)")
+display.setevent(chk_id38, display.EVENT_PRESS, "chk_id38_press_event(%value)")
+
+-- Set the state of the controls based on the closed channel list
+if closed_channels != nil then
+	for key, value in pairs(closed_channels) do
+		if value == (slot_adder + 17) then
+			display.setvalue(chk_id31, display.ON)
+		elseif value == (slot_adder + 18) then
+			display.setvalue(chk_id32, display.ON)
+		elseif value == (slot_adder + 19) then
+			display.setvalue(chk_id33, display.ON)
+		elseif value == (slot_adder + 20) then
+			display.setvalue(chk_id34, display.ON)
+		elseif value == (slot_adder + 21) then
+			display.setvalue(chk_id35, display.ON)
+		elseif value == (slot_adder + 22) then
+			display.setvalue(chk_id36, display.ON)
+		elseif value == (slot_adder + 23) then
+			display.setvalue(chk_id37, display.ON)
+		elseif value == (slot_adder + 24) then
+			display.setvalue(chk_id38, display.ON)
+		end
+	end
+end
+
+function chk_id31_press_event(v)
+	local chn = string.format("%s", slot_adder + 17)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id32_press_event(v)
+	local chn = string.format("%s", slot_adder + 18)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id33_press_event(v)
+	local chn = string.format("%s", slot_adder + 19)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id34_press_event(v)
+	local chn = string.format("%s", slot_adder + 20)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id35_press_event(v)
+	local chn = string.format("%s", slot_adder + 21)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id36_press_event(v)
+	local chn = string.format("%s", slot_adder + 22)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id37_press_event(v)
+	local chn = string.format("%s", slot_adder + 23)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id38_press_event(v)
+	local chn = string.format("%s", slot_adder + 24)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+-- Create row 4 check buttons
+chk_id41 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*0, y1+(yd*3), "", "")
+chk_id42 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*1, y1+(yd*3), "", "")
+chk_id43 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*2, y1+(yd*3), "", "")
+chk_id44 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*3, y1+(yd*3), "", "")
+chk_id45 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*4, y1+(yd*3), "", "")
+chk_id46 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*5, y1+(yd*3), "", "")
+chk_id47 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*6, y1+(yd*3), "", "")
+chk_id48 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*7, y1+(yd*3), "", "")
+
+-- Create functions for row 4 check buttons...
+display.setevent(chk_id41, display.EVENT_PRESS, "chk_id41_press_event(%value)")
+display.setevent(chk_id42, display.EVENT_PRESS, "chk_id42_press_event(%value)")
+display.setevent(chk_id43, display.EVENT_PRESS, "chk_id43_press_event(%value)")
+display.setevent(chk_id44, display.EVENT_PRESS, "chk_id44_press_event(%value)")
+display.setevent(chk_id45, display.EVENT_PRESS, "chk_id45_press_event(%value)")
+display.setevent(chk_id46, display.EVENT_PRESS, "chk_id46_press_event(%value)")
+display.setevent(chk_id47, display.EVENT_PRESS, "chk_id47_press_event(%value)")
+display.setevent(chk_id48, display.EVENT_PRESS, "chk_id48_press_event(%value)")
+
+-- Set the state of the controls based on the closed channel list
+if closed_channels != nil then
+	for key, value in pairs(closed_channels) do
+		if value == (slot_adder + 25) then
+			display.setvalue(chk_id41, display.ON)
+		elseif value == (slot_adder + 26) then
+			display.setvalue(chk_id42, display.ON)
+		elseif value == (slot_adder + 27) then
+			display.setvalue(chk_id43, display.ON)
+		elseif value == (slot_adder + 28) then
+			display.setvalue(chk_id44, display.ON)
+		elseif value == (slot_adder + 29) then
+			display.setvalue(chk_id45, display.ON)
+		elseif value == (slot_adder + 30) then
+			display.setvalue(chk_id46, display.ON)
+		elseif value == (slot_adder + 31) then
+			display.setvalue(chk_id47, display.ON)
+		elseif value == (slot_adder + 32) then
+			display.setvalue(chk_id48, display.ON)
+		end
+	end
+end
+
+function chk_id41_press_event(v)
+	local chn = string.format("%s", slot_adder + 25)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id42_press_event(v)
+	local chn = string.format("%s", slot_adder + 26)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id43_press_event(v)
+	local chn = string.format("%s", slot_adder + 27)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id44_press_event(v)
+	local chn = string.format("%s", slot_adder + 28)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id45_press_event(v)
+	local chn = string.format("%s", slot_adder + 29)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id46_press_event(v)
+	local chn = string.format("%s", slot_adder + 30)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id47_press_event(v)
+	local chn = string.format("%s", slot_adder + 31)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id48_press_event(v)
+	local chn = string.format("%s", slot_adder + 32)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+-- Create row 5 check buttons
+chk_id51 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*0, y1+(yd*4), "", "")
+chk_id52 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*1, y1+(yd*4), "", "")
+chk_id53 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*2, y1+(yd*4), "", "")
+chk_id54 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*3, y1+(yd*4), "", "")
+chk_id55 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*4, y1+(yd*4), "", "")
+chk_id56 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*5, y1+(yd*4), "", "")
+chk_id57 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*6, y1+(yd*4), "", "")
+chk_id58 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*7, y1+(yd*4), "", "")
+
+-- Create functions for row 5 check buttons...
+display.setevent(chk_id51, display.EVENT_PRESS, "chk_id51_press_event(%value)")
+display.setevent(chk_id52, display.EVENT_PRESS, "chk_id52_press_event(%value)")
+display.setevent(chk_id53, display.EVENT_PRESS, "chk_id53_press_event(%value)")
+display.setevent(chk_id54, display.EVENT_PRESS, "chk_id54_press_event(%value)")
+display.setevent(chk_id55, display.EVENT_PRESS, "chk_id55_press_event(%value)")
+display.setevent(chk_id56, display.EVENT_PRESS, "chk_id56_press_event(%value)")
+display.setevent(chk_id57, display.EVENT_PRESS, "chk_id57_press_event(%value)")
+display.setevent(chk_id58, display.EVENT_PRESS, "chk_id58_press_event(%value)")
+
+-- Set the state of the controls based on the closed channel list
+if closed_channels != nil then
+	for key, value in pairs(closed_channels) do
+		if value == (slot_adder + 33) then
+			display.setvalue(chk_id51, display.ON)
+		elseif value == (slot_adder + 34) then
+			display.setvalue(chk_id52, display.ON)
+		elseif value == (slot_adder + 35) then
+			display.setvalue(chk_id53, display.ON)
+		elseif value == (slot_adder + 36) then
+			display.setvalue(chk_id54, display.ON)
+		elseif value == (slot_adder + 37) then
+			display.setvalue(chk_id55, display.ON)
+		elseif value == (slot_adder + 38) then
+			display.setvalue(chk_id56, display.ON)
+		elseif value == (slot_adder + 39) then
+			display.setvalue(chk_id57, display.ON)
+		elseif value == (slot_adder + 40) then
+			display.setvalue(chk_id58, display.ON)
+		end
+	end
+end
+
+function chk_id51_press_event(v)
+	local chn = string.format("%s", slot_adder + 33)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id52_press_event(v)
+	local chn = string.format("%s", slot_adder + 34)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id53_press_event(v)
+	local chn = string.format("%s", slot_adder + 35)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id54_press_event(v)
+	local chn = string.format("%s", slot_adder + 36)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id55_press_event(v)
+	local chn = string.format("%s", slot_adder + 37)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id56_press_event(v)
+	local chn = string.format("%s", slot_adder + 38)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id57_press_event(v)
+	local chn = string.format("%s", slot_adder + 39)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id58_press_event(v)
+	local chn = string.format("%s", slot_adder + 40)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+-- Create row 6 check buttons
+chk_id61 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*0, y1+(yd*5), "", "")
+chk_id62 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*1, y1+(yd*5), "", "")
+chk_id63 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*2, y1+(yd*5), "", "")
+chk_id64 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*3, y1+(yd*5), "", "")
+chk_id65 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*4, y1+(yd*5), "", "")
+chk_id66 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*5, y1+(yd*5), "", "")
+chk_id67 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*6, y1+(yd*5), "", "")
+chk_id68 = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*7, y1+(yd*5), "", "")
+
+-- Create functions for row 6 check buttons...
+display.setevent(chk_id61, display.EVENT_PRESS, "chk_id61_press_event(%value)")
+display.setevent(chk_id62, display.EVENT_PRESS, "chk_id62_press_event(%value)")
+display.setevent(chk_id63, display.EVENT_PRESS, "chk_id63_press_event(%value)")
+display.setevent(chk_id64, display.EVENT_PRESS, "chk_id64_press_event(%value)")
+display.setevent(chk_id65, display.EVENT_PRESS, "chk_id65_press_event(%value)")
+display.setevent(chk_id66, display.EVENT_PRESS, "chk_id66_press_event(%value)")
+display.setevent(chk_id67, display.EVENT_PRESS, "chk_id67_press_event(%value)")
+display.setevent(chk_id68, display.EVENT_PRESS, "chk_id68_press_event(%value)")
+
+-- Set the state of the controls based on the closed channel list
+if closed_channels != nil then
+	for key, value in pairs(closed_channels) do
+		if value == (slot_adder + 41) then
+			display.setvalue(chk_id61, display.ON)
+		elseif value == (slot_adder + 42) then
+			display.setvalue(chk_id62, display.ON)
+		elseif value == (slot_adder + 43) then
+			display.setvalue(chk_id63, display.ON)
+		elseif value == (slot_adder + 44) then
+			display.setvalue(chk_id64, display.ON)
+		elseif value == (slot_adder + 45) then
+			display.setvalue(chk_id65, display.ON)
+		elseif value == (slot_adder + 46) then
+			display.setvalue(chk_id66, display.ON)
+		elseif value == (slot_adder + 47) then
+			display.setvalue(chk_id67, display.ON)
+		elseif value == (slot_adder + 48) then
+			display.setvalue(chk_id68, display.ON)
+		end
+	end
+end
+
+function chk_id61_press_event(v)
+	local chn = string.format("%s", slot_adder + 41)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id62_press_event(v)
+	local chn = string.format("%s", slot_adder + 42)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id63_press_event(v)
+	local chn = string.format("%s", slot_adder + 43)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id64_press_event(v)
+	local chn = string.format("%s", slot_adder + 44)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id65_press_event(v)
+	local chn = string.format("%s", slot_adder + 45)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id66_press_event(v)
+	local chn = string.format("%s", slot_adder + 46)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id67_press_event(v)
+	local chn = string.format("%s", slot_adder + 47)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_id68_press_event(v)
+	local chn = string.format("%s", slot_adder + 48)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+-- Create the DMM input check buttons
+chk_dmm_input = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*8+row_dmm_buff, y1, "", "")
+txt_dmm_in = display.create(id, display.OBJ_TEXT, x1+xd*8+row_dmm_buff-18, y1+63, "IN", display.COLOR_VALUE_LABEL, display.FONT_SMALL)
+chk_dmm_sense = display.create(id, display.OBJ_EDIT_CHECK, x1+xd*8+row_dmm_buff, y1+yd, "", "")
+txt_dmm_sns = display.create(id, display.OBJ_TEXT, x1+xd*8+row_dmm_buff-18, y1+yd+63, "SNS", display.COLOR_VALUE_LABEL, display.FONT_SMALL)
+
+-- Create functions for the DMM check buttons...
+display.setevent(chk_dmm_input, display.EVENT_PRESS, "chk_dmm_input_press_event(%value)")
+display.setevent(chk_dmm_sense, display.EVENT_PRESS, "chk_dmm_sense_press_event(%value)")
+
+-- Set the state of the controls based on the closed channel list
+if closed_channels != nil then
+	for key, value in pairs(closed_channels) do
+		if value == (slot_adder + 49) then
+			display.setvalue(chk_dmm_sense, display.ON)
+		elseif value == (slot_adder + 50) then
+			display.setvalue(chk_dmm_input, display.ON)
+		end
+	end
+end
+
+function chk_dmm_input_press_event(v)
+	local chn = string.format("%s", slot_adder + 50)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+function chk_dmm_sense_press_event(v)
+	local chn = string.format("%s", slot_adder + 49)
+    if (v == 1) then 
+    	channel.multiple.close(chn) 
+    else
+    	channel.multiple.open(chn)
+    end
+end
+
+-- Lets build the little vertical lines
+local yline_1 = 90
+local yline_2 = yline_1
+local vy1 = 59
+local vy2 = 37
+local x11 = 30
+local xd1 = 80
+local vy3 = 122
+local vy4 = 115
+local yd1 = 58
+
+vr1_1 = display.create(id, display.OBJ_LINE, x1+x11+xd1*0, vy1, x1+x11+xd1*0, vy2)
+vr1_2 = display.create(id, display.OBJ_LINE, x1+x11+xd1*1, vy1, x1+x11+xd1*1, vy2)
+vr1_3 = display.create(id, display.OBJ_LINE, x1+x11+xd1*2, vy1, x1+x11+xd1*2, vy2)
+vr1_4 = display.create(id, display.OBJ_LINE, x1+x11+xd1*3, vy1, x1+x11+xd1*3, vy2)
+vr1_5 = display.create(id, display.OBJ_LINE, x1+x11+xd1*4, vy1, x1+x11+xd1*4, vy2)
+vr1_6 = display.create(id, display.OBJ_LINE, x1+x11+xd1*5, vy1, x1+x11+xd1*5, vy2)
+vr1_7 = display.create(id, display.OBJ_LINE, x1+x11+xd1*6, vy1, x1+x11+xd1*6, vy2)
+vr1_8 = display.create(id, display.OBJ_LINE, x1+x11+xd1*7, vy1, x1+x11+xd1*7, vy2)
+
+vr2_1 = display.create(id, display.OBJ_LINE, x1+x11+xd1*0, vy3, x1+x11+xd1*0, vy4)
+vr2_2 = display.create(id, display.OBJ_LINE, x1+x11+xd1*1, vy3, x1+x11+xd1*1, vy4)
+vr2_3 = display.create(id, display.OBJ_LINE, x1+x11+xd1*2, vy3, x1+x11+xd1*2, vy4)
+vr2_4 = display.create(id, display.OBJ_LINE, x1+x11+xd1*3, vy3, x1+x11+xd1*3, vy4)
+vr2_5 = display.create(id, display.OBJ_LINE, x1+x11+xd1*4, vy3, x1+x11+xd1*4, vy4)
+vr2_6 = display.create(id, display.OBJ_LINE, x1+x11+xd1*5, vy3, x1+x11+xd1*5, vy4)
+vr2_7 = display.create(id, display.OBJ_LINE, x1+x11+xd1*6, vy3, x1+x11+xd1*6, vy4)
+vr2_8 = display.create(id, display.OBJ_LINE, x1+x11+xd1*7, vy3, x1+x11+xd1*7, vy4)
+
+vr2_1 = display.create(id, display.OBJ_LINE, x1+x11+xd1*0, vy3+yd1, x1+x11+xd1*0, vy4+yd1)
+vr2_2 = display.create(id, display.OBJ_LINE, x1+x11+xd1*1, vy3+yd1, x1+x11+xd1*1, vy4+yd1)
+vr2_3 = display.create(id, display.OBJ_LINE, x1+x11+xd1*2, vy3+yd1, x1+x11+xd1*2, vy4+yd1)
+vr2_4 = display.create(id, display.OBJ_LINE, x1+x11+xd1*3, vy3+yd1, x1+x11+xd1*3, vy4+yd1)
+vr2_5 = display.create(id, display.OBJ_LINE, x1+x11+xd1*4, vy3+yd1, x1+x11+xd1*4, vy4+yd1)
+vr2_6 = display.create(id, display.OBJ_LINE, x1+x11+xd1*5, vy3+yd1, x1+x11+xd1*5, vy4+yd1)
+vr2_7 = display.create(id, display.OBJ_LINE, x1+x11+xd1*6, vy3+yd1, x1+x11+xd1*6, vy4+yd1)
+vr2_8 = display.create(id, display.OBJ_LINE, x1+x11+xd1*7, vy3+yd1, x1+x11+xd1*7, vy4+yd1)
+
+vr3_1 = display.create(id, display.OBJ_LINE, x1+x11+xd1*0, vy3+yd1*2, x1+x11+xd1*0, vy4+yd1*2)
+vr3_2 = display.create(id, display.OBJ_LINE, x1+x11+xd1*1, vy3+yd1*2, x1+x11+xd1*1, vy4+yd1*2)
+vr3_3 = display.create(id, display.OBJ_LINE, x1+x11+xd1*2, vy3+yd1*2, x1+x11+xd1*2, vy4+yd1*2)
+vr3_4 = display.create(id, display.OBJ_LINE, x1+x11+xd1*3, vy3+yd1*2, x1+x11+xd1*3, vy4+yd1*2)
+vr3_5 = display.create(id, display.OBJ_LINE, x1+x11+xd1*4, vy3+yd1*2, x1+x11+xd1*4, vy4+yd1*2)
+vr3_6 = display.create(id, display.OBJ_LINE, x1+x11+xd1*5, vy3+yd1*2, x1+x11+xd1*5, vy4+yd1*2)
+vr3_7 = display.create(id, display.OBJ_LINE, x1+x11+xd1*6, vy3+yd1*2, x1+x11+xd1*6, vy4+yd1*2)
+vr3_8 = display.create(id, display.OBJ_LINE, x1+x11+xd1*7, vy3+yd1*2, x1+x11+xd1*7, vy4+yd1*2)
+
+vr4_1 = display.create(id, display.OBJ_LINE, x1+x11+xd1*0, vy3+yd1*3, x1+x11+xd1*0, vy4+yd1*3)
+vr4_2 = display.create(id, display.OBJ_LINE, x1+x11+xd1*1, vy3+yd1*3, x1+x11+xd1*1, vy4+yd1*3)
+vr4_3 = display.create(id, display.OBJ_LINE, x1+x11+xd1*2, vy3+yd1*3, x1+x11+xd1*2, vy4+yd1*3)
+vr4_4 = display.create(id, display.OBJ_LINE, x1+x11+xd1*3, vy3+yd1*3, x1+x11+xd1*3, vy4+yd1*3)
+vr4_5 = display.create(id, display.OBJ_LINE, x1+x11+xd1*4, vy3+yd1*3, x1+x11+xd1*4, vy4+yd1*3)
+vr4_6 = display.create(id, display.OBJ_LINE, x1+x11+xd1*5, vy3+yd1*3, x1+x11+xd1*5, vy4+yd1*3)
+vr4_7 = display.create(id, display.OBJ_LINE, x1+x11+xd1*6, vy3+yd1*3, x1+x11+xd1*6, vy4+yd1*3)
+vr4_8 = display.create(id, display.OBJ_LINE, x1+x11+xd1*7, vy3+yd1*3, x1+x11+xd1*7, vy4+yd1*3)
+
+vr5_1 = display.create(id, display.OBJ_LINE, x1+x11+xd1*0, vy3+yd1*4, x1+x11+xd1*0, vy4+yd1*4)
+vr5_2 = display.create(id, display.OBJ_LINE, x1+x11+xd1*1, vy3+yd1*4, x1+x11+xd1*1, vy4+yd1*4)
+vr5_3 = display.create(id, display.OBJ_LINE, x1+x11+xd1*2, vy3+yd1*4, x1+x11+xd1*2, vy4+yd1*4)
+vr5_4 = display.create(id, display.OBJ_LINE, x1+x11+xd1*3, vy3+yd1*4, x1+x11+xd1*3, vy4+yd1*4)
+vr5_5 = display.create(id, display.OBJ_LINE, x1+x11+xd1*4, vy3+yd1*4, x1+x11+xd1*4, vy4+yd1*4)
+vr5_6 = display.create(id, display.OBJ_LINE, x1+x11+xd1*5, vy3+yd1*4, x1+x11+xd1*5, vy4+yd1*4)
+vr5_7 = display.create(id, display.OBJ_LINE, x1+x11+xd1*6, vy3+yd1*4, x1+x11+xd1*6, vy4+yd1*4)
+vr5_8 = display.create(id, display.OBJ_LINE, x1+x11+xd1*7, vy3+yd1*4, x1+x11+xd1*7, vy4+yd1*4)
+
+-- Lets build the little horizontal lines
+local hx1 = 45
+local hx2 = 55
+local hx3 = hx1 + xd
+local hx4 = hx3 + 15
+local hxd = xd
+
+hc1_1 = display.create(id, display.OBJ_LINE, hx1, yline_1+yd*0, hx2, yline_2+yd*0)
+hc1_2 = display.create(id, display.OBJ_LINE, hx1, yline_1+yd*1, hx2, yline_2+yd*1)
+hc1_3 = display.create(id, display.OBJ_LINE, hx1, yline_1+yd*2, hx2, yline_2+yd*2)
+hc1_4 = display.create(id, display.OBJ_LINE, hx1, yline_1+yd*3, hx2, yline_2+yd*3)
+hc1_5 = display.create(id, display.OBJ_LINE, hx1, yline_1+yd*4, hx2, yline_2+yd*4)
+hc1_6 = display.create(id, display.OBJ_LINE, hx1, yline_1+yd*5, hx2, yline_2+yd*5)
+
+hc2_1 = display.create(id, display.OBJ_LINE, hx3, yline_1+yd*0, hx4, yline_2+yd*0)
+hc2_2 = display.create(id, display.OBJ_LINE, hx3, yline_1+yd*1, hx4, yline_2+yd*1)
+hc2_3 = display.create(id, display.OBJ_LINE, hx3, yline_1+yd*2, hx4, yline_2+yd*2)
+hc2_4 = display.create(id, display.OBJ_LINE, hx3, yline_1+yd*3, hx4, yline_2+yd*3)
+hc2_5 = display.create(id, display.OBJ_LINE, hx3, yline_1+yd*4, hx4, yline_2+yd*4)
+hc2_6 = display.create(id, display.OBJ_LINE, hx3, yline_1+yd*5, hx4, yline_2+yd*5)
+
+hc3_1 = display.create(id, display.OBJ_LINE, hx3+hxd*1, yline_1+yd*0, hx4+hxd*1, yline_2+yd*0)
+hc3_2 = display.create(id, display.OBJ_LINE, hx3+hxd*1, yline_1+yd*1, hx4+hxd*1, yline_2+yd*1)
+hc3_3 = display.create(id, display.OBJ_LINE, hx3+hxd*1, yline_1+yd*2, hx4+hxd*1, yline_2+yd*2)
+hc3_4 = display.create(id, display.OBJ_LINE, hx3+hxd*1, yline_1+yd*3, hx4+hxd*1, yline_2+yd*3)
+hc3_5 = display.create(id, display.OBJ_LINE, hx3+hxd*1, yline_1+yd*4, hx4+hxd*1, yline_2+yd*4)
+hc3_6 = display.create(id, display.OBJ_LINE, hx3+hxd*1, yline_1+yd*5, hx4+hxd*1, yline_2+yd*5)
+
+hc4_1 = display.create(id, display.OBJ_LINE, hx3+hxd*2, yline_1+yd*0, hx4+hxd*2, yline_2+yd*0)
+hc4_2 = display.create(id, display.OBJ_LINE, hx3+hxd*2, yline_1+yd*1, hx4+hxd*2, yline_2+yd*1)
+hc4_3 = display.create(id, display.OBJ_LINE, hx3+hxd*2, yline_1+yd*2, hx4+hxd*2, yline_2+yd*2)
+hc4_4 = display.create(id, display.OBJ_LINE, hx3+hxd*2, yline_1+yd*3, hx4+hxd*2, yline_2+yd*3)
+hc4_5 = display.create(id, display.OBJ_LINE, hx3+hxd*2, yline_1+yd*4, hx4+hxd*2, yline_2+yd*4)
+hc4_6 = display.create(id, display.OBJ_LINE, hx3+hxd*2, yline_1+yd*5, hx4+hxd*2, yline_2+yd*5)
+
+hc5_1 = display.create(id, display.OBJ_LINE, hx3+hxd*3, yline_1+yd*0, hx4+hxd*3, yline_2+yd*0)
+hc5_2 = display.create(id, display.OBJ_LINE, hx3+hxd*3, yline_1+yd*1, hx4+hxd*3, yline_2+yd*1)
+hc5_3 = display.create(id, display.OBJ_LINE, hx3+hxd*3, yline_1+yd*2, hx4+hxd*3, yline_2+yd*2)
+hc5_4 = display.create(id, display.OBJ_LINE, hx3+hxd*3, yline_1+yd*3, hx4+hxd*3, yline_2+yd*3)
+hc5_5 = display.create(id, display.OBJ_LINE, hx3+hxd*3, yline_1+yd*4, hx4+hxd*3, yline_2+yd*4)
+hc5_6 = display.create(id, display.OBJ_LINE, hx3+hxd*3, yline_1+yd*5, hx4+hxd*3, yline_2+yd*5)
+
+hc6_1 = display.create(id, display.OBJ_LINE, hx3+hxd*4, yline_1+yd*0, hx4+hxd*4, yline_2+yd*0)
+hc6_2 = display.create(id, display.OBJ_LINE, hx3+hxd*4, yline_1+yd*1, hx4+hxd*4, yline_2+yd*1)
+hc6_3 = display.create(id, display.OBJ_LINE, hx3+hxd*4, yline_1+yd*2, hx4+hxd*4, yline_2+yd*2)
+hc6_4 = display.create(id, display.OBJ_LINE, hx3+hxd*4, yline_1+yd*3, hx4+hxd*4, yline_2+yd*3)
+hc6_5 = display.create(id, display.OBJ_LINE, hx3+hxd*4, yline_1+yd*4, hx4+hxd*4, yline_2+yd*4)
+hc6_6 = display.create(id, display.OBJ_LINE, hx3+hxd*4, yline_1+yd*5, hx4+hxd*4, yline_2+yd*5)
+
+hc7_1 = display.create(id, display.OBJ_LINE, hx3+hxd*5, yline_1+yd*0, hx4+hxd*5, yline_2+yd*0)
+hc7_2 = display.create(id, display.OBJ_LINE, hx3+hxd*5, yline_1+yd*1, hx4+hxd*5, yline_2+yd*1)
+hc7_3 = display.create(id, display.OBJ_LINE, hx3+hxd*5, yline_1+yd*2, hx4+hxd*5, yline_2+yd*2)
+hc7_4 = display.create(id, display.OBJ_LINE, hx3+hxd*5, yline_1+yd*3, hx4+hxd*5, yline_2+yd*3)
+hc7_5 = display.create(id, display.OBJ_LINE, hx3+hxd*5, yline_1+yd*4, hx4+hxd*5, yline_2+yd*4)
+hc7_6 = display.create(id, display.OBJ_LINE, hx3+hxd*5, yline_1+yd*5, hx4+hxd*5, yline_2+yd*5)
+
+hc8_1 = display.create(id, display.OBJ_LINE, hx3+hxd*6, yline_1+yd*0, hx4+hxd*6, yline_2+yd*0)
+hc8_2 = display.create(id, display.OBJ_LINE, hx3+hxd*6, yline_1+yd*1, hx4+hxd*6, yline_2+yd*1)
+hc8_3 = display.create(id, display.OBJ_LINE, hx3+hxd*6, yline_1+yd*2, hx4+hxd*6, yline_2+yd*2)
+hc8_4 = display.create(id, display.OBJ_LINE, hx3+hxd*6, yline_1+yd*3, hx4+hxd*6, yline_2+yd*3)
+hc8_5 = display.create(id, display.OBJ_LINE, hx3+hxd*6, yline_1+yd*4, hx4+hxd*6, yline_2+yd*4)
+hc8_6 = display.create(id, display.OBJ_LINE, hx3+hxd*6, yline_1+yd*5, hx4+hxd*6, yline_2+yd*5)
+
+hc9_1 = display.create(id, display.OBJ_LINE, hx3+hxd*7, yline_1+yd*0, hx4+hxd*7+5, yline_2+yd*0)
+hc9_2 = display.create(id, display.OBJ_LINE, hx3+hxd*7, yline_1+yd*1, hx4+hxd*7+5, yline_2+yd*1)
+
+-- Create the buttons to facilitate open/close
+--but_id = display.create(id, display.OBJ_BUTTON, 200, 420, "Set State")
+--display.setevent(but_id, display.EVENT_PRESS, "number_press_event()")
+
+but_id2 = display.create(id, display.OBJ_BUTTON, 300, 420, "Open All")
+display.setevent(but_id2, display.EVENT_PRESS, "open_all_event()")
+
+function open_all_event()
+  	channel.open("allslots")
+  
+	-- Update the display to remove any/all checks
+	display.setvalue(chk_id11, 0)
+  	display.setvalue(chk_id12, 0)
+  	display.setvalue(chk_id13, 0)
+	display.setvalue(chk_id14, 0)
+  	display.setvalue(chk_id15, 0)
+  	display.setvalue(chk_id16, 0)
+  	display.setvalue(chk_id17, 0)
+  	display.setvalue(chk_id18, 0)
+  
+	display.setvalue(chk_id21, 0)
+  	display.setvalue(chk_id22, 0)
+  	display.setvalue(chk_id23, 0)
+	display.setvalue(chk_id24, 0)
+  	display.setvalue(chk_id25, 0)
+  	display.setvalue(chk_id26, 0)
+  	display.setvalue(chk_id27, 0)
+  	display.setvalue(chk_id28, 0)
+  	
+  	display.setvalue(chk_id31, 0)
+  	display.setvalue(chk_id32, 0)
+  	display.setvalue(chk_id33, 0)
+	display.setvalue(chk_id34, 0)
+  	display.setvalue(chk_id35, 0)
+  	display.setvalue(chk_id36, 0)
+  	display.setvalue(chk_id37, 0)
+  	display.setvalue(chk_id38, 0)
+  	
+  	display.setvalue(chk_id41, 0)
+  	display.setvalue(chk_id42, 0)
+  	display.setvalue(chk_id43, 0)
+	display.setvalue(chk_id44, 0)
+  	display.setvalue(chk_id45, 0)
+  	display.setvalue(chk_id46, 0)
+  	display.setvalue(chk_id47, 0)
+  	display.setvalue(chk_id48, 0)
+  	
+  	display.setvalue(chk_id51, 0)
+  	display.setvalue(chk_id52, 0)
+  	display.setvalue(chk_id53, 0)
+	display.setvalue(chk_id54, 0)
+  	display.setvalue(chk_id55, 0)
+  	display.setvalue(chk_id56, 0)
+  	display.setvalue(chk_id57, 0)
+  	display.setvalue(chk_id58, 0)
+  	
+  	display.setvalue(chk_id61, 0)
+  	display.setvalue(chk_id62, 0)
+  	display.setvalue(chk_id63, 0)
+	display.setvalue(chk_id64, 0)
+  	display.setvalue(chk_id65, 0)
+  	display.setvalue(chk_id66, 0)
+  	display.setvalue(chk_id67, 0)
+  	display.setvalue(chk_id68, 0)
+  	
+  	display.setvalue(chk_dmm_input, 0)
+  	display.setvalue(chk_dmm_sense, 0)
+end
+
+endscript
+loadimage MatrixApp_icon MatrixApp
+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
+endimage

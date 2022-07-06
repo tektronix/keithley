@@ -1,4 +1,4 @@
-# Keithley Instruments
+# Keithley Instruments [![Keithley](https://tektronix.github.io/media/Keithley-opensource_badge.svg)](https://github.com/tektronix)
 
 This GitHub repository stores working and in-progress code examples for Keithley Instruments products. The code and content here is not officially supported unless otherwise stated by a Tektronix employee. It is offered for learning and collaboration purposes.
 

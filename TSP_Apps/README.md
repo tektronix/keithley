@@ -24,6 +24,15 @@ Full description [here](https://forum.tek.com/viewtopic.php?f=617&t=141115)
 * **[Resistance Tolerance Meter](./Resistance_Tolerance_Meter.tspa)**  
 Turns the DMM6500 or DAQ6510 into a dedicated resistor tolerance meter. You can set the expected value, number of resistors to be tested, and several other options. The app gives you an option to export the data when you're done. This is basically a wrapper of the limit test functionality.
 
+* **[DAQ6510 Demo](./KE_DAQ6510_Demo.tsp)**  
+Intended as a Sales helper tool, this script for the DAQ6510 provides a self-guided tour of the instrument's high-level features. Requires a Model 7700, 7702, 7706, 7707, 7708, or 7710 to be inserted into Slot 1 of the mainframe. 
+
+* **[PONG](./PONG)**
+<br>This app is for showing off the playful side of TSP by offering a throw-back, retro-gaming experience in the form of PONG! Note that the app includes wiring instructions for the game controller station. 
+ 
+* **[Matrix Control](./DAQ6510_MatrxCtrl.tspa)**
+<br>This app is for controlling and monitoring the states of the Model 7709 6x8 matrix cross points. The app detects active states upon launch and updates the UI accordingly. The user has an on-screen matrix of point to choose from as well as the ability to switch in the Row 1 and Row 2 connections to the DMM Input and Sense, respectively. 
+
 ## About TSP
 
 The TSP language is largely based on Lua 5.0 with instrument specific commands and some features of later Lua versions. Check the Reference Manual of your instrument for more information on TSP and for supported instrument specific commands.  
