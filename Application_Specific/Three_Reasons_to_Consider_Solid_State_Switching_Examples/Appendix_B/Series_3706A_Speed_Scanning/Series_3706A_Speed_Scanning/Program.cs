@@ -162,10 +162,6 @@ namespace Series_3706A_Speed_Scanning
                 status = -1;
                 Console.WriteLine(e.Message);
             }
-            finally
-            {
-                // Nothing to close
-            }
             return status;
         }
 
@@ -218,7 +214,7 @@ namespace Series_3706A_Speed_Scanning
         static public int InstRcv_FloatData(NetworkStream netStream, int chunkSize, ref float[] fltData)
         {
             byte[] rcvBytes;
-            rcvBytes = new byte[chunkSize * 4 + 3];
+            rcvBytes = new byte[(chunkSize * 4) + 3];
             int bytesRcvd = netStream.Read(rcvBytes, 0, rcvBytes.Length);
             // Need to convert to the byte array into single or do
             Buffer.BlockCopy(rcvBytes, 2, fltData, 0, fltData.Length * 4);
