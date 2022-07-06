@@ -11,21 +11,28 @@ These code examples are a good place to start learning how to work with your ins
 Examples include those from the module card manuals (7700, 7701, 7702, 7703, 7705, 7706, 7707, 7708, 7709, 7710, 7711, and 7712) where applicable.
 
 * **[DMM6500](./DMM6500)**  
+Some examples work with all graphical Keithley instruments. Includes examples from the DMM6500 User's Manual.
 
 * **[DMM7510](./DMM7510)**  
+Python, TSP, and C# code examples.
 
-* **[General](./General)** 
+* **[General](./General)**  
 Instrument examples which might be applicable to across an instrument platform, series, or instrument independent.  
 
 * **[Model 2000 DMM](./Model_2000/)**
+Visual basic example for controlling 2000-SCAN cards. Also works with DMM6500 in Model 2000 emulation mode. 
 
-* **[Model 2010 DMM](./Model_2010/)**
+* **[Model 2001 DMM](./Model_2001/)**
+Visual basic examples for the 2001 and 2002 Multimeters.
 
 * **[Model 2015 THD Audio Analyzer DMM](./Model_2015/)**
+Python code example.
 
 * **[Model 6430 Electrometer](./Model_6430/)**
+C# examples.
 
 * **[2200 Series Power Supplies](./Series_2200/)**
+Python and C# examples.
 
 * **[2260B Series Power Supplies](./Series_2260B)**  
 General examples to show basic and advanced features.
@@ -37,11 +44,13 @@ Assorted examples for remotely operating the PSU in different modes and connecti
 General examples to show basic and advanced features.
 
 * **[2400 Series SourceMeter&reg; Source Measure Units](./Series_2400/)** 
+Code examples for the non-graphical (classic VFD display) 2400 Series Source Measure Units.
 
 * **[2400 Series Graphical SourceMeter&reg; Source Measure Units](./Series_2400/)**
+Code examples for the graphical 2400 Series Source Measure Units. Some examples are written for specific models.
 
-* **[2600B Series SourceMeter&reg;](./26xx-SMU/Tutorials)**  
-Many will work with non-A and A versions of the 2600 Series
+* **[2600B Series SourceMeter&reg; Source Measure Units](./26xx-SMU/Tutorials)**  
+Many examples will work with non-A and A versions of the 2600 Series
 
 * **[3706A Series System Switch/Multimeter](./Series_3706A)**  
 A variety of scanning and switching examples.
