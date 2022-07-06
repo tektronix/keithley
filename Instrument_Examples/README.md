@@ -26,7 +26,7 @@ Assorted examples for remotely operating the PSU in different modes and connecti
 General examples to show basic and advanced features.
 
 * **[Series_3706A](./Series_3706A)**  
-A variety of scanning and switching examples to choose from. 
+A variety of scanning and switching examples.
 
 * **[Instructables](./Instructables)** 
 Quick generic tutorials for controlling instruments but not dedicated to any one specific model.
