@@ -1,0 +1,270 @@
+--[[
+
+***********************************************************
+*** Copyright 2022 Tektronix, Inc.                      ***
+*** See www.tek.com/sample-license for licensing terms. ***
+***********************************************************
+
+Written by: Keithley Applications Engineering 
+
+This script allows constant power to be sourced by modifying voltage or current.
+
+To utilize console console commands set the global variable 'consoleControl' to true
+
+]]
+
+-- ********************** GLOBAL VARIABLES **********************
+
+-- Variable for Console Control
+consoleControl = false;
+
+-- User Input Variables
+source = "Voltage"
+targetSource = 0.0
+increaseSource = true
+maxSourceLevel = 0.0
+targetPower = 0.0
+
+-- Generated Variables
+currSource = 0.0
+currPower = 0.0
+
+-- ************************* FUNCTIONS **************************
+
+-- Input Functions
+
+function set_source() 
+    -- Get what the user wants to source
+	optionID = display.input.option("Select Source", "Voltage", "Current")
+	if optionID == display.BUTTON_OPTION1 then -- Voltage
+		return "Voltage"
+
+	elseif optionID == display.BUTTON_OPTION2 then -- Current
+		return "Current"
+
+	end
+end
+
+function set_starting_source()
+    -- Gets the starting source value
+
+    -- If source is Voltage
+    if source == "Voltage" then
+	    return display.input.number("Target/Starting Source Level", display.NFORMAT_PREFIX, 0, -1100, 1100)
+
+    -- If source is Current
+    else  
+        return display.input.number("Target/Starting Source Level", display.NFORMAT_PREFIX, 0, -1.05, 1.05)  
+        
+    end
+end
+
+function can_increase_source() 
+    -- Can the source be modified
+	optionID = display.input.option("Can the script increase source?", "Yes", "No")
+	if optionID == display.BUTTON_OPTION1 then -- Yes
+		return true
+	elseif optionID == display.BUTTON_OPTION2 then -- No
+		return false
+	end
+end
+
+function set_max_source_level()
+    -- Gets the max source value
+
+    -- If source is Voltage
+    if source == "Voltage" then
+	    return display.input.number("Max Source Level", display.NFORMAT_PREFIX, targetSource, targetSource, 1100)
+
+    -- If source is Current
+    else  
+        return display.input.number("Max Source Level", display.NFORMAT_PREFIX, targetSource, targetSource, 1.05)  
+        
+    end
+end
+
+function set_target_power()
+    -- Gets the target power level
+	return display.input.number("Target Power", display.NFORMAT_PREFIX, 0, 0, 1000)
+end
+
+-- General Functions
+
+function generateScreen()
+
+    -- Generates user swipe object and clears screen
+    display.clear()
+	powScreen = display.changescreen(display.SCREEN_USER_SWIPE)
+
+    -- Sets text blocks
+    display.settext(display.TEXT1, "Sourcing: "..source)
+    display.settext(display.TEXT2, "____");
+
+end
+
+function updateDisplay()
+    -- Updates the source reading
+    if source == "Voltage" then
+        -- Voltage Source
+        display.settext(display.TEXT2, display.format(currSource, "V", display.NFORMAT_DECIMAL, 6))
+    elseif source == "Current" then
+        -- Current Source
+        display.settext(display.TEXT2, display.format(currSource, "A", display.NFORMAT_DECIMAL, 6))
+    else
+        -- Catch Errors
+        display.settext(display.TEXT2, "ERROR")
+    end
+
+end
+
+function generateBuffer()
+    powBuffer = buffer.make(100, buffer.STYLE_STANDARD)
+	powBuffer.clear()
+	buffer.clearstats(powBuffer)
+	powBuffer.capacity = 1 * 100
+	powBuffer.fillmode = buffer.FILL_CONTINUOUS
+end
+
+function calculate()
+
+    local tempResist = 0;
+
+    -- If the user allows source to increase
+    if increaseSource == true then
+
+        -- Enables limiting source
+        smu.measure.limit[1].enable = smu.ON;
+
+        -- Measures the resistance/voltage/current to calculate source changes
+        smu.measure.func = smu.FUNC_RESISTANCE
+        smu.measure.math.format = smu.MATH_RECIPROCAL
+        smu.measure.math.enable = smu.ON
+
+        -- Resistance
+        tempResist = smu.measure.math.format;
+
+        -- Updates current power (P = IV)
+        currPower = tempCurr * tempVolt
+
+        -- If the source is voltage
+        if source == "Voltage" then
+            -- Vset = sqrt(Rout * Pow)
+            smu.source.level = math.sqrt(tempResist * currPower)
+
+        -- If the source is current
+        elseif source == "Current" then
+            -- Iset = sqrt(Pow / Rout)
+            smu.source.level = math.sqrt(currPower/tempResist)
+    
+        -- Throws error if source isnt set
+        else
+            print('ERROR: Source must be set to either "Voltage" or "Current"')  
+        end
+    
+    -- User does not allow the source to increase
+    else
+
+    end
+
+end
+
+function run()
+
+    -- Resets SMU
+    smu.reset()
+    trigger.clear()
+	opc()
+
+    -- Generates and updates the screen
+    generateScreen()
+
+    -- Generates our buffer
+    generateBuffer()
+
+    -- Define a trigger model that will capture until we push front panel trigger button
+	trigger.model.setblock(1, trigger.BLOCK_BUFFER_CLEAR, powBuffer)
+	trigger.model.setblock(2, trigger.BLOCK_DELAY_CONSTANT, 0)
+    trigger.model.setblock(3, trigger.BLOCK_MEASURE_DIGITIZE, powBuffer, trigger.COUNT_INFINITE)
+	trigger.model.setblock(4, trigger.BLOCK_WAIT, trigger.EVENT_DISPLAY) -- wait until the TRIGGER key is pressed
+	trigger.model.setblock(5, trigger.BLOCK_MEASURE_DIGITIZE, powBuffer, trigger.COUNT_STOP) -- stop making digitized measurements
+	opc()
+
+    -- Sets source to Voltage or Current
+    if source == "Voltage" then
+        -- Sets source to Voltage
+        smu.source.func = smu.FUNC_DC_VOLTAGE
+
+        -- Sets voltage limit
+        smu.measure.setattribute(smu.FUNC_DC_VOLTAGE, smu.ATTR_MEAS_LIMIT_HIGH_1, maxSourceLevel)
+
+    else -- source == "Current"
+
+        -- Sets source to Current
+        smu.source.func = smu.FUNC_DC_CURRENT
+
+        -- Sets current limit
+        smu.measure.setattribute(smu.FUNC_DC_CURRENT, smu.ATTR_MEAS_LIMIT_HIGH_1, maxSourceLevel)
+
+    end
+
+    -- Sources voltage/current at the user target level
+    smu.source.level = targetSource
+    currSource = targetSource
+
+    -- Turn on source output & sets default settings
+    smu.source.output = smu.ON
+    smu.measure.unit = smu.UNIT_WATT
+
+    smu.measure.read(powBuffer)
+    trigger.model.initiate()
+
+    -- While output is on
+    while smu.source.output == smu.ON do
+        for i = 1, powBuffer.n do
+
+        -- Reads current power from the Buffer
+        currPower = powBuffer[i]
+
+        -- Calculates new required source to get desired power
+        calculate()
+
+        -- Updates the printed value of the Voltage/Current sourced
+        updateDisplay()   
+
+        end
+    end
+
+    trigger.model.abort()
+    
+end
+
+-- ************************* MAIN PROGRAM **************************
+
+-- Resets the 2400
+reset() 
+eventlog.clear()
+
+-- Prints out Info for user
+print('This script can be ran from the screen or the console')
+
+-- Checks if the user is providing inputs via the console or the front panel
+if consoleControl then
+    -- Input from console (prompts user for inputs)
+    print('Set values using console commands and then use the run() command')
+else
+    
+    -- Input from front panel
+    source = set_source()
+    targetSource = set_starting_source()
+    increaseSource = can_increase_source() 
+    if increaseSource then
+        maxSourceLevel = set_max_source_level()
+    end
+    targetPower = set_target_power()
+
+    -- Informs user how to enable console input of commands
+    print('Set consoleControl = true to use the console for commands')
+
+    -- Runs the script with the user input settings
+    run()
+end
