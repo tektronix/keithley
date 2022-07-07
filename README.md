@@ -1,4 +1,4 @@
-# Keithley Instruments [![Keithley](https://tektronix.github.io/media/Keithley-opensource_badge.svg)](https://github.com/tektronix)
+# Keithley Instruments 
 
 This GitHub repository stores working and in-progress code examples for Keithley Instruments products. The code and content here is not officially supported unless otherwise stated by a Tektronix employee. It is offered for learning and collaboration purposes.
 
@@ -22,7 +22,6 @@ If you don't want to clone this entire repository, it's still possible to take i
 
 ## Maintainers
 
-Keithley Instruments Factory Applications Engineers:  
 Josh Brown: [jbrown1234](https://github.com/jbrown1234)  
 Brad Odhner: [Brad-O](https://github.com/Brad-O)
 
