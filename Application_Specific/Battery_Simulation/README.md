@@ -1,10 +1,6 @@
 # 2281S-20-6 Battery Models
 
-This Directory holds battery models for the Model [2281S-20-6 Precision DC Supply & Battery Simulator](https://www.tek.com/tektronix-and-keithley-dc-power-supplies/2281s).  You can use these models to simulate a variety of batteries. To contribute your own models, file a pull request against the `dev` branch, being sure to follow the [Contribution Guidelines](../../../README.md#contributing). Battery models should be in their own folder within the [2281S Battery Models Directory](./2281S_Battery_Models/). Model folders should use underscores to be of the format: *Brand\_Type/Model#\_Chemistry/trademark*
-
-To request a battery model, open an issue with the "Code Request" template, but please be aware that Keithley cannot fulfill every request for battery models.
-
-Most models have the conditions they were generated with listed in their `*_SetupAndRawData.csv` files, along with the raw data collected during model generation. You can have multiple models for the same battery in the same folder, made under different conditions. Each pair of files must have a unique name.
+This Directory holds battery models for the Model [2281S-20-6 Precision DC Supply & Battery Simulator](https://www.tek.com/tektronix-and-keithley-dc-power-supplies/2281s).  You can use these models to simulate a variety of batteries. To contribute your own models, or request a model, see the [Contribution Guidelines](/CONTRIBUTING.md)
 
 ## Generating 2281S-20-6 Battery Models
 
