@@ -154,12 +154,12 @@ class DMM6500:
         #       1. Channel string
         #       2. Transducer
         #       3. Transducer type
-        if (len(args) == 0):
+        if not (args):
             self.SendCmd("dmm.measure.func = dmm.FUNC_TEMPERATURE")
         else:
             if (type(args[0]) != str):
                 self.SendCmd("dmm.measure.func = dmm.FUNC_TEMPERATURE")
-                if(len(args) > 0):
+                if(args):
                     xStr = "dmm.measure.transducer"
                     if(args[0] == self.Transducer.TC):
                        xStr2 = "dmm.TRANS_THERMOCOUPLE"

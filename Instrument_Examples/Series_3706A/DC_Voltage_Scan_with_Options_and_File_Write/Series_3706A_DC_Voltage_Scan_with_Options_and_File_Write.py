@@ -1,3 +1,21 @@
+""" ================================================================================
+
+*** Copyright 2019 Tektronix, Inc.                      ***
+*** See www.tek.com/sample-license for licensing terms. ***
+
+================================================================================ """
+
+"""
+====================================================================================================
+
+    This example configures a series of channels within the 3706A mainframe for
+    DCV measurement scanning. Additionally, a log file is created on a USB drive
+    connected to the front port of the meter and writes the measurement information
+    after each scan. 
+
+====================================================================================================
+"""
+
 import socket
 import struct
 import math

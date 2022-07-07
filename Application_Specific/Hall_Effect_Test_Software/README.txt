@@ -1,0 +1,1 @@
+All files contained within this zip can be extracted to the LabVIEW 2018\instr.lib directory. 

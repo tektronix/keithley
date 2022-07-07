@@ -1,3 +1,8 @@
+-- ************************************************************
+-- Copyright 2019 Tektronix, Inc.
+-- See www.tek.com/sample-license for licensing terms.
+-- ************************************************************
+
 function scan_dio_trigger(scan_list, my_range, scan_count)
 	reset()														-- Reset
 	dmm.func = dmm.TWO_WIRE_OHMS								-- Set measurement function
