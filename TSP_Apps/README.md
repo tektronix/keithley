@@ -13,6 +13,9 @@ The TSP language is largely based on Lua 5.0 with instrument specific commands a
 
 [comment]: **[Title](./file.tspa)**  
 
+* **[Calculator App](./CalculatorApp.tspa)**
+This app allows the user to perform basic calculator functions on Keithley's Touch, Test, Invent® Interface.
+
 * **[Matrix Control](./DAQ6510_MatrxCtrl.tspa)**
 This app is for controlling and monitoring the states of the Model 7709 6x8 matrix cross points. The app detects active states upon launch and updates the UI accordingly. The user has an on-screen matrix of point to choose from as well as the ability to switch in the Row 1 and Row 2 connections to the DMM Input and Sense, respectively. 
 
