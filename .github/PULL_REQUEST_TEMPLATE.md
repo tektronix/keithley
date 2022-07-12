@@ -4,6 +4,7 @@
 Please review the [Contribution Guidelines](https://github.com/tektronix/keithley/CONTRIBUTING.md) before submitting.
 
 - [ ] You have previously submitted a Contributor License Agreement or have contacted a maintainer to request one.
+- [ ] You have given the Pull Request a descriptive name above.
 - [ ] You placed all files in an appropriate directory.
 - [ ] You updated README files if placing files in directories that already have READMEs. 
 
@@ -16,6 +17,6 @@ Please review the [Contribution Guidelines](https://github.com/tektronix/keithle
 
 ### Description
 
-- Use bullets to describe what this pull request change.
+- Use bullets to describe what this pull request changes.
 
 <!-- Modified by Tektronix. Original Content developed by the angular-translate team and Pascal Precht and their Pull Request Template available at https://github.com/angular-translate/angular-translate -->
