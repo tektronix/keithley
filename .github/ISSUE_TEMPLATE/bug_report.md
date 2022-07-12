@@ -6,6 +6,7 @@ labels: ''
 assignees: Brad-O
 
 ---
+This form should only be used for issues related to this repo. For technical assistance or advice, visit [tek.com](http://www.tek.com).
 
 **Describe the bug**
 A clear and concise description of what the bug is.

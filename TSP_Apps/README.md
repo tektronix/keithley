@@ -1,8 +1,8 @@
 # TSP Apps
 
-Keithley's TSP&reg; (Test Script Processor) enabled instruments have an on-board, user accessable processor. This allows the instruments to control themselves by writing functions or entire scripts that can be stored on the instrument itself and called either from an external computer or the front panel of the instrument. For our Touch Test Invent&reg; touchscreen enabled instruments, TSP can be used to take further control of the instrument's display and user interface to create mini, instrument specific applications, or Apps. TSP Apps have the extension .tspa to distinquish them from traditional .tsp scripts.
+Keithley's TSP&reg; (Test Script Processor) enabled instruments have an on-board, user accessible processor. This allows the instruments to control themselves by writing functions or entire scripts that can be stored on the instrument itself and called either from an external computer or the front panel of the instrument. For our Touch Test Invent&reg; touchscreen enabled instruments, TSP can be used to take further control of the instrument's display and user interface to create mini, instrument specific applications, or Apps. TSP Apps have the extension .tspa to distinguish them from traditional .tsp scripts.
 
-You can find offically supported, Keithley factory tested TSP Apps [here](https://www.tek.com/keithley/tsp-applications-for-touch-test-invent-models).
+You can find officially supported, Keithley factory tested TSP Apps [here](https://www.tek.com/keithley/tsp-applications-for-touch-test-invent-models).
 
 ## About TSP
 
@@ -23,7 +23,7 @@ This app is for controlling and monitoring the states of the Model 7709 6x8 matr
 Provides hands-on front panel control of the Model 7706 multi-function module. The operator is able to manipulate the digital and analog output as well as the totalizer.
 
 * **[Digital I/O Control](./DIOControlFull.tspa)**  
-This app allows full control of the Digital I/O port.  It requries a communication card with a digital I/O port.
+This app allows full control of the Digital I/O port.  It requires a communication card with a digital I/O port.
 
 * **[Email Buffer](./email.tspa)**  
 This app is in progress and can only be run from a computer right now.  It allows for emailing data buffers.
