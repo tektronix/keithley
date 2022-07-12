@@ -28,7 +28,7 @@ You generally only need to submit a CLA once, so if you've already submitted one
 
 All examples should be safe for people and instruments. 
 
-Examples that explicitely call for, or result in, unsafe conditions are are not allowed. (For example, a script designed to source current into a fully charged lithium ion battery.) 
+Examples that explicitly call for, or result in, unsafe conditions are are not allowed. (For example, a script designed to source current into a fully charged lithium ion battery.) 
 
 Examples that put instruments in a unsafe operating conditions, or deliberately crash instrument firmware/software are not allowed. (For example, a script that calls for 3 or more SMUs to be placed together in series.)
 
@@ -36,7 +36,7 @@ All examples must involve at least one Keithley instrument.
 
 ### Branches and Pull Requests
 
-To contribute, Fork this repo and create a new branch that will contain your additons or modification. When your changes are complete, or if you're ready for feedback, submit a pull request against the branch you're wishing to add to or modify. The only permanent branch of this repo is `main`, which represents the most up-to-date examples. Other branches might be made if Keithley engineers are working on larger projects.
+To contribute, Fork this repo and create a new branch that will contain your additions or modification. When your changes are complete, or if you're ready for feedback, submit a pull request against the branch you're wishing to add to or modify. The only permanent branch of this repo is `main`, which represents the most up-to-date examples. Other branches might be made if Keithley engineers are working on larger projects.
 
 If you see something you're not sure is a bug, or if you'd like to request an example, please submit an Issue via GitHub.  
 
@@ -44,23 +44,25 @@ If you'd like help from a Keithley engineer in developing an example, please sub
 
 ### READMEs
 
-README.md files are spread throughout this repo to help with readability on GitHub. Because this repo is not a cohesive codebase, but rather a collection of seperate pieces of reference material, these READMEs are vital in helping people find the best example for their scenario. These READMEs are meant to describe what content is within different folders, they are not necessarily meant to be documentation. Examples should either start with commented documentation that describes the code's usage, or inlcude seperate documentation in a contained folder. 
+README.md files are spread throughout this repo to help with readability on GitHub. Because this repo is not a cohesive codebase, but rather a collection of separate pieces of reference material, these READMEs are vital in helping people find the best example for their scenario. These READMEs are meant to describe what content is within different folders, they are not necessarily meant to be documentation. Examples should either start with commented documentation that describes the code's usage, or include separate documentation in a contained folder. 
 
 When editing files, ensure any READMEs that address your edited files reflect your changes. When adding files, add READMEs as prudent. If you're adding several folder directories, or many different files, or a totally new type of example, a README is probably needed. If you're adding or removing files to a folder that already has a README, you should edit that README to reflect your changes. 
 
 Lists in READMEs should have this format:
 
-\* \*\*[*Name of Example*]\(.\/*directory_of_example*\)\*\* *space* *space*  
-*Description of Example*
+```
+* **[Name of Example](./directory_of_example)** ((Use 2 spaces at the end of this line.))
+Description of Example.
+```
 
 which appears as:
 
-* **[Application Specific](./Application_Specific/)**  
-Application Specific examples.
+* **[Name of Example](./directory_of_example/)**  
+Description of Example.
 
 ## Application Specific Examples
 
-These examples can include one or multiple Keithley instruments, as well as other equipment. They should accomplish a specific application task, not just demonstrate general behavior of an instrument. Examples should include documentation, either in comments or in seperate files, with instructions on accomplishing the application.
+These examples can include one or multiple Keithley instruments, as well as other equipment. They should accomplish a specific application task, not just demonstrate general behavior of an instrument. Examples should include documentation, either in comments or in separate files, with instructions on accomplishing the application.
 
 Examples should be placed in their own folder within the [Application Specific directory](./Application_Specific/). Multiple examples of the same application may be placed in the same folder, but a README should document the differences.
 
@@ -74,7 +76,7 @@ To request a battery model, open an issue on GitHub with the "Code Request" temp
 
 ## Instrument Drivers
 
-Drivers should properly reflect the capabilites of the instrument. Any language is welcome.
+Drivers should properly reflect the capabilities of the instrument. Any language is welcome.
 
 ## Instrument Examples
 
@@ -82,13 +84,13 @@ These examples should demonstrate behavior of the instrument. They are ideally t
 
 ## TSP Apps
 
-TSP Apps are self-contained GUI apps for Touch, Test, Invent&reg; instruments writted in the TSP language, which is based on Lua 5.0. 
+TSP Apps are self-contained GUI apps for Touch, Test, Invent&reg; instruments written in the TSP language, which is based on Lua 5.0. 
 
 ### How are TSP Apps different from TSP scripts?
  
-Here are the differences in implimentation:
+Here are the differences in implementation:
 * TSP Apps use the `.tspa` extension rather than `.tsp`, this is how the instruments differentiate them.
-* TSP Apps appear in a dedicated Apps menu within Touch, Test, Invent instruments, seperate from the scripts menus. 
+* TSP Apps appear in a dedicated Apps menu within Touch, Test, Invent instruments, separate from the scripts menus. 
 
 But there are also differences in how TSP Apps *should* work:
 > These differences aren't enforced by the instruments themselves, but they are enforced by Keithley developers and you should consider them requirements for TSP Apps. 
@@ -102,17 +104,30 @@ But there are also differences in how TSP Apps *should* work:
 These TSP comments should appear as the first lines of any TSP App.
 
 Required:  
--- $Title: *Title of App*  
--- $Product: *Comma seperated list of compatable TTI Instruments. Options: 2450, 2460, 2461, 2470, DMM6500, DAQ6510*  
--- $Description: *Single line of text, appears in the instruments Apps menu*  
+```
+-- $Title: <Title of App, it must not have spaces>  
+-- $Product: <Comma separated list of compatible TTI Instruments. Options: 2450, 2460, 2461, 2470, DMM6500, DAQ6510>  
+-- $Description: <Single line of text, appears in the instruments Apps menu>  
+```
 
 Optional:  
--- $Tag: *Comma seperated list of tags, these are not used at the moment* 
--- $Requires: *Required firmware version of instrument*  
--- $Icon: *Name of global variable containing icon*  
--- $Version: *Version string of this App*  
--- $NvStorageName: *A unique string key that will be used to automatically associate any `userstring.{add,get}` calls with it. Use a unique NvStorageName with every app that uses calls to userstring. This flag is used to help prevent userstring name conflicts. This should only be used for apps that need to store information in non-volatile memory.*
+```
+-- $Tag: <Comma separated list of tags, these are not used at the moment> 
+-- $Requires: <Required firmware version of instrument>  
+-- $Icon: <Name of loaded icon>  
+-- $Version: <Version string of this App>  
+```
 
 ### TSP App Icons
 
-*TODO*
+Icons will not be required for contributions to this repo. Images for use as App icons can be loaded into Touch, Test, Invent instruments by encoding the images in base64 ASCII format and loading them through with the App scripts in the same `.tspa` file. Images must be a standard PNG file, 24 bits + alpha, transparency is supported. Icons should be 60x60 in size. There are various online tools to convert PNG files to base64 ASCII. 
+
+After writing your app, add an image to the end of your `.tspa` file like so:
+
+```
+loadimage <imgName> <appName>   
+<base64 PNG Image>
+endimage  
+```
+
+appName must match the name of the app used for the $Title: tag in the header. imgName must match the $Icon: tag in the header. The `<>` brackets should be omitted. 
