@@ -27,4 +27,4 @@ Python PyVISA driver for the 2380 DC Electronic Load.
 Python sockets driver for the 3706A Systems Switch and Multimeter.
 
 * **[Generic SMU](./SMU_General/)**  
-Basic driver for controling Keithley Source Measure Units. Original files and .zip are included. Consult the included document "Getting Started with Instrument Control Using Python 3 and PyVISA" for more information. 
+Basic driver for controlling Keithley Source Measure Units. Original files and .zip are included. Consult the included document "Getting Started with Instrument Control Using Python 3 and PyVISA" for more information. 
