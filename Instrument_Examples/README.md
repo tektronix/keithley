@@ -5,7 +5,7 @@ These code examples are a good place to start learning how to work with your ins
 
 ## Directory
 
-[comment]: **[Insturment](./directory)**  
+[comment]: **[Instrument](./directory)**  
 
 * **[DAQ6510](./DAQ6510)**  
 Examples include those from the module card manuals (7700, 7701, 7702, 7703, 7705, 7706, 7707, 7708, 7709, 7710, 7711, and 7712) where applicable.

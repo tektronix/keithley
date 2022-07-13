@@ -1,5 +1,5 @@
 
-# Application Specifc Code
+# Application Specific Code
 
 This GitHub repository stores application specific code for one or multiple Keithley Instruments products.
 

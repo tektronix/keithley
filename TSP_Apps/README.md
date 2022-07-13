@@ -13,13 +13,13 @@ The TSP language is largely based on Lua 5.0 with instrument specific commands a
 
 [comment]: **[Title](./file.tspa)**  
 
-* **[Calculator App](./CalculatorApp.tspa)**
+* **[Calculator App](./CalculatorApp.tspa)**  
 This app allows the user to perform basic calculator functions on Keithley's Touch, Test, Invent® Interface.
 
-* **[Matrix Control](./DAQ6510_MatrxCtrl.tspa)**
+* **[Matrix Control](./DAQ6510_MatrxCtrl.tspa)**  
 This app is for controlling and monitoring the states of the Model 7709 6x8 matrix cross points. The app detects active states upon launch and updates the UI accordingly. The user has an on-screen matrix of point to choose from as well as the ability to switch in the Row 1 and Row 2 connections to the DMM Input and Sense, respectively. 
 
-* **[DAQ6510 7706 card Control](./DAQ6510_MultiFuncCtrl.tspa)**
+* **[DAQ6510 7706 card Control](./DAQ6510_MultiFuncCtrl.tspa)**  
 Provides hands-on front panel control of the Model 7706 multi-function module. The operator is able to manipulate the digital and analog output as well as the totalizer.
 
 * **[Digital I/O Control](./DIOControlFull.tspa)**  
@@ -34,7 +34,7 @@ Intended as a Sales helper tool, this script for the DAQ6510 provides a self-gui
 * **[Let it Snow](./let_it_snow.tspa)**  
 A simple, unoptimized holiday app to put falling snow right on the front panel of your instrument. It's surprisingly relaxing...
 
-* **[PONG](./Pong.tspa)**
+* **[PONG](./Pong.tspa)**  
 This app is for showing off the playful side of TSP by offering a throw-back, retro-gaming experience in the form of PONG! Note that the app includes wiring instructions for the game controller station. 
 
 * **[Probe Hold](./Probe_Hold.tspa)**  
