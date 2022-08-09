@@ -23,7 +23,7 @@ If you don't want to clone this entire repository, it's still possible to take i
 ## Maintainers
 
 Josh Brown: [jbrown1234](https://github.com/jbrown1234)  
-Brad Odhner: [Brad-O](https://github.com/Brad-O)
+Brad Odhner: [Brad-O](https://github.com/Brad-O)  
 Liz Makley: [Little-LIZard](https://github.com/Little-LIZard)
 
 ## License
