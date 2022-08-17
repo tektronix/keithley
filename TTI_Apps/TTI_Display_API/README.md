@@ -19,7 +19,7 @@ experience to a specific desired application. This adapted experience
 should allow for a clear and clean user experience specifically designed
 for their application.
 
-The TTI display API, when combined with scripting creates a [TTI App](#a-tti-app), or a script based application which takes over the user
+The TTI display API, when combined with scripting creates a [TTI App](#tti-apps), or a script based application which takes over the user
 interface of the product.
 
 The TTI display API is designed to be both limiting and flexible. There
