@@ -6,7 +6,7 @@ Touch, Test, Invent instruments include:
 | Instrument Type |  |  |  |  |
 | --- | --- | --- | --- | --- |
 | Source Measure Units | [2450 SMU](https://www.tek.com/en/products/keithley/source-measure-units/2400-graphical-series-sourcemeter) | [2460 SMU](https://www.tek.com/en/products/keithley/source-measure-units/2400-graphical-series-sourcemeter) | [2461 SMU](https://www.tek.com/en/products/keithley/source-measure-units/2400-graphical-series-sourcemeter) | [2470 SMU](https://www.tek.com/en/products/keithley/source-measure-units/2400-graphical-series-sourcemeter) |
-| Digital Multimeters | [DMM6500]((https://www.tek.com/en/products/keithley/digital-multimeter/dmm6500)) | [DMM7510](https://www.tek.com/en/products/keithley/digital-multimeter/dmm7510) | --- | --- |
+| Digital Multimeters | [DMM6500](https://www.tek.com/en/products/keithley/digital-multimeter/dmm6500) | [DMM7510](https://www.tek.com/en/products/keithley/digital-multimeter/dmm7510) | --- | --- |
 | Data Acquisition Systems | [DAQ6510](https://www.tek.com/en/products/keithley/digital-multimeter/keithley-daq6510) | --- | --- | --- |
 
 You can find officially supported, Keithley factory tested TTI Apps [here](https://www.tek.com/keithley/tsp-applications-for-touch-test-invent-models).
