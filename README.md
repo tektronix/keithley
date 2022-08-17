@@ -20,6 +20,13 @@ TSP&reg; Apps for Touch, Test, Invent&reg; instruments (i.e. Keithley's line of 
 
 If you don't want to clone this entire repository, it's still possible to take individual files. Navigate to the directory holding the file you want and right-click the file to select _Save link as..._ or some variation on that depending on your browser. The file name will automatically populate and you can save the file where you'd like. Alternatively, you can open the file you want on GitHub and right-click "Raw" at the top of the file to accomplish the same thing.
 
+## Relevant Keithley Software
+
+If you're looking for officially supported software, we invite you to visit [tek.com/software](https://www.tek.com/software). Here are some especially relevant software options for controlling Keithley equipment:
+- [Test Script Builder](https://www.tek.com/en/keithley-test-script-builder), dedicated IDE for TSP code development. 
+- [KickStart](https://www.tek.com/en/products/keithley/keithley-control-software-bench-instruments/kickstart), Instrument control and automation software for both Keithley and Tektronix products.
+- [Keithley Automated Characterization Suite (ACS)](https://www.tek.com/en/products/keithley/semiconductor-test-systems/automated-characterization-suite), Advanced characterization and automation software.
+
 ## Maintainers
 
 Josh Brown: [jbrown1234](https://github.com/jbrown1234)  
