@@ -13,10 +13,7 @@ First, please consult the Tektronix [Code of Conduct](https://tektronix.github.i
     - [Battery Simulation Models](#battery-simulation-models)
   - [Instrument Drivers](#instrument-drivers)
   - [Instrument Examples](#instrument-examples)
-  - [TSP Apps](#tsp-apps)
-    - [How are TSP Apps different from TSP scripts?](#how-are-tsp-apps-different-from-tsp-scripts)
-    - [TSP Apps Header](#tsp-apps-header)
-    - [TSP App Icons](#tsp-app-icons)
+  - [TTI Apps](#tti-apps)
 
 ### Contributor License Agreement
 
@@ -82,52 +79,6 @@ Drivers should properly reflect the capabilities of the instrument. Any language
 
 These examples should demonstrate behavior of the instrument. They are ideally to be used as reference for creating your own, application specific code. 
 
-## TSP Apps
+## TTI Apps
 
-TSP Apps are self-contained GUI apps for Touch, Test, Invent&reg; instruments written in the TSP language, which is based on Lua 5.0. 
-
-### How are TSP Apps different from TSP scripts?
- 
-Here are the differences in implementation:
-* TSP Apps use the `.tspa` extension rather than `.tsp`, this is how the instruments differentiate them.
-* TSP Apps appear in a dedicated Apps menu within Touch, Test, Invent instruments, separate from the scripts menus. 
-
-But there are also differences in how TSP Apps *should* work:
-> These differences aren't enforced by the instruments themselves, but they are enforced by Keithley developers and you should consider them requirements for TSP Apps. 
-* TSP Apps have a standardized header comment block. The instruments pull from these comments to populate the Apps menu.
-* TSP Apps utilize special libraries of TSP commands that give more control over the instrument's display. This allows the development of custom screens and graphics.
-  * TSP Apps always have a GUI, though the GUI isn't required to be the only way of interacting with the App.
-* TSP Apps can be cleanly ended by the user. Ending an App returns the instrument either to its default power-on state, or to the state the instrument was in before the App was run.
-
-### TSP Apps Header
-
-These TSP comments should appear as the first lines of any TSP App.
-
-Required:  
-```
--- $Title: <Title of App, it must not have spaces>  
--- $Product: <Comma separated list of compatible TTI Instruments. Options: 2450, 2460, 2461, 2470, DMM6500, DAQ6510>  
--- $Description: <Single line of text, appears in the instruments Apps menu>  
-```
-
-Optional:  
-```
--- $Tag: <Comma separated list of tags, these are not used at the moment> 
--- $Requires: <Required firmware version of instrument>  
--- $Icon: <Name of loaded icon>  
--- $Version: <Version string of this App>  
-```
-
-### TSP App Icons
-
-Icons will not be required for contributions to this repo. Images for use as App icons can be loaded into Touch, Test, Invent instruments by encoding the images in base64 ASCII format and loading them through with the App scripts in the same `.tspa` file. Images must be a standard PNG file, 24 bits + alpha, transparency is supported. Icons should be 60x60 in size. There are various online tools to convert PNG files to base64 ASCII. 
-
-After writing your app, add an image to the end of your `.tspa` file like so:
-
-```
-loadimage <imgName> <appName>   
-<base64 PNG Image>
-endimage  
-```
-
-appName must match the name of the app used for the $Title: tag in the header. imgName must match the $Icon: tag in the header. The `<>` brackets should be omitted. 
+TTI Apps should follow the conventions outlined in the [TTI display API](/TTI_Apps/TTI_Display_API/README.md), particularly the section on [creating Apps](/TTI_Apps/TTI_Display_API/README.md#tti-apps).
