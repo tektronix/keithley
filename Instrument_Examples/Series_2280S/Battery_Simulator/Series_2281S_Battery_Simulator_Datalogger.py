@@ -15,16 +15,14 @@ Revisions:  2022-02-07, Initial Revision.
 
 ***********************************************************"""
 
+import csv
+import os
+import time
+from datetime import datetime
+
 import numpy as np
 import pyvisa as visa
 import pyvisa.constants as pyconst
-import time
-from datetime import datetime
-import sys
-import select
-import os
-import csv
-import numpy
 
 echo_commands = 0
 
