@@ -30,8 +30,8 @@ t3 = time.time()
     Parameters:
         resource_mgr (object) - Instance of a resource manager object.
 
-        instrument_object (object) - Instance of an instrument object to be initialized
-                                     within this function. 
+        instrument_object (object) - Instance of an instrument object to be 
+                                     initialized within this function.
 
         instrument_resource_string (string) - The VISA resource string associated with
                                               a specific instrument defining its connection
