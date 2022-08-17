@@ -13,7 +13,7 @@ Code in any language for any instrument that fulfills a specific application. Th
 * **[Instrument Drivers](./Drivers)**  
 Code that makes up a partial or complete instrument driver library for any programming language.
 
-* **[TSP Apps](./TSP_Apps)**  
+* **[TTI Apps](./TTI_Apps)**  
 TSP&reg; Apps for Touch, Test, Invent&reg; instruments (i.e. Keithley's line of touch screen enabled instruments). These are not traditional TSP scripts.
 
 ## Downloading Files
