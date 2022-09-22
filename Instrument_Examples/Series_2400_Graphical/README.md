@@ -1,10 +1,24 @@
 # Series 2400 Graphical Source Measure Units
 
-These examples include those found in the User Manual, Application Notes, and other sources. The files in this directory will work with all 2400 Graphical SMUs, the sub directories will generally only work for those units, but might be able to be adapted. 
+These examples include those found in the User Manual, Application Notes, and other sources. The files in this directory will work with all [2400 Graphical SMUs](https://www.tek.com/en/products/keithley/source-measure-units/2400-graphical-series-sourcemeter), the sub directories will generally only work for those units, but might be able to be adapted. 
 
 ## Directory
 
 [comment]: **[2450-SMU](./directory)**  
+
+* **[2450-SMU](./2450-SMU/)**  
+200V / 1A SMU with Triaxial outputs
+
+* **[2460-SMU](./2460-SMU/)**  
+100V / 1A SMU
+
+* **[2461-SMU](./2461-SMU/)**  
+100V / 10A (pulsed) SMU
+
+* **[2470-SMU](./2470-SMU/)**  
+1100V / 1A SMU with high-V triaxial outputs
+
+-----
 
 * **[Pulse V Measure I](./PulseV_MeasureI.tsp)**  
 Defines an operation to toggle between two source levels when a timer object elapses. The timer object is also used as the stimulus for a digital output strobe; this gives some timing marks to have more insight into the trigger blocks rate of operation/speed.
