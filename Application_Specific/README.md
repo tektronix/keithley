@@ -21,3 +21,6 @@ Files to be used with LabVIEW 2018 for controlling a 3765 plug-in card for a 370
 
 * **[Increase 4-Wire Resistance Measurement Capability with Common-side Ohms](./Increase_4-Wire_Resistance_Measurement_Capability_with_Common-side_Ohms)**  
 C# and Python code examples to target increased 4-wire measurement bandwidth per multiplexer card using the Common-side Ohms functionality. 
+
+* **[Rds(On) of SiC MOSFET](./Rds(On)_of_SiC_MOSFET/)**  
+Supplemental TSP code to a series of videos made by Keithley Applications Engineer Andrea Clary using a 2461 High Current Source Measure Unit and a 2450 SMU. 
