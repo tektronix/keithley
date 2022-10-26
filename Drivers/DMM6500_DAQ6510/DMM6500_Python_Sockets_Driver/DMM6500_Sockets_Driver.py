@@ -618,12 +618,12 @@ class DMM6500:
         #   For channel scan measurements:
         #       1. Channel string
         #       2. Input impedance
-        if len(args) == 0:
+        if not (args):
             self.SendCmd("dmm.measure.func = dmm.FUNC_DC_VOLTAGE")
         else:
             if type(args[0]) != str:
                 self.SendCmd("dmm.measure.func = dmm.FUNC_DC_VOLTAGE")
-                if len(args) > 0:
+                if(args):
                     xStr = "dmm.measure.inputimpedance"
                     if args[0] == self.InputZ.Z_10M:
                        xStr2 = "dmm.IMPEDANCE_10M"
@@ -645,7 +645,7 @@ class DMM6500:
         return
     
     def SetFunction_2W_Resistance(self, *args):
-        if len(args) == 0:
+        if not (args):
             self.SendCmd("dmm.measure.func = dmm.FUNC_RESISTANCE")  #FUNC_4W_RESISTANCE
         else:
             if type(args[0]) != str:
@@ -656,12 +656,12 @@ class DMM6500:
         return
 
     def SetFunction_4W_Resistance(self, *args):
-        if len(args) == 0:
+        if not (args):
             self.SendCmd("dmm.measure.func = dmm.FUNC_4W_RESISTANCE")  
         else:
             if type(args[0]) != str:
                 self.SendCmd("dmm.measure.func = dmm.FUNC_4W_RESISTANCE")
-                if len(args) > 0:
+                if(args):
                     # The first argument will set OCOMP...
                     xStr = "dmm.measure.offsetcompensation.enable"
                     if args[0] == self.OCOMP.ON:
@@ -709,12 +709,12 @@ class DMM6500:
         #       1. Channel string
         #       2. Transducer
         #       3. Transducer type
-        if (len(args) == 0):
+        if not (args):
             self.SendCmd("dmm.measure.func = dmm.FUNC_TEMPERATURE")
         else:
             if (type(args[0]) != str):
                 self.SendCmd("dmm.measure.func = dmm.FUNC_TEMPERATURE")
-                if len(args) > 0:
+                if(args):
                     xStr = "dmm.measure.transducer"
                     if args[0] == self.Transducer.TC:
                        xStr2 = "dmm.TRANS_THERMOCOUPLE"

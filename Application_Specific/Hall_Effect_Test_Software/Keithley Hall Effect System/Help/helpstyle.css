@@ -1,0 +1,47 @@
+body {
+	font-family: arial;
+}
+.pagebody {
+	text-align: center;
+}
+.pagecontent {
+	text-align: left;
+	width: 780px;
+	margin: 0 auto;
+}
+a:visited {
+	color: #0000FF;
+}
+a:hover {
+	color: #FF6702;
+}
+ul {
+	font-size: x-small;
+}
+h1 {
+	border-bottom: 1px solid #666666;
+}
+.caption {
+	text-align: center;
+	font-size: x-small;
+	font-family: arial;
+	margin-top: 0px;
+}
+.diagram {
+	border: 1px solid #666666;
+	margin-top: 0px;
+	margin-bottom: 5px;
+	text-align: center;
+}
+.footer {
+	padding-top: 5px;
+	border-top: 1px solid #666666;
+	font-size: 10px;
+}
+.logo {
+	margin-bottom: 0px;
+	padding: 0px;
+}
+.logosm {
+	float: right;
+}

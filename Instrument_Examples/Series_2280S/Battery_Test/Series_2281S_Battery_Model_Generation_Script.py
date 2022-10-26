@@ -15,16 +15,10 @@ Revisions:  2022-03-22, Initial Revision.
 
 import numpy as np
 import pyvisa as visa
-import pyvisa.constants as pyconst
 import time
-from datetime import datetime
-import sys
-import select
-import os
-import csv
-import numpy
 
 echo_commands = 0
+
 
 def instrument_connect(resource_mgr, instrument_object, instrument_resource_string, timeout, do_id_query, do_reset,
                        do_clear):

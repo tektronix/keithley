@@ -1,10 +1,12 @@
 
 ### Pull Request Checklist
 
-Please review the [Contribution Guidelines](../README.md#contributing) before submitting.
+Please review the [Contribution Guidelines](https://github.com/tektronix/keithley/CONTRIBUTING.md) before submitting.
 
-- [ ] Pulling against the `dev` branch (left side).
 - [ ] You have previously submitted a Contributor License Agreement or have contacted a maintainer to request one.
+- [ ] You have given the Pull Request a descriptive name above.
+- [ ] You placed all files in an appropriate directory.
+- [ ] You updated README files if placing files in directories that already have READMEs. 
 
 ### Type (Select only one)
 
@@ -15,6 +17,6 @@ Please review the [Contribution Guidelines](../README.md#contributing) before su
 
 ### Description
 
-Describe your pull request here.
+- Use bullets to describe what this pull request changes.
 
 <!-- Modified by Tektronix. Original Content developed by the angular-translate team and Pascal Precht and their Pull Request Template available at https://github.com/angular-translate/angular-translate -->
