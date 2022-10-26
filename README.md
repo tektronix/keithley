@@ -13,6 +13,9 @@ Code in any language for any instrument that fulfills a specific application. Th
 * **[Instrument Drivers](./Drivers)**  
 Code that makes up a partial or complete instrument driver library for any programming language.
 
+* **[KickStart Template Projects](./KickStart_Template_Projects/)**
+Application specific template projects that can be loaded into [Keithley KickStart software](https://www.tek.com/en/products/keithley/keithley-control-software-bench-instruments/kickstart). 
+
 * **[TTI Apps](./TTI_Apps)**  
 TSP&reg; Apps for Touch, Test, Invent&reg; instruments (i.e. Keithley's line of touch screen enabled instruments). These are not traditional TSP scripts.
 
