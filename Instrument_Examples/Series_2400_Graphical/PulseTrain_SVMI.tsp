@@ -16,6 +16,7 @@
 
 
  Tested with: KEITHLEY INSTRUMENTS,MODEL 2461,04110442,1.7.12b
+			  KEITHLEY INSTRUMENTS,MODEL 2450,04451269,1.7.7b
  Tested with: 1Kohm resistor - 2Wire connections
 
  With a SMU current measurement: fastest pulse is ~4msec  -- TODO verify this
@@ -56,8 +57,6 @@ function createMeasureConfigList(ConfigListNameMeas, measRange)
 	smu.measure.configlist.store(ConfigListNameMeas)
 end -- function
 
-
-
 function load_trigger_blocks(NumPulses, ConfigListNameSrc, ConfigListNameMeas)
 
 	trigger.model.load("Empty") --load an empty trigger model as to clear all trigger model blocks
@@ -96,7 +95,6 @@ function load_trigger_blocks(NumPulses, ConfigListNameSrc, ConfigListNameMeas)
 	trigger.model.setblock(blockNumber, trigger.BLOCK_SOURCE_OUTPUT, smu.OFF)
 	
 end -- function
-
 
 function config_timer_and_digio(NumPulses, toff, ton)
 	-- setup a timer
