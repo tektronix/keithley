@@ -22,7 +22,7 @@
 ...Resistance,	False,,,,
 ...Power,	False,,,,
 "...Auto Zero","	On",,,,
-..Instrument Settings,	,,,,,
+..Instrument Settings,	,,,,
 ...Input Terminals,	Rear,,,,
 ...Sense,	2-Wire,,,,
 ...Output Off,	Normal,,,,
