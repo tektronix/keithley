@@ -7,7 +7,7 @@
 .Channel,	DRAIN,,,,
 ..Instrument,	Top 2450,,,,
 ...Model,	2450,,,,
-...Serial Number,	04500494,,,,
+...Serial Number,	04500494,,,,,
 ..Source Settings,	,,,,,
 ...Mode,	DC,,,,
 ...Function,	Voltage Bias,,,,
