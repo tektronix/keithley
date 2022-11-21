@@ -29,4 +29,4 @@ C# and Python code examples to target increased 4-wire measurement bandwidth per
 Supplemental TSP code to a series of videos made by Keithley Applications Engineer Andrea Clary using a 2461 High Current Source Measure Unit and a 2450 SMU. 
 
 * **[Kickstart Test Templates](./Kickstart%20Test%20Templates)**   
-Kickstart testing templates for MOSFETs, Resistors, and Diodes. The various tests are accompanied by data and graphs showing expected results; tests include I-V Characterization, Forward/Reverse Biasing, and Sweeps. These templates are ready to test using 2450/2461/2612B SMU, make adjustments as necessary.
+Kickstart testing templates for MOSFETs, Resistors, and Diodes. The various tests are accompanied by data and graphs showing expected results; tests include I-V Characterization, Forward/Reverse Biasing, and Sweeps. These templates are ready to test using SMUs, make adjustments as necessary.
