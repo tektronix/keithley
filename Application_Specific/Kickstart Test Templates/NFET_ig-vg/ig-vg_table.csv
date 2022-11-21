@@ -1,58 +1,58 @@
-﻿	Common Settings,	
-	.Source/Sweep Points,	51
-	.Repeat,	0
-	.Source to Measure Delay,	5
-	.Measure Window,	166.667 ms
-	.NPLC,	10
-	.Channel,	DRAIN
-	..Instrument,	Top 2450
-	...Model,	2450
-	...Serial Number,	04500494
-	..Source Settings,	
-	...Mode,	DC
-	...Function,	Voltage Bias
-	...Range,	Auto
-	...Bias Level,	0
-	...Limit,	0.1
-	..Measure Settings,	
-	...Voltage,	Measured
-	...Current,	True
-	...Range,	Auto
-	...Minimum Range,	1E-08
-	...Resistance,	False
-	...Power,	False
-	...Auto Zero,	On
-	..Instrument Settings,	
-	...Input Terminals,	Rear
-	...Sense,	2-Wire
-	...Output Off,	Normal
-	...High Capacitance,	False
-	.Channel,	GATE
-	..Instrument,	Bottom 2450
-	...Model,	2450
-	...Serial Number,	01419958
-	..Source Settings,	
-	...Mode,	DC
-	...Function,	Voltage Sweep
-	...Type,	Linear
-	...Dual Sweep,	Disabled
-	...Range,	Auto
-	...Start,	0
-	...Stop,	5
-	...Step,	0.1
-	...Limit,	0.1
-	..Measure Settings,	
-	...Voltage,	Measured
-	...Current,	True
-	...Range,	Auto
-	...Minimum Range,	1E-08
-	...Resistance,	False
-	...Power,	False
-	...Auto Zero,	On
-	..Instrument Settings,	
-	...Input Terminals,	Rear
-	...Sense,	2-Wire
-	...Output Off,	Normal
+﻿	Common Settings,	,,,,
+	.Source/Sweep Points,	51,,,,
+	.Repeat,	0,,,,
+	.Source to Measure Delay,	5,,,,
+	.Measure Window,	166.667 ms,,,,
+	.NPLC,	10,,,,
+	.Channel,	DRAIN,,,,
+	..Instrument,	Top 2450,,,,
+	...Model,	2450,,,,
+	...Serial Number,	04500494,,,,
+	..Source Settings,	,,,,,
+	...Mode,	DC,,,,
+	...Function,	Voltage Bias,,,,
+	...Range,	Auto,,,,
+	...Bias Level,	0,,,,
+	...Limit,	0.1,,,,
+	..Measure Settings,	,,,,
+	...Voltage,	Measured,,,,
+	...Current,	True,,,,
+	...Range,	Auto,,,,
+	...Minimum Range,	1E-08,,,,
+	...Resistance,	False,,,,
+	...Power,	False,,,,
+	...Auto Zero,	On,,,,
+	..Instrument Settings,	,,,,,
+	...Input Terminals,	Rear,,,,
+	...Sense,	2-Wire,,,,
+	...Output Off,	Normal,,,,
+	...High Capacitance,	False,,,,
+	.Channel,	GATE,,,,
+	..Instrument,	Bottom 2450,,,,
+	...Model,	2450,,,,
+	...Serial Number,	01419958,,,,
+	..Source Settings,	,,,,,
+	...Mode,	DC,,,,
+	...Function,	Voltage Sweep,,,,
+	...Type,	Linear,,,,
+	...Dual Sweep,	Disabled,,,,
+	...Range,	Auto,,,,
+	...Start,	0,,,,
+	...Stop,	5,,,,
+	...Step,	0.1,,,,
+	...Limit,	0.1,,,,
+	..Measure Settings,	,,,,,
+	...Voltage,	Measured,,,,
+	...Current,	True,,,,
+	...Range,	Auto,,,,
+	...Minimum Range,	1E-08,,,,
+	...Resistance,	False,,,,
+	...Power,	False,,,,
+	...Auto Zero,	On,,,,
+	..Instrument Settings,	,,,,,
+	...Input Terminals,	Rear,,,,
+	...Sense,	2-Wire,,,,
+	...Output Off,	Normal,,,,
 	...High Capacitance,	False,,,,
 ,,,,,
 "Index","DRAIN Time (s)","DRAIN Voltage (V)","DRAIN Current (A)","GATE Voltage (V)","GATE Current (A)"
