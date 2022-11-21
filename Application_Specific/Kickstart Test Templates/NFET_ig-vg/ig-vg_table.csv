@@ -53,7 +53,7 @@
 ...Input Terminals,	Rear,,,,
 ...Sense,	2-Wire,,,,
 ...Output Off,	Normal,,,,
-...High Capacitance,	False,,,,
+"...High Capacitance","	False",,,,
 ,,,,,
 "Index","DRAIN Time (s)","DRAIN Voltage (V)","DRAIN Current (A)","GATE Voltage (V)","GATE Current (A)"
 "1","0","8.32827936392277E-07","-1.09934883418816E-09","1.58756120072212E-06","-3.64015995124589E-09"
