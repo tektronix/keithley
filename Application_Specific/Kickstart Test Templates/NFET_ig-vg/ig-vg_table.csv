@@ -21,7 +21,7 @@
 ...Minimum Range,	1E-08,,,,
 ...Resistance,	False,,,,
 ...Power,	False,,,,
-...Auto Zero,	On,,,,
+"...Auto Zero","	On",,,,
 ..Instrument Settings,	,,,,,
 ...Input Terminals,	Rear,,,,
 ...Sense,	2-Wire,,,,
