@@ -31,7 +31,7 @@ Common Settings,,,
 ...Sense,	2-Wire,,
 ...Output Off,	Normal,,
 ...High Capacitance,	False,,
-,,,
+ ,,,
 index	Time (s)	Voltage (V)	Current (A)
 1	0	3.37E-06	-3.02E-09
 2	3.83E-01	9.09E-03	-5.14E-09
