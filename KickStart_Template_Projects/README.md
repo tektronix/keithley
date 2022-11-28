@@ -2,7 +2,11 @@
 This folder contains full projects that can be loaded into, and run on Keithley's [Kickstart software](https://www.tek.com/products/keithley/keithley-control-software-bench-instruments/kickstart).
 
 ## How to use these projects
-...
+Download the .kzp file for the template project you want (see instructions in the [main README](/README.md#downloading-files)) and use KickStart's Open Project button to open the downloaded .kzp file. 
+
+The test will open and you will see Simulated Instruments added to the left pane of KickStart, along with error messages for "Could not find..." whatever instruments the project uses. Use the "Instruments" button in the bottom right of the test window to swap these simulated instruments for real instruments on your bench. The test will then be ready to run. 
+
+Each folder in this directory is accompanied by KickStart's .csv and .png exports showing expected results.
 
 ## Directory
 
