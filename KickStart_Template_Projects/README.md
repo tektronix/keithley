@@ -12,10 +12,10 @@ Each folder in this directory is accompanied by KickStart's .csv and .png export
 
 [comment]: **[Title](./folder)**  
 
-* **[NFET Ig-Vg Test](./NFET_ig-vg)**  
+* **[NFET Ig-Vg](./NFET_ig-vg)**  
 Test to see the gate current leakage occurring in a MOSFET device.
 
-* **[NFET Vds-Id Test](./NFET_vds-id)**  
+* **[NFET Vds-Id](./NFET_vds-id)**  
 Test to see the relationship between Current and Voltage at the Drain of a MOSFET device.
 
 * **[NFET Vgs-Id](./NFET_vgs-id)**  
