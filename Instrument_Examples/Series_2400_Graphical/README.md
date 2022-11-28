@@ -22,7 +22,7 @@ These examples include those found in the User Manual, Application Notes, and ot
 ### Instrument agnostic:
 
 * **[Battery Cycler](./smu_battery_cycle_solution.py)**  
-This python script can be used to perform battery cycling (charge/discharge) testing. See comments in the file for details. 
+This Python script can be used to perform battery cycling (charge/discharge) testing. See comments in the file for details. 
 
 * **[PulseTrain_SVMI](./PulseTrain_SVMI.tsp)**  
 Defines an operation to toggle between two source levels when a timer object elapses. The timer object is also used as the stimulus for a digital output strobe; this gives some timing marks to have more insight into the trigger blocks rate of operation/speed.
