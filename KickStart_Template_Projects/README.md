@@ -36,11 +36,11 @@ Test to see the Reverse Bias Voltage of a Diode using only 1 channel of a multic
 * **[Diode - Reverse Bias - 2 Channel](./VRD_2channel)**  
 Test to see the Reverse Bias Voltage of a Diode using both channels of a multichannel SMU (Ex: 2612B) or using 2 single-channel SMUs (Ex: 2450).
 
-* **[BJT Gummel Plot](./BJT_Gummel)**
+* **[BJT Gummel Plot](./BJT_Gummel)**  
 Test to show the logarithm of the base current as a function of the emitter-base voltage in a BJT device. (Linear graph included)
 
-* **[BJT Vce-Ic](./BJT_vce_ic)**
+* **[BJT Vce-Ic](./BJT_vce_ic)**  
 Test to show the relationship between current and voltage at the collector of a BJT device.
 
-* **[BJT Vc Saturation](./BJT_vcsat)**
+* **[BJT Vc Saturation](./BJT_vcsat)**  
 Test to show the saturation voltage between the collector and emitter terminals of a BJT device.
