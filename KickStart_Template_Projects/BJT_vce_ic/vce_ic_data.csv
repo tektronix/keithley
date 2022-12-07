@@ -1,66 +1,66 @@
-﻿	Common Settings,	
-	.Source/Sweep Points,	101
-	.Stepper,	base
-	.Stepper Points,	5
-	.Repeat,	0
-	.Source to Measure Delay,	0.005
-	.Measure Window,	16.667 ms
-	.NPLC,	1
-	.Channel,	base
-	..Instrument,	New Top 2450
-	...Model,	2450
-	...Serial Number,	01419964
-	..Source Settings,	
-	...Mode,	DC
-	...Function,	Current Sweep
-	...Type,	Linear
-	...Dual Sweep,	Disabled
-	...Range,	Auto
-	...Start,	5E-05
-	...Stop,	0.0004
-	...Step,	8.75E-05
-	...Limit,	20
-	..Measure Settings,	
-	...Current,	Measured
-	...Voltage,	False
-	...Range,	Auto
-	...Minimum Range,	0.02
-	...Resistance,	False
-	...Power,	False
-	...Auto Zero,	On
-	..Instrument Settings,	
-	...Input Terminals,	Front
-	...Sense,	2-Wire
-	...Output Off,	Normal
-	...High Capacitance,	False
-	.Channel,	collector
-	..Instrument,	Bottom 2450
-	...Model,	2450
-	...Serial Number,	01419958
-	..Source Settings,	
-	...Mode,	DC
-	...Function,	Voltage Sweep
-	...Type,	Linear
-	...Dual Sweep,	Disabled
-	...Range,	Auto
-	...Start,	0
-	...Stop,	4
-	...Step,	0.04
-	...Limit,	1
-	..Measure Settings,	
-	...Voltage,	Measured
-	...Current,	True
-	...Range,	Auto
-	...Minimum Range,	1E-08
-	...Resistance,	False
-	...Power,	False
-	...Auto Zero,	On
-	..Instrument Settings,	
-	...Input Terminals,	Front
-	...Sense,	2-Wire
-	...Output Off,	Normal
-	...High Capacitance,	False
-
+﻿	Common Settings,	,,,,,,,,,,,,,,,,,,,
+	.Source/Sweep Points,	101,,,,,,,,,,,,,,,,,,,
+	.Stepper,	base,,,,,,,,,,,,,,,,,,,
+	.Stepper Points,	5,,,,,,,,,,,,,,,,,,,
+	.Repeat,	0,,,,,,,,,,,,,,,,,,,
+	.Source to Measure Delay,	0.005,,,,,,,,,,,,,,,,,,,
+	.Measure Window,	16.667 ms,,,,,,,,,,,,,,,,,,,
+	.NPLC,	1,,,,,,,,,,,,,,,,,,,
+	.Channel,	base,,,,,,,,,,,,,,,,,,,
+	..Instrument,	New Top 2450,,,,,,,,,,,,,,,,,,,
+	...Model,	2450,,,,,,,,,,,,,,,,,,,
+	...Serial Number,	01419964,,,,,,,,,,,,,,,,,,,
+	..Source Settings,	,,,,,,,,,,,,,,,,,,,
+	...Mode,	DC,,,,,,,,,,,,,,,,,,,
+	...Function,	Current Sweep,,,,,,,,,,,,,,,,,,,
+	...Type,	Linear,,,,,,,,,,,,,,,,,,,
+	...Dual Sweep,	Disabled,,,,,,,,,,,,,,,,,,,
+	...Range,	Auto,,,,,,,,,,,,,,,,,,,
+	...Start,	5E-05,,,,,,,,,,,,,,,,,,,
+	...Stop,	0.0004,,,,,,,,,,,,,,,,,,,
+	...Step,	8.75E-05,,,,,,,,,,,,,,,,,,,
+	...Limit,	20,,,,,,,,,,,,,,,,,,,
+	..Measure Settings,	,,,,,,,,,,,,,,,,,,,
+	...Current,	Measured,,,,,,,,,,,,,,,,,,,
+	...Voltage,	False,,,,,,,,,,,,,,,,,,,
+	...Range,	Auto,,,,,,,,,,,,,,,,,,,
+	...Minimum Range,	0.02,,,,,,,,,,,,,,,,,,,
+	...Resistance,	False,,,,,,,,,,,,,,,,,,,
+	...Power,	False,,,,,,,,,,,,,,,,,,,
+	...Auto Zero,	On,,,,,,,,,,,,,,,,,,,
+	..Instrument Settings,	,,,,,,,,,,,,,,,,,,,
+	...Input Terminals,	Front,,,,,,,,,,,,,,,,,,,
+	...Sense,	2-Wire,,,,,,,,,,,,,,,,,,,
+	...Output Off,	Normal,,,,,,,,,,,,,,,,,,,
+	...High Capacitance,	False,,,,,,,,,,,,,,,,,,,
+	.Channel,	collector,,,,,,,,,,,,,,,,,,,
+	..Instrument,	Bottom 2450,,,,,,,,,,,,,,,,,,,
+	...Model,	2450,,,,,,,,,,,,,,,,,,,
+	...Serial Number,	01419958,,,,,,,,,,,,,,,,,,,
+	..Source Settings,	,,,,,,,,,,,,,,,,,,,
+	...Mode,	DC,,,,,,,,,,,,,,,,,,,
+	...Function,	Voltage Sweep,,,,,,,,,,,,,,,,,,,
+	...Type,	Linear,,,,,,,,,,,,,,,,,,,
+	...Dual Sweep,	Disabled,,,,,,,,,,,,,,,,,,,
+	...Range,	Auto,,,,,,,,,,,,,,,,,,,
+	...Start,	0,,,,,,,,,,,,,,,,,,,
+	...Stop,	4,,,,,,,,,,,,,,,,,,,
+	...Step,	0.04,,,,,,,,,,,,,,,,,,,
+	...Limit,	1,,,,,,,,,,,,,,,,,,,
+	..Measure Settings,	,,,,,,,,,,,,,,,,,,,
+	...Voltage,	Measured,,,,,,,,,,,,,,,,,,,
+	...Current,	True,,,,,,,,,,,,,,,,,,,
+	...Range,	Auto,,,,,,,,,,,,,,,,,,,
+	...Minimum Range,	1E-08,,,,,,,,,,,,,,,,,,,
+	...Resistance,	False,,,,,,,,,,,,,,,,,,,
+	...Power,	False,,,,,,,,,,,,,,,,,,,
+	...Auto Zero,	On,,,,,,,,,,,,,,,,,,,
+	..Instrument Settings,	,,,,,,,,,,,,,,,,,,,
+	...Input Terminals,	Front,,,,,,,,,,,,,,,,,,,
+	...Sense,	2-Wire,,,,,,,,,,,,,,,,,,,
+	...Output Off,	Normal,,,,,,,,,,,,,,,,,,,
+	...High Capacitance,	False,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,
 "Index","base = 5E-05Abase Time (s)","base = 5E-05Abase Current (A)","base = 5E-05Acollector Voltage (V)","base = 5E-05Acollector Current (A)","base = 0.0001375Abase Time (s)","base = 0.0001375Abase Current (A)","base = 0.0001375Acollector Voltage (V)","base = 0.0001375Acollector Current (A)","base = 0.000225Abase Time (s)","base = 0.000225Abase Current (A)","base = 0.000225Acollector Voltage (V)","base = 0.000225Acollector Current (A)","base = 0.0003125Abase Time (s)","base = 0.0003125Abase Current (A)","base = 0.0003125Acollector Voltage (V)","base = 0.0003125Acollector Current (A)","base = 0.0004Abase Time (s)","base = 0.0004Abase Current (A)","base = 0.0004Acollector Voltage (V)","base = 0.0004Acollector Current (A)"
 "1","0","4.99996531289071E-05","4.78444962936919E-06","-4.93344159622211E-05","10.3364869","0.000137495386297815","2.31761077884585E-06","-0.000134417452500202","19.5802728","0.000224995063035749","2.46019226324279E-06","-0.000217724707908928","28.8123129","0.000312492455122992","2.95924837701023E-06","-0.000299059058306739","38.04759","0.000399989599827677","3.18739876092877E-06","-0.00037811987567693"
 "2","0.43931342","4.99996749567799E-05","0.040004838258028","0.000301432650303468","10.55229488","0.000137495531816967","0.0399801842868328","0.00102484447415918","19.79610618","0.000224995557800867","0.0400061085820198","0.00179803417995572","29.02810486","0.000312492717057467","0.040004026144743","0.00252981320954859","38.26340006","0.000399990094592795","0.0400021597743034","0.00319506786763668"
