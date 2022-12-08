@@ -12,17 +12,14 @@ Each folder in this directory is accompanied by KickStart's .csv and .png export
 
 [comment]: **[Title](./folder)**  
 
-* **[NFET Ig-Vg](./NFET_ig-vg)**  
-Test to see the gate current leakage occurring in a MOSFET device.
+* **[BJT Gummel Plot](./BJT_Gummel)**  
+Test to show the logarithm of the base current as a function of the emitter-base voltage in a BJT device. (Linear graph included)
 
-* **[NFET Vds-Id](./NFET_vds-id)**  
-Test to see the relationship between Current and Voltage at the Drain of a MOSFET device.
+* **[BJT Vce-Ic](./BJT_vce_ic)**  
+Test to show the relationship between current and voltage at the collector of a BJT device.
 
-* **[NFET Vgs-Id](./NFET_vgs-id)**  
-Test to see the Threshold Voltage and Max Gain of a MOSFET device.
-
-* **[Resistor Sweep](./resistor_sweep)**  
-Test to see the relationship between Current and Voltage in a resistor when Voltage is sourced.
+* **[BJT Vc Saturation](./BJT_vcsat)**  
+Test to show the saturation voltage between the collector and emitter terminals of a BJT device.
 
 * **[Diode - Forward Bias - 1 Channel](./VFD_1channel)**  
 Test to see the Forward Bias Voltage of a Diode using only 1 channel of a multichannel SMU (Ex: 2612B) or using 1 single-channel SMU (Ex: 2450).
@@ -36,11 +33,14 @@ Test to see the Reverse Bias Voltage of a Diode using only 1 channel of a multic
 * **[Diode - Reverse Bias - 2 Channel](./VRD_2channel)**  
 Test to see the Reverse Bias Voltage of a Diode using both channels of a multichannel SMU (Ex: 2612B) or using 2 single-channel SMUs (Ex: 2450).
 
-* **[BJT Gummel Plot](./BJT_Gummel)**  
-Test to show the logarithm of the base current as a function of the emitter-base voltage in a BJT device. (Linear graph included)
+* **[NFET Ig-Vg](./NFET_ig-vg)**  
+Test to see the gate current leakage occurring in a MOSFET device.
 
-* **[BJT Vce-Ic](./BJT_vce_ic)**  
-Test to show the relationship between current and voltage at the collector of a BJT device.
+* **[NFET Vds-Id](./NFET_vds-id)**  
+Test to see the relationship between Current and Voltage at the Drain of a MOSFET device.
 
-* **[BJT Vc Saturation](./BJT_vcsat)**  
-Test to show the saturation voltage between the collector and emitter terminals of a BJT device.
+* **[NFET Vgs-Id](./NFET_vgs-id)**  
+Test to see the Threshold Voltage and Max Gain of a MOSFET device.
+
+* **[Resistor Sweep](./resistor_sweep)**  
+Test to see the relationship between Current and Voltage in a resistor when Voltage is sourced.
