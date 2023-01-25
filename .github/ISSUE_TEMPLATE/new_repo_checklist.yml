@@ -1,0 +1,29 @@
+name: ✅New Repository Checklist
+description: New repositories should complete this checklist
+title: "[CHECKLIST]: NEW REPOSITORY SETTINGS"
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Congrats on creating a new repository! Please make sure your new repo meets these requirements.
+
+  - type: checkboxes
+    id: repo-items
+    attributes:
+      label: Have you added any of the following to your repo yet?
+      description: You may select more than one. Click on each for more information.
+      options:
+        - label: -[README that follows guidelines](https://github.com/tektronix/best-practice-resources/blob/main/README-templates)
+        - label: -[LICENSE](https://github.com/tektronix/best-practice-resources/blob/main/README.md#license)
+        - label: -[Global Codeowner](https://github.com/tektronix/best-practice-resources/blob/main/.github/folder-guide.md#codeowners)
+        - label: -[Branch Protection](https://github.com/tektronix/best-practice-resources/blob/main/README.md#branch-protection)
+        - label: -[dependabot](https://github.com/tektronix/best-practice-resources/blob/main/.github/folder-guide.md#dependabot)
+        - label: -[Repo Lint Action](https://github.com/tektronix/best-practice-resources/blob/main/.github/folder-guide.md#repo-lint)
+        - label: -[CodeScan](https://github.com/tektronix/best-practice-resources/blob/main/.github/folder-guide.md#codescan)
+        - label: -[About description with topics](https://github.com/tektronix/best-practice-resources/blob/main/README.md#topics)
+
+  - type: markdown
+    attributes:
+      value: |
+        If you weren't able to check all of the boxes, please see the [best practices documentation](https://github.com/tektronix/best-practice-resources) for detailed instructions on how to add each requirement.
