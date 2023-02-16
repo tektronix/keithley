@@ -7,6 +7,9 @@ These examples are applicable to a range of instruments, not having the same lev
 
 [comment]: **[General](./directory)**  
 
+* **[Creating GUIs](./Creating_GUIs)** 
+Quick generic examples to inspire your own GUI creating initiatives.
+
 * **[Instructables](./Instructables)** 
 Quick generic tutorials for controlling instruments but not dedicated to any one specific model.
 
