@@ -15,7 +15,7 @@ Seed documentation to help get the reader started with instrument automation and
 --- For the document supporting PyCharm, the example Python script is provided. <br>
 --- for the document supporting VS Code, <br>
 ------ Starter template file for the Getting Started with Instrument Control Using Python instruction document<br>
------- This code requires instrcomms.py which can be found at  [Instrument Communication Resources](../General/Instrument_Communication_Resouces). <br>
+------ This code requires instrcomms.py which can be found at  [Instrument Communication Resources](../Instrument_Communication_Resouces). <br>
 
 * **[Get_Started_with_Instr_Control_VB](./Get_Started_with_Instr_Control_VB)** 
 <br>Reusable code that can be used to help streamline instrument communications setups. 
