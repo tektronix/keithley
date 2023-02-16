@@ -7,20 +7,21 @@ Seed documentation to help get the reader started with instrument automation and
 
 [comment]: **[General](./directory)**  
 
-* **[Creating GUIs](./Creating_GUIs)** 
-Quick generic examples to inspire your own GUI creating initiatives.
+* **[Get_Started_with_Instr_Control_Go](./Get_Started_with_Instr_Control_Go)** 
+For users of Golang that wish to connect to and control their test instrumentation. 
 
-* **[Instructables](./Instructables)** 
-Quick generic tutorials for controlling instruments but not dedicated to any one specific model.
+* **[Get_Started_with_Instr_Control_Python](./Get_Started_with_Instr_Control_Python)** 
+For users of Python that wish to connect to and control their test instrumentation. Documents focusing on use withing PyCharm and VS Code are provided. <br>
+--- For the document supporting PyCharm, the example Python script is provided. <br>
+--- for the document supporting VS Code, <br>
+------ Starter template file for the Getting Started with Instrument Control Using Python instruction document<br>
+------ This code requires instrcomms.py which can be found at   <br>
 
-* **[Instrument Communication Resources](./Instrument_Communication_Resouces)** 
+* **[Get_Started_with_Instr_Control_VB](./Get_Started_with_Instr_Control_VB)** 
 Reusable code that can be used to help streamline instrument communications setups. 
 
-* **[Send as Script File to a Keithley Touchscreen Instrument](./Send_a_Script_File_to_A_Keithley_Touchscreen_Instrument)** 
-Series of examples in different programming languages, showing how you can upload a custom script file to your TSP-enabled instrument. 
+* **[Get_Started_with_Intsr_Control_CSharp](./Get_Started_with_Intsr_Control_CSharp)** 
+Series of examples in different programming languages, showing how you can upload a custom script file to your TSP-enabled instrument. <br>
 
-* **[Synchronize Internal Clock with NTP Server](./Synchronize_Internal_Clock_with_NTP_Server)**
-Example script used to synchronize your Keithley touchscreen instrument time to NTP server time. 
-
-* **[TSP-Net Seed Ideas](./TSP-NET_Seed_Ideas/)**
-Basic TSP code to get you started on using TSP-Net to control instruments over LAN from a TSP-enabled instrument.
+* **[Log_Your_Instrument_Test_Data_Directly_to_a_Network_Location](./Log_Your_Instrument_Test_Data_Directly_to_a_Network_Location)**
+Example script used to synchronize your Keithley touchscreen instrument time to NTP server time. <br>
