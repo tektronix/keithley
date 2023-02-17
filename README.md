@@ -1,3 +1,9 @@
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://theme.tekcloud.com/prod/github/keithley-logo-dark-mode.png" width="200px">
+  <source media="(prefers-color-scheme: light)" srcset="https://theme.tekcloud.com/prod/github/keithley-logo-light-mode.png" width="200px">
+  <img alt="Keithley Logo" src="https://theme.tekcloud.com/prod/github/keithley-logo-light-mode.png" width="200px">
+</picture>
+
 # Keithley Instruments 
 
 This GitHub repository stores working and in-progress code examples for Keithley Instruments products. The code and content here is not officially supported unless otherwise stated by a Tektronix employee. It is offered for learning and collaboration purposes.
