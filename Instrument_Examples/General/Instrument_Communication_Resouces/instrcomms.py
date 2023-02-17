@@ -19,7 +19,7 @@ class Communications:
     liking and feel free to leave suggestions for improvement. Thanks!
     """
 
-    def __init__(self, instrument_resource_string):
+    def __init__(self, instrument_resource_string=None):
         self._instrument_resource_string = instrument_resource_string
         self._resource_manager = None
         self._instrument_object = None
@@ -34,7 +34,7 @@ class Communications:
         except visa.VisaIOWarning as visawarning:
             print(f"{visawarning}")
 
-    def connect(self, timeout=None):
+    def connect(self, instrument_resource_string=None, timeout=None):
         """
         Open an instance of an instrument object for remote communication.
 
@@ -47,6 +47,9 @@ class Communications:
             None
         """
         try:
+            if instrument_resource_string != None:
+                self._instrument_resource_string = instrument_resource_string
+                
             self._instrument_object = self._resource_manager.open_resource(
                 self._instrument_resource_string
             )
