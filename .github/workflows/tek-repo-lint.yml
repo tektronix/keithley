@@ -1,0 +1,151 @@
+name: tek-repo-lint
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+# select correct state for repository
+env:
+  # state: private
+  state: public
+
+jobs:
+  public-or-private-repo:
+    runs-on: ubuntu-latest
+    outputs:
+      repostate: ${{ steps.repo-state.outputs.repostate }}
+    steps:
+
+      - name: Repo state
+        id: repo-state
+        run: echo "repostate=${{env.state}}" >> $GITHUB_OUTPUT
+      - name: Repo public?
+        if: "${{ env.state == 'public' }}"
+        run: echo "Workflow has repo set as public. If this is incorrect, uncomment line 11."
+      - name: Repo private?
+        if: "${{ env.state == 'private' }}"
+        run: echo "Workflow has repo set as private. If this is incorrect, uncomment line 12."
+
+  check-for-codeowners-file:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Check for CODEOWNERS
+        id: codeowners_file
+        uses: initialstate/file-check-action@v1
+        with:
+          file: ".github/CODEOWNERS"
+
+      - name: CODEOWNERS file Output Test
+        run: echo ${{ steps.codeowners_file.outputs.file_exists }}
+
+      - name: CODEOWNERS file exists with content
+        if: steps.codeowners_file.outputs.file_exists == 'true'
+        run: echo CODEOWNERS file exists!
+
+      - name: CODEOWNERS file does not exist
+        if: steps.codeowners_file.outputs.file_exists == 'false'
+        run: echo CODEOWNERS file does not exist!
+  
+  check-for-readme-file:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Check for README.md
+        id: readme_file
+        uses: initialstate/file-check-action@v1
+        with:
+          file: "README"
+
+      - name: README file Output Test
+        run: echo ${{ steps.readme_file.outputs.file_exists }}
+
+      - name: README file exists with content
+        if: steps.readme_file.outputs.file_exists == 'true'
+        run: echo README file exists!
+
+      - name: README file does not exist
+        if: steps.readme_file.outputs.file_exists == 'false'
+        run: echo README file does not exist!
+
+  check-for-license:
+    needs: public-or-private-repo
+    if: needs.public-or-private-repo.outputs.repostate == 'public'
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Check for LICENSE.md
+        id: license_file
+        uses: initialstate/file-check-action@v1
+        with:
+          file: "LICENSE"
+
+      - name: LICENSE file Output Test
+        run: echo ${{ steps.license_file.outputs.file_exists }}
+
+      - name: LICENSE file exists with content
+        if: steps.license_file.outputs.file_exists == 'true'
+        run: echo LICENSE file exists!
+
+      - name: LICENSE file does not exist
+        if: steps.license_file.outputs.file_exists == 'false'
+        run: echo LICENSE file does not exist!
+
+  check-for-dependabot-file:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Check for dependabot.yml
+        id: dependabot_file
+        uses: initialstate/file-check-action@v1
+        with:
+          file: ".github/dependabot.yml"
+
+      - name: dependabot.yml file Output Test
+        run: echo ${{ steps.dependabot_file.outputs.file_exists }}
+
+      - name: dependabot file exists with content
+        if: steps.dependabot_file.outputs.file_exists == 'true'
+        run: echo dependabot file exists!
+
+      - name: dependabot file does not exist
+        if: steps.dependabot_file.outputs.file_exists == 'false'
+        run: echo dependabot file does not exist!
+
+  check-for-codeql-file:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Check for codeql-analysis.yml
+        id: codeql-analysis_file
+        uses: initialstate/file-check-action@v1
+        with:
+          file: ".github/workflows/codeql-analysis.yml"
+
+      - name: codeql-analysis.yml file Output Test
+        run: echo ${{ steps.codeql-analysis_file.outputs.file_exists }}
+
+      - name: codeql-analysis file exists with content
+        if: steps.codeql-analysis_file.outputs.file_exists == 'true'
+        run: echo codeql-analysis file exists!
+
+      - name: codeql-analysis file does not exist
+        if: steps.codeql-analysis_file.outputs.file_exists == 'false'
+        run: echo codeql-analysis file does not exist!
