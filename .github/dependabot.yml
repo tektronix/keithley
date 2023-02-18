@@ -1,0 +1,26 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    labels:
+      - "gh-actions"
+      - "dependencies"
+    commit-message:
+      prefix: "gh-actions"
+      include: "scope"
+
+  # Only for repos with a package.json
+  # - package-ecosystem: npm
+  #   directory: /
+  #   schedule:
+  #     interval: weekly
+  #   labels:
+  #     - "npm"
+  #     - "dependencies"
+  #   commit-message:
+  #     prefix: "npm"
+  #     include: "scope"
+  
+  # other supported packages can be found here: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#package-ecosystem
