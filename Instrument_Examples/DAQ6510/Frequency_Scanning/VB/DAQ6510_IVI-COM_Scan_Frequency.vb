@@ -60,7 +60,7 @@ Module Module1
             System.Threading.Thread.Sleep(500)  'delay defined In milliseconds
             trigState = daq6510.Trigger.Model.State
             'Console.WriteLine("{0}", daq6510.Buffer.Actual["defbuffer1"])
-        Loop While (trigState.IndexOf("WAITING") <> -1 Or trigState.IndexOf("RUNNING") <> -1)
+        Loop While ((trigState.IndexOf("WAITING")) <> -1 Or (trigState.IndexOf("RUNNING") <> -1))
 
         my_scan.Count = 10
         daq6510.Trigger.Initiate()

@@ -69,7 +69,7 @@ namespace DAQ6510_IVI_COM_Scan_with_Frequency_CSharp
                 System.Threading.Thread.Sleep(1000); // delay defined in milliseconds
                 trigState = daq6510.Trigger.Model.State;
                 //Console.WriteLine("{0}", daq6510.Buffer.Actual["defbuffer1"]);
-            } while (trigState.IndexOf("WAITING") != -1 || trigState.IndexOf("RUNNING") != -1);
+            } while ((trigState.IndexOf("WAITING")) != -1 || (trigState.IndexOf("RUNNING") != -1));
 
             String receieved_data = daq6510.Buffer.FetchData(1, 10, "defbuffer1", "READ, UNIT, CHAN, REL");
             String[] data_array_str = receieved_data.Split(',');

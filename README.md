@@ -1,3 +1,11 @@
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://theme.tekcloud.com/prod/github/keithley-logo-dark-mode.png" width="200px">
+  <source media="(prefers-color-scheme: light)" srcset="https://theme.tekcloud.com/prod/github/keithley-logo-light-mode.png" width="200px">
+  <img alt="Keithley Logo" src="https://theme.tekcloud.com/prod/github/keithley-logo-light-mode.png" width="200px">
+</picture>
+
+![repo linter workflow](https://github.com/tektronix/keithley/actions/workflows/tek-repo-lint.yml/badge.svg)
+
 # Keithley Instruments 
 
 This GitHub repository stores working and in-progress code examples for Keithley Instruments products. The code and content here is not officially supported unless otherwise stated by a Tektronix employee. It is offered for learning and collaboration purposes.
@@ -12,6 +20,9 @@ Code in any language for any instrument that fulfills a specific application. Th
 
 * **[Instrument Drivers](./Drivers)**  
 Code that makes up a partial or complete instrument driver library for any programming language.
+
+* **[KickStart Template Projects](./KickStart_Template_Projects/)**  
+Application specific template projects that can be loaded into [Keithley KickStart software](https://www.tek.com/en/products/keithley/keithley-control-software-bench-instruments/kickstart). 
 
 * **[TTI Apps](./TTI_Apps)**  
 TSP&reg; Apps for Touch, Test, Invent&reg; instruments (i.e. Keithley's line of touch screen enabled instruments). These are not traditional TSP scripts.
