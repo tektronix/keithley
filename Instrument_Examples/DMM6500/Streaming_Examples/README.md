@@ -16,5 +16,6 @@ Holds the following: <br>
 	* The user can change the triggering type expectations by specifying the script (lua) file to be uploaded.
   * functions_V3.lua - This script file holds the TSP function blocks for triggering the DMM6500 using the TSP-Link lines (requires the TSP-Link accessory cards) and getting the readings. 
   * functions_V4_EXT_Trig.lua - This script file holds the TSP function blocks for triggering the DMM6500 using the External Output & External Input trigger lines (on the rear panel of the instrument) and getting the readings.
-
+* **[Dual Meters V and I TSP-Link Triggered](./01_Dual_Meters_V_and_I_TSP_Link_Triggered)**
+This example assumes the user has two DMM6500's with TSP-Link accessory cards. The Python code will upload the complementary TSP script file and configure one meter for digitized voltage and the other for digitized current. Both meters will be triggered at the same instant and readings from each are streamed back to the controlling PC. 
  
