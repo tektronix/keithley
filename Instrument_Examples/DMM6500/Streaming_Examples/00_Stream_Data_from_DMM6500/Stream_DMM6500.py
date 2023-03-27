@@ -8,14 +8,13 @@ import time
 
 #settings
 seconds_to_capture = 600 # Modify this value to adjust your run time. 
-#minutes_to_capture = seconds_to_capture * 60
 
-sample_rate = 50000 # NOTE: 60kS/s is the max rate we have observed under
+sample_rate = 10000 # NOTE: 60kS/s is the max rate we have observed under
                     #       certain conditions/circumstances. To attain
                     #       higher sampling and data transfer rates, use
                     #       USB.
                     
-chunkSize = 249     # This value is the max binary format transfer value
+chunkSize = 200     # This value is the max binary format transfer value
                     # we can implement for data transfer, and is limited
                     # by the ethernet protocol where the max frame size
                     # is < 1500 bytes, and this includes header/trailer
@@ -25,11 +24,11 @@ chunkSize = 249     # This value is the max binary format transfer value
                     # many readings to to transfer for a given poll of the
                     # instrument.
                     
-ip_address = "134.63.74.54"     # Place your instrument's IP address here.
+ip_address = "134.63.74.181"     # Place your instrument's IP address here.
 output_data_path = "data.txt"   # This is the output file that is created which
                                 # will hold your readings provided in ASCII
                                 # format in a text file. 
-functions_path = "functions_V3.lua"    # This file holds the set of TSP (Lua-
+functions_path = "functions_V4_EXT_Trigger.lua"    # This file holds the set of TSP (Lua-
                                     # based) functions that are called by
                                     # the Python script to help minimize the
                                     # amount of bytes needed to setup up and

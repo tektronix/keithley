@@ -3,8 +3,8 @@ readings_captured = 0
 function do_setup(rng, sample_rate, bufferSize, do_current)
     reset()
 	
-	tsplink.line[1].mode = tsplink.MODE_TRIGGER_OPEN_DRAIN
-	trigger.tsplinkout[1].stimulus = trigger.EVENT_NOTIFY1
+	trigger.extout.stimulus = trigger.EVENT_NOTIFY1
+	trigger.extin.edge = trigger.EDGE_FALLING
 	
 	if do_current == 1 then
 		dmm.digitize.func = dmm.FUNC_DIGITIZE_CURRENT
@@ -23,7 +23,7 @@ function do_setup(rng, sample_rate, bufferSize, do_current)
 							  trigger.EVENT_NOTIFY1)
                               
     trigger.model.setblock(2, trigger.BLOCK_WAIT, 
-							  trigger.EVENT_TSPLINK1)
+							  trigger.EVENT_EXTERNAL)
                               
     trigger.model.setblock(3, trigger.BLOCK_DIGITIZE, 
 							  defbuffer1, bufferSize)
@@ -57,16 +57,16 @@ end
 
 function get_data(buffSize)
 	chunker = 200
-    --while buffer.getstats(defbuffer1).n - readings_captured < 200 do
+    
 	while (buffer.getstats(defbuffer1).n - readings_captured) < chunker do
         delay(0.001)
     end
     local index1 = math.mod(readings_captured, buffSize) + 1
-    local index2 = index1 + (chunker - 1)			-- was 199
+    local index2 = index1 + (chunker - 1)			
 	if index2 > buffSize then
 		index2 = buffSize
 	end
-    --print(scpi.execute(':TRAC:DATA? ' .. index1 .. ', ' .. index2 .. ', \"defbuffer1\"'))
+    
 	printbuffer(index1, index2, defbuffer1.readings)
 	readings_captured = readings_captured + chunker
 end
