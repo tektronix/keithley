@@ -1,3 +1,11 @@
+--[[
+
+***********************************************************
+*** Copyright 2023 Tektronix, Inc.                      ***
+*** See www.tek.com/sample-license for licensing terms. ***
+***********************************************************
+]]
+
 readings_captured = 0
 
 function do_setup(rng, sample_rate, bufferSize, do_current)
@@ -56,17 +64,17 @@ function trig()
 end
 
 function get_data(buffSize)
-	chunker = 200
-    --while buffer.getstats(defbuffer1).n - readings_captured < 200 do
+	chunker = 249
+    
 	while (buffer.getstats(defbuffer1).n - readings_captured) < chunker do
         delay(0.001)
     end
     local index1 = math.mod(readings_captured, buffSize) + 1
-    local index2 = index1 + (chunker - 1)			-- was 199
+    local index2 = index1 + (chunker - 1)		
 	if index2 > buffSize then
 		index2 = buffSize
 	end
-    --print(scpi.execute(':TRAC:DATA? ' .. index1 .. ', ' .. index2 .. ', \"defbuffer1\"'))
+    
 	printbuffer(index1, index2, defbuffer1.readings)
 	readings_captured = readings_captured + chunker
 end

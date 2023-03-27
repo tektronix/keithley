@@ -1,4 +1,8 @@
-#!/usr/bin/python
+# ***********************************************************
+# *** Copyright 2023 Tektronix, Inc.                      ***
+# *** See www.tek.com/sample-license for licensing terms. ***
+# ***********************************************************
+
 
 from pydoc import doc
 import socket
@@ -7,14 +11,14 @@ import math
 import time
 
 #settings
-seconds_to_capture = 600 # Modify this value to adjust your run time. 
+seconds_to_capture = 60 # Modify this value to adjust your run time. 
 
-sample_rate = 10000 # NOTE: 60kS/s is the max rate we have observed under
+sample_rate = 50000 # NOTE: 60kS/s is the max rate we have observed under
                     #       certain conditions/circumstances. To attain
                     #       higher sampling and data transfer rates, use
                     #       USB.
                     
-chunkSize = 200     # This value is the max binary format transfer value
+chunkSize = 249     # This value is the max binary format transfer value
                     # we can implement for data transfer, and is limited
                     # by the ethernet protocol where the max frame size
                     # is < 1500 bytes, and this includes header/trailer

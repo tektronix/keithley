@@ -1,3 +1,11 @@
+--[[
+
+***********************************************************
+*** Copyright 2023 Tektronix, Inc.                      ***
+*** See www.tek.com/sample-license for licensing terms. ***
+***********************************************************
+]]
+
 readings_captured = 0
 
 function do_setup(rng, sample_rate, bufferSize, do_current)
@@ -56,7 +64,7 @@ function trig()
 end
 
 function get_data(buffSize)
-	chunker = 200
+	chunker = 249
     
 	while (buffer.getstats(defbuffer1).n - readings_captured) < chunker do
         delay(0.001)
