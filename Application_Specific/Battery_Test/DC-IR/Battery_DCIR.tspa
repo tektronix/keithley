@@ -1,0 +1,635 @@
+loadscript Battery_DCIR
+-- $Title: DCIR App
+-- $Product: SMU 2450, 2460, 2461, 2470
+-- $Description: Measure the internal resistance of a battery using either 1 or 2 DC current pulses. Disconnect battery before running app. 
+-- $Icon: DCIR_App_Icon
+-- $Version: 1.0
+-- LoadedAppName = "DCIR App"
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+-- MENU
+------------------------------------------------------------------------------------------------------------------------------------------------------
+x_pos1 = 150 -- Text label 1
+x_pos2 = x_pos1 + 400 -- Text label 2
+x_col1 = 200 -- Left side column of buttons
+x_col2 = 600 -- Right side column of buttons
+
+y_pos1 = 20            -- General Test Settings
+y_pos2 = y_pos1 + 100  -- Pulse 1/2 titles
+y_pos3 = y_pos2 + 20   -- OCV for Pulse 1
+y_pos4 = y_pos3 + 60   -- C Rate for Pulse 1/2
+y_pos5 = y_pos4 + 60   -- Charging/discharging
+y_pos6 = y_pos5 + 70   -- Current or C rate
+y_pos7 = y_pos6 + 70   -- Blank or Capacity
+y_pos8 = y_pos7 + 70   -- Time
+y_pos9 = y_pos8 + 90   -- Run button
+y_pos10 = y_pos9 + 90  -- Tables
+
+
+function mainMenu()
+
+		-- Find max current values for each SMU model
+		if localnode.model == "2450" then
+			maxCurrent = 1
+		elseif localnode.model == "2460" then
+			maxCurrent = 7
+		elseif localnode.model == "2461" then
+			maxCurrent = 10
+		elseif localnode.model == "2470" then
+			maxCurrent = 1
+		else
+			return -1011, "Unexpected SMU model detected; ConfigSystem aborted"
+		end --if
+		minDuration = smu_nplc / localnode.linefreq -- Calculate the shortest time duration (equal to 1 measurement on the set nplc)
+		
+		id = display.create(display.ROOT, display.OBJ_SCREEN, "Battery DCIR Test", 0, 850)
+		menu_id = display.create(display.ROOT, display.OBJ_SCREEN_MENU, "DCIR App Menu")
+		settings_id = display.create(menu_id, display.OBJ_BUTTON_MENU, 1, 1, id, "Test Settings")
+		table_id = display.create(menu_id, display.OBJ_BUTTON_MENU, 1, 2, display.SCREEN_READING_TABLE)
+		buffer_id = display.create(menu_id, display.OBJ_BUTTON_MENU, 1, 3, display.SCREEN_MEAS_RBUFFERS) 
+		display.changescreen(id)
+		
+		-- Set default voltage limit default to be nominal 3.6 V + 25% overhead
+		lim = display.create(id, display.OBJ_EDIT_NUMBER, x_col1, y_pos1, "Voltage Limit", "Volts", display.NFORMAT_PREFIX, 4.5)
+		
+		
+		pulse1 = display.create(id, display.OBJ_TEXT, x_pos1, y_pos2, "PULSE 1", 0x00FFFFFF, display.FONT_LARGE)
+		pulse2 = display.create(id, display.OBJ_TEXT, x_pos2, y_pos2, "PULSE 2", 0x00FFFFFF, display.FONT_LARGE)
+		line_id = display.create(id, display.OBJ_LINE, 400, 100, 400, 480)
+	
+		OCVcheck = display.create(id, display.OBJ_EDIT_CHECK, x_col1, y_pos3, "Choose OCV", "Removes Pulse 1")
+		display.setevent(OCVcheck, display.EVENT_PRESS, "OCV()")
+		CR1button = display.create(id, display.OBJ_EDIT_CHECK, x_col1, y_pos4, "Choose C-Rate", "For Pulse 1")
+		display.setevent(CR1button, display.EVENT_PRESS, "cRATE1()")
+		charge1Check = display.create(id, display.OBJ_EDIT_CHECK, x_col1, y_pos5, "Charging Pulse", "For Pulse 1")
+		display.setevent(charge1Check, display.EVENT_PRESS, "charge1Press()")
+		CR2button = display.create(id, display.OBJ_EDIT_CHECK, x_col2, y_pos4, "Choose C-Rate", "For Pulse 2")
+		display.setevent(CR2button, display.EVENT_PRESS, "cRATE2()") 
+		charge2Check = display.create(id, display.OBJ_EDIT_CHECK, x_col2, y_pos5, "Charging Pulse", "For Pulse 2")
+		display.setevent(charge2Check, display.EVENT_PRESS, "charge2Press()")
+				
+		
+		curr = display.create(id, display.OBJ_EDIT_NUMBER, x_col1, y_pos6, "Current", "Amps", display.NFORMAT_PREFIX, 1, 0, maxCurrent) 
+		time = display.create(id, display.OBJ_EDIT_NUMBER, x_col1, y_pos8, "Time", "Seconds", display.NFORMAT_PREFIX, 1, minDuration, 100)
+				
+		
+		curr2 = display.create(id, display.OBJ_EDIT_NUMBER, x_col2, y_pos6, "Current", "Amps", display.NFORMAT_PREFIX, 1, 0, maxCurrent)
+		time2 = display.create(id, display.OBJ_EDIT_NUMBER, x_col2, y_pos8, "Time", "Seconds", display.NFORMAT_PREFIX, 1, minDuration, 100)
+		
+		runButton = display.create(id, display.OBJ_BUTTON, 325, y_pos9, "RUN")
+		display.setevent(runButton, display.EVENT_PRESS, "SetAllValues()")
+		
+		-- Results table
+		vocTab = display.create(id, display.OBJ_LIST, 20, y_pos10, 340, 100)
+		display.setcell(vocTab, 1, 1, "Open Circuit Voltage (V)")
+		RTab = display.create(id, display.OBJ_LIST, 435, y_pos10, 340, 100) 
+		display.setcell(RTab, 1, 1, "Internal Resistance (\18)")
+		DelITab = display.create(id, display.OBJ_LIST, 20, y_pos10+100, 340, 100) 
+		display.setcell(DelITab, 1, 1, "Delta I (A)")
+		
+		-- Save Button
+		saveButton = display.create(id, display.OBJ_BUTTON, 530, y_pos10+120, "Save Data")
+		display.setevent(saveButton, display.EVENT_PRESS, "SaveData()")
+		
+		-- Not measuring this value
+		-- voltTab = display.create(id, display.OBJ_LIST, 435, 550, 340, 100)
+		-- display.setcell(voltTab, 1, 1, "Nominal Voltage (V)")
+
+end
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Check Box Setting Functions
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function charge1Press()
+		if tonumber(display.getvalue(charge1Check)) == 1 then -- Pulse 1 is a charging pulse, warn the user
+			display.input.prompt(display.BUTTONS_OK, "Warning: Charging pulses may damage non-rechargable batteries.")
+		end
+end
+
+
+function charge2Press()
+		if tonumber(display.getvalue(charge2Check)) == 1 then -- Pulse 2 is a charging pulse, warn the user
+			display.input.prompt(display.BUTTONS_OK, "Warning: Charging pulses may damage non-rechargable batteries.")
+		end
+end
+
+
+function OCV() -- Removes settings for first pulse, app does OCV at rest instead
+		if tonumber(display.getvalue(CR1button)) == 1 then -- If using C Rate values, delete those boxes and the pulse time
+			display.delete(CR)
+			display.delete(cap)		
+			display.delete(time)	
+		else -- Otherwise, delete the current option and the pulse time
+			display.delete(curr)
+			display.delete(time)
+		end
+				
+		-- Swap event to bring settings back if unchecked
+		display.setevent(OCVcheck, display.EVENT_PRESS, "unOCV()")
+end
+
+
+function unOCV() -- Creates settings for the first pulse
+		if tonumber(display.getvalue(CR1button)) == 1 then -- If using C Rate values, create those boxes
+			CR = display.create(id, display.OBJ_EDIT_NUMBER, x_col1, y_pos6, "C-Rate", "", display.NFORMAT_PREFIX, 0, 0, 10)
+			cap = display.create(id, display.OBJ_EDIT_NUMBER, x_col1, y_pos7, "Capacity", "mAh", display.NFORMAT_PREFIX, 0, 0, 10000)
+			time = display.create(id, display.OBJ_EDIT_NUMBER, x_col1, y_pos8, "Time", "Seconds", display.NFORMAT_PREFIX, 1, minDuration, 100)
+		else -- Otherwise, add the current/pulse time option
+			curr = display.create(id, display.OBJ_EDIT_NUMBER, x_col1, y_pos6, "Current", "Amps", display.NFORMAT_PREFIX, 1, 0, maxCurrent) 
+			time = display.create(id, display.OBJ_EDIT_NUMBER, x_col1, y_pos8, "Time", "Seconds", display.NFORMAT_PREFIX, 1, minDuration, 100)
+		end
+		
+		-- Swap events to remove settings if checked
+		display.setevent(OCVcheck, display.EVENT_PRESS, "OCV()")
+end
+
+function cRATE1() -- changing settings for first pulse, sets up buttons for c-rate and capacity
+		if tonumber(display.getvalue(OCVcheck)) == 0 then -- If we are allowing settings for first pulse, then change the settings
+			display.delete(curr)
+			
+			CR = display.create(id, display.OBJ_EDIT_NUMBER, x_col1, y_pos6, "C-Rate", "", display.NFORMAT_PREFIX, 0, 0, 10)
+			cap = display.create(id, display.OBJ_EDIT_NUMBER, x_col1, y_pos7, "Capacity", "mAh", display.NFORMAT_PREFIX, 0, 0, 10000)
+		-- Else do nothing - we aren't doing a first pulse
+		end
+		-- Swap event so that the settings are changed back this is unchecked
+		display.setevent(CR1button, display.EVENT_PRESS, "uncRATE1()")
+end
+
+function uncRATE1() -- undoing c-rate settings for first pulse, put current in remove c-rate
+		if tonumber(display.getvalue(OCVcheck)) == 0 then -- If we are allowing settings for first pulse, then change the settings
+			display.delete(CR)
+			display.delete(cap)
+		
+			curr = display.create(id, display.OBJ_EDIT_NUMBER, x_col1, y_pos6, "Current", "Amps", display.NFORMAT_PREFIX, 1, 0, maxCurrent)
+		-- Else do nothing - we aren't using a first pulse
+		end
+		-- Swap events so that the settings are changed back if this is checked again
+		display.setevent(CR1button, display.EVENT_PRESS, "cRATE1()")
+end
+
+function cRATE2() -- changing settings for second pulse, sets up buttons for c-rate and capacity
+		display.delete(curr2)
+
+		CR2 = display.create(id, display.OBJ_EDIT_NUMBER, x_col2, y_pos6, "C-Rate", "", display.NFORMAT_PREFIX, 0, 0, 10)
+		cap2 = display.create(id, display.OBJ_EDIT_NUMBER, x_col2, y_pos7, "Capacity", "mAh", display.NFORMAT_PREFIX, 0, 0, 10000)
+		
+		display.setevent(CR2button, display.EVENT_PRESS, "uncRATE2()")
+end
+
+function uncRATE2() -- undoing settings for second pulse, putting current in removing c-rate & capacity
+		display.delete(CR2)
+		display.delete(cap2)
+		
+		curr2 = display.create(id, display.OBJ_EDIT_NUMBER, x_col2, y_pos6, "Current", "Amps", display.NFORMAT_PREFIX, 1, 0, maxCurrent)
+		
+		display.setevent(CR2button, display.EVENT_PRESS, "cRATE2()")
+end
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Run Routines
+------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Collect user input and start configuration process, then run the test
+function SetAllValues() 
+		-- These are the parameters we need
+		local current1
+		local current2
+		local loadDuration1
+		local loadDuration2
+		local vLimit
+		
+		-- Retrieve first pulse settings
+		if tonumber(display.getvalue(OCVcheck)) == 1 then -- We're using the OCV
+			-- Do nothing, there's no first pulse settings
+		elseif tonumber(display.getvalue(CR1button)) == 1 then -- We're using C Rate
+			local cRate1 = display.getvalue(CR)
+			local capacity1 = display.getvalue(cap)
+			loadDuration1 = display.getvalue(time)
+			current1 = cRate1 * (capacity1 / 1000) -- Calculate current from capacity (convert to Ah) and C rate
+			if tonumber(display.getvalue(charge1Check)) == 0 then -- discharging pulse 1
+				current1 = current1 * -1
+			end
+		else -- We're using set current values
+			current1 = display.getvalue(curr)
+			loadDuration1 = display.getvalue(time)
+			if tonumber(display.getvalue(charge1Check)) == 0 then -- discharging pulse 1
+				current1 = current1 * -1
+			end
+		end
+		
+		-- Retrieve second pulse settings
+		if tonumber(display.getvalue(CR2button)) == 1 then -- We're using C Rate
+			local cRate2 = display.getvalue(CR2)
+			local capacity2 = display.getvalue(cap2)
+			loadDuration2 = display.getvalue(time2)
+			current2 = cRate2 * (capacity2 / 1000) -- Calculate current from capacity (convert to Ah) and C rate
+			if tonumber(display.getvalue(charge2Check)) == 0 then -- discharging pulse 2
+				current2 = current2 * -1
+			end	
+		else -- We're using set current values
+			current2 = display.getvalue(curr2)
+			loadDuration2 = display.getvalue(time2)
+			if tonumber(display.getvalue(charge2Check)) == 0 then -- discharging pulse 2
+				current2 = current2 * -1
+			end	
+		end
+		
+		-- Retrieve voltage limit
+		vLimit = display.getvalue(lim)	
+		
+		-- Now set up the pulses and run the test
+		if tonumber(display.getvalue(OCVcheck)) == 1 then -- We're using the OCV
+			config_single_pulse_test(ConfigListNameSrc, ConfigListNameMeas, offStateLoad, vLimit, current2, smu_nplc) -- Create configuration lists
+			config_single_pulse_timer(loadDuration2, smu_nplc)
+			load_single_pulse_trigger_blocks(ConfigListNameSrc, ConfigListNameMeas)
+			isDual_global = false
+			run_test(false)
+		else -- We're using a 2 pulse routine
+			config_dual_pulse_test(ConfigListNameSrc, ConfigListNameMeas, offStateLoad, vLimit, current1, current2, smu_nplc) -- Create configuration lists
+			config_dual_pulse_timer(loadDuration1, loadDuration2, smu_nplc)
+			load_dual_pulse_trigger_blocks(ConfigListNameSrc, ConfigListNameMeas) -- Load trigger model
+			isDual_global = true
+			run_test(true)
+		end
+end -- function
+
+-- Create config list for a single pulse
+function config_single_pulse_test(ConfigListNameSrc, ConfigListNameMeas, offStateLoad, v_limit, current2, smu_nplc)
+		-- create measure config list
+		createMeasureConfigList(ConfigListNameMeas, v_limit, smu_nplc)
+		
+		-- create source config list
+		createSourceConfigList(ConfigListNameSrc, current2, offStateLoad, v_limit)
+		
+		-- append the load values onto this source list
+	   	appendSourceConfigList(ConfigListNameSrc, current2, v_limit)
+	   	appendSourceConfigList(ConfigListNameSrc, offStateLoad, v_limit)  -- this one not required if we depend on wrap around to index 1
+	   	
+end  -- function
+
+-- Create a config list for 2 pulses
+function config_dual_pulse_test(ConfigListNameSrc, ConfigListNameMeas, offStateLoad, v_limit, current1, current2, smu_nplc)
+		
+		local srcRange
+		
+		-- source range is larger of 2 current values
+		if math.abs(current1) > math.abs(current2) then
+			srcRange = current1
+		else
+			srcRange = current2
+		end
+		
+		-- create measure config list
+		createMeasureConfigList(ConfigListNameMeas, v_limit, smu_nplc)
+		
+		-- create source config list
+		createSourceConfigList(ConfigListNameSrc, srcRange, offStateLoad, v_limit)
+		
+		-- append the load values onto this source list
+	   	appendSourceConfigList(ConfigListNameSrc, current1, v_limit)
+	   	appendSourceConfigList(ConfigListNameSrc, current2, v_limit)
+	   	appendSourceConfigList(ConfigListNameSrc, offStateLoad, v_limit)  -- this one not required if we depend on wrap around to index 1
+	   
+
+end  -- function
+
+-- create a measure config list entry
+function createMeasureConfigList(ConfigListNameMeas, vrange, nplc)
+
+		smu.measure.configlist.create(ConfigListNameMeas)
+		
+		--Set up the measure functions.
+		smu.measure.func = smu.FUNC_DC_VOLTAGE
+		smu.measure.range = vrange  -- firmware coerce to closest match
+		smu.measure.nplc = nplc   -- 1 nplc = 16.7msec for 60Hz power
+		smu.measure.sense = smu.SENSE_4WIRE -- Use 4 wire mode
+
+		
+		smu.measure.configlist.store(ConfigListNameMeas)
+
+end  -- function
+
+-- create source config list entry
+function createSourceConfigList(ConfigListNameSrc, srcRange, srcLevel, complianceLimit)
+
+		smu.source.configlist.create(ConfigListNameSrc)
+		
+		--Set the source to output current.
+		smu.source.func = smu.FUNC_DC_CURRENT
+		smu.source.vlimit.level = complianceLimit
+		smu.source.readback = smu.ON        
+		smu.source.range = srcRange
+		smu.source.level = srcLevel
+				
+		smu.source.configlist.store(ConfigListNameSrc)
+
+end  -- function
+
+-- Add a config list entry to an existing config list
+function appendSourceConfigList(ConfigListNameSrc, srcLevel, complianceLimit)
+
+		smu.source.level = srcLevel
+		smu.source.vlimit.level = complianceLimit
+		
+		smu.source.configlist.store(ConfigListNameSrc)
+
+end  -- function
+
+-- Configure the timers for a single pulse
+function config_single_pulse_timer(duration, integration)
+
+    -- Timer1 = controls duration of the pulse
+    -- Timer2 = controls measure delay for pulse so that measurement occurs at end of pulse
+   
+	-- Source timing
+	trigger.timer[1].enable = 0
+	trigger.timer[1].reset()
+	trigger.timer[1].clear()
+	trigger.timer[1].delay = duration
+	trigger.timer[1].count = 1
+	trigger.timer[1].start.stimulus = trigger.EVENT_NOTIFY1 -- Start this timer right away
+	trigger.timer[1].start.generate = trigger.OFF  -- first timer event after timer delay elapses
+	trigger.timer[1].enable = 1  -- enable the timer after all settings
+	
+	-- Measure Timing
+	trigger.timer[3].enable = 0
+	trigger.timer[3].reset()
+	trigger.timer[3].clear()
+	measDelay = duration - (integration / localnode.linefreq) - 10e-3
+	trigger.timer[3].delay = measDelay
+	trigger.timer[3].count = 1 
+	trigger.timer[3].start.stimulus = trigger.EVENT_NOTIFY1 -- Start this timer right away
+	trigger.timer[3].start.generate = trigger.OFF
+	trigger.timer[3].enable = 1 
+
+end -- function
+
+-- Create the trigger model for a single pulse
+function load_single_pulse_trigger_blocks(ConfigListNameSrc, ConfigListNameMeas)
+
+            trigger.model.load("Empty")  -- clear any old trigger models
+            waitcomplete()
+
+			-- program the trigger blocks
+			 blockNumber = 1
+			 trigger.model.setblock(blockNumber, trigger.BLOCK_BUFFER_CLEAR)	-- clears buffer "1"
+			 
+			 blockNumber = blockNumber + 1
+			 trigger.model.setblock(blockNumber, trigger.BLOCK_CONFIG_RECALL, ConfigListNameSrc, 1, ConfigListNameMeas, 1) -- Start at offStateLoad
+						
+			 blockNumber = blockNumber + 1
+			 trigger.model.setblock(blockNumber, trigger.BLOCK_SOURCE_OUTPUT, smu.ON) -- turn output on
+			 
+			 blockNumber = blockNumber + 1
+		     trigger.model.setblock(blockNumber, trigger.BLOCK_MEASURE)  -- one measurement into defbuffer1 - OCV
+			 
+			 blockNumber = blockNumber + 1
+		     trigger.model.setblock(blockNumber, trigger.BLOCK_CONFIG_NEXT, ConfigListNameSrc, ConfigListNameMeas)	-- loads next index point ie ConfigListNameMeas (current2)
+			
+			 blockNumber = blockNumber + 1	
+		     trigger.model.setblock(blockNumber, trigger.BLOCK_NOTIFY, trigger.EVENT_NOTIFY1)  -- start timer1 (source) and timer2 (measure)
+		
+		     blockNumber = blockNumber + 1
+		     trigger.model.setblock(blockNumber, trigger.BLOCK_WAIT, trigger.EVENT_TIMER3)  -- wait for meas delay timer
+		     
+		     blockNumber = blockNumber + 1
+		     trigger.model.setblock(blockNumber, trigger.BLOCK_MEASURE)  -- one measurement into defbuffer1
+		     
+		     blockNumber = blockNumber + 1
+		     trigger.model.setblock(blockNumber, trigger.BLOCK_CONFIG_NEXT, ConfigListNameSrc, ConfigListNameMeas)	-- loads next index point ie ConfigListNameMeas (offStateLoad)
+		     
+		     blockNumber = blockNumber + 1
+		     trigger.model.setblock(blockNumber, trigger.BLOCK_DELAY_CONSTANT, 0.2)  -- arbitrary delay before turning output off
+		     
+		     blockNumber = blockNumber + 1
+		     trigger.model.setblock(blockNumber, trigger.BLOCK_SOURCE_OUTPUT, smu.OFF)
+
+
+end  -- function
+
+-- Configure the timers for 2 pulses
+function config_dual_pulse_timer(duration1, duration2, integration)
+
+    -- Timer1 = controls duration of first pulse
+    -- Timer2 = controls duration of second pulse
+    -- Timer3 = controls measure delay for first pulse so that measurement occurs at end of pulse
+    -- Timer4 = controls measure delay for second pulse so that measurement occurs at end of pulse
+   
+	-- Source timing
+	trigger.timer[1].enable = 0
+	trigger.timer[1].reset()
+	trigger.timer[1].clear()
+	trigger.timer[1].delay = duration1
+	trigger.timer[1].count = 1
+	trigger.timer[1].start.stimulus = trigger.EVENT_NOTIFY1 -- Start this timer right away
+	trigger.timer[1].start.generate = trigger.OFF  -- first timer event after timer delay elapses
+	trigger.timer[1].enable = 1  -- enable the timer after all settings
+	
+	trigger.timer[2].enable = 0
+	trigger.timer[2].reset()
+	trigger.timer[2].clear()	
+	trigger.timer[2].delay = duration2
+	trigger.timer[2].count = 1
+	trigger.timer[2].start.stimulus = trigger.EVENT_TIMER1 -- Start this timer after 1 is complete
+	trigger.timer[2].start.generate = trigger.OFF  
+	trigger.timer[2].enable = 1  -- enable the timer after all settings
+	 
+	-- Measure Timing
+	trigger.timer[3].enable = 0
+	trigger.timer[3].reset()
+	trigger.timer[3].clear()
+	measDelay = duration1 - (integration / localnode.linefreq) - 10e-3
+	trigger.timer[3].delay = measDelay
+	trigger.timer[3].count = 1 
+	trigger.timer[3].start.stimulus = trigger.EVENT_NOTIFY1 -- Start this timer right away
+	trigger.timer[3].start.generate = trigger.OFF
+	trigger.timer[3].enable = 1 
+	
+	trigger.timer[4].enable = 0
+	trigger.timer[4].reset()
+	trigger.timer[4].clear()
+	measDelay = duration2 - (integration / localnode.linefreq) - 10e-3
+	trigger.timer[4].delay = measDelay
+	trigger.timer[4].count = 1  
+	trigger.timer[4].start.stimulus = trigger.EVENT_TIMER1 -- Start this timer after 1 is complete
+	trigger.timer[4].start.generate = trigger.OFF
+	trigger.timer[4].enable = 1 
+
+end -- function
+
+-- Create the trigger model for 2 pulses
+function load_dual_pulse_trigger_blocks(ConfigListNameSrc, ConfigListNameMeas)
+
+            trigger.model.load("Empty")  -- clear any old trigger models
+            waitcomplete()
+
+			-- program the trigger blocks
+			 blockNumber = 1
+			 trigger.model.setblock(blockNumber, trigger.BLOCK_BUFFER_CLEAR)	-- clears buffer "defbuffer1"
+			 
+			 blockNumber = blockNumber + 1
+			 trigger.model.setblock(blockNumber, trigger.BLOCK_CONFIG_RECALL, ConfigListNameSrc, 1, ConfigListNameMeas, 1) -- Start at offStateLoad
+			
+			 blockNumber = blockNumber + 1
+			 trigger.model.setblock(blockNumber, trigger.BLOCK_SOURCE_OUTPUT, smu.ON) -- turn output on
+			 
+			 blockNumber = blockNumber + 1
+		     trigger.model.setblock(blockNumber, trigger.BLOCK_MEASURE)  -- one measurement into defbuffer1 - OCV
+			 
+			 blockNumber = blockNumber + 1
+		     trigger.model.setblock(blockNumber, trigger.BLOCK_CONFIG_NEXT, ConfigListNameSrc, ConfigListNameMeas)	-- loads next index point ie ConfigListNameMeas (current1)
+			
+			 blockNumber = blockNumber + 1	
+		     trigger.model.setblock(blockNumber, trigger.BLOCK_NOTIFY, trigger.EVENT_NOTIFY1)  -- start timer1 (source) and timer3 (measure)
+		
+		     blockNumber = blockNumber + 1
+		     trigger.model.setblock(blockNumber, trigger.BLOCK_WAIT, trigger.EVENT_TIMER3)  -- wait for meas delay timer
+		     
+		     blockNumber = blockNumber + 1
+		     trigger.model.setblock(blockNumber, trigger.BLOCK_MEASURE)  -- one measurement into defbuffer1
+		     
+		     blockNumber = blockNumber + 1
+		     trigger.model.setblock(blockNumber, trigger.BLOCK_CONFIG_NEXT, ConfigListNameSrc, ConfigListNameMeas)	-- loads next index point ie ConfigListNameMeas (current2)
+		     
+		     blockNumber = blockNumber + 1
+		     trigger.model.setblock(blockNumber, trigger.BLOCK_WAIT, trigger.EVENT_TIMER4)  -- wait for second meas delay timer
+		     
+		     blockNumber = blockNumber + 1
+		     trigger.model.setblock(blockNumber, trigger.BLOCK_MEASURE)  -- one measurement into defbuffer1
+		     
+		     blockNumber = blockNumber + 1
+		     trigger.model.setblock(blockNumber, trigger.BLOCK_CONFIG_NEXT, ConfigListNameSrc, ConfigListNameMeas)	-- loads next index point ie ConfigListNameMeas (offStateLoad)
+		     
+		     blockNumber = blockNumber + 1
+		     trigger.model.setblock(blockNumber, trigger.BLOCK_DELAY_CONSTANT, 0.2)  -- arbitrary delay before turning output off
+		     
+		     blockNumber = blockNumber + 1
+		     trigger.model.setblock(blockNumber, trigger.BLOCK_SOURCE_OUTPUT, smu.OFF)
+
+
+end  -- function
+
+-- Run the test 
+function run_test()
+	
+		-- Variables
+		local v_oc
+		local pulse1
+		local pulse2
+		local deltaV
+		local deltaI
+		local R
+		
+		---Initiate trigger model and wait until finished.
+		trigger.model.initiate()
+		waitcomplete()  -- or wait SRQ or *OPC if in python
+				
+		beeper.beep(0.25, 1200)
+		
+		-- results come from indices of defbuffer1
+		v_oc = defbuffer1[1]
+		if tonumber(display.getvalue(OCVcheck)) == 0 then -- We had a first pulse
+			pulse1 = defbuffer1[2]
+			pulse2 = defbuffer1[3]
+	        deltaV = pulse1 - pulse2   -- voltage at index 2 should be bigger than index 3 if I2<I3
+	        deltaI = math.abs(defbuffer1.sourcevalues[3] - defbuffer1.sourcevalues[2])
+	    else -- Adjust indices if we didn't do the first pulse
+	    	pulse1 = 9.9e37
+	    	pulse2 = defbuffer1[2]
+	    	deltaV = v_oc - pulse2   -- voltage at index 2 should be bigger than index 3 if I2<I3
+	        deltaI = math.abs(defbuffer1.sourcevalues[2] - defbuffer1.sourcevalues[1])
+	    end
+	    
+	    R = deltaV/deltaI
+	    -- Save to Buffer
+	    buffer.write.reading(dcirBuffer, v_oc)
+	    buffer.write.reading(dcirBuffer, pulse1)
+	    buffer.write.reading(dcirBuffer, pulse2)
+	    buffer.write.reading(dcirBuffer, deltaI)
+	    buffer.write.reading(dcirBuffer, R)
+	    
+	    -- Display Results	    
+        local voc_str = tostring(v_oc)
+		display.setcell(vocTab, 2, 1, voc_str)
+		
+		local R_str = tostring(R)
+		display.setcell(RTab, 2, 1, R_str)
+		
+		local delI_str = tostring(deltaI)
+		display.setcell(DelITab, 2, 1, delI_str)
+		
+end  -- function
+
+-- Save readings to USB
+function SaveData()
+    local file_name
+	local time_cur
+	local numReadings
+
+    --check if the usb inserted into USB port
+	if file.usbdriveexists() == 0 then   -- 
+	    display.prompt(display.BUTTONS_OK, "Please insert a USB flash drive into the front-panel USB port.")
+	else
+	    file_name = display.input.string("Please enter the file name.", display.SFORMAT_ANY) 
+        if file_name == nil then  --user click cancel in dialog
+            return
+		else                      --click ok
+			time_cur = string.format("%d-%.2d-%.2d_%.2d-%.2d-%.2d",os.date("%Y"), os.date("%m"), os.date("%d"), os.date("%H"), os.date("%M"), os.date("%S"))
+			file_name =  string.format("%s_%s", file_name,time_cur)
+			numReadings = dcirBuffer.n/5 -- Calculate number of batteries measured (sets of 5 buffer entries)
+			file_num = file.open("/usb1/"..file_name..".csv", file.MODE_WRITE)
+			if file_num != nil then
+				file.write(file_num, "OCV, V_Pulse_1, V_Pulse_2, Delta_I, DCIR\n")  -- Table Header
+				j = 1
+				for i = 1, numReadings, 1
+				do -- Write a set of 5 readings to a row
+					file.write(file_num, string.format("%f, %f, %f, %f, %f\n", dcirBuffer[j], dcirBuffer[j+1], dcirBuffer[j+2], dcirBuffer[j+3], dcirBuffer[j+4]))
+					j = j + 5
+				end
+				file.close(file_num)
+			end
+		end
+	end
+end -- function
+
+--------------------------------------------------------------------------
+-- Main Code - start App
+--------------------------------------------------------------------------
+
+reset() -- clear all settings and turn output off
+smu.source.offmode = smu.OFFMODE_HIGHZ  -- Immediately set to high Z mode to prevent battery discharge
+
+eventlog.clear()
+eventlog.suppress(5076)
+eventlog.suppress(2732)
+eventlog.suppress(2731)
+eventlog.suppress(5078)  --5078, Cannot make measurements with Output Off while in Resistance, Hi-Z, or 4-Wire
+
+smu.source.func = smu.FUNC_DC_CURRENT
+smu.measure.func = smu.FUNC_DC_VOLTAGE
+smu.source.autodelay = smu.OFF
+smu.source.range = 10e-6
+smu.source.level = 0
+smu.measure.range = 20
+smu.source.vlimit.level = 20
+
+-- Some default values: 
+smu_nplc = 1
+offStateLoad = 0
+ConfigListNameSrc = "DCIR_Src"
+ConfigListNameMeas = "DCIR_Meas"
+
+-- Create custom buffer
+dcirBuffer = buffer.make(5000, buffer.STYLE_WRITABLE)
+
+-- now is OK to connect SMU to battery
+
+start = display.input.prompt(display.BUTTONS_OK, "SMU set to High Impedance mode. Ready to connect battery with 4-wire configuration.")
+if start == display.BUTTON_OK then
+	mainMenu()
+end
+endscript
+loadimage DCIR_App_Icon Battery_DCIR
+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
+endimage
