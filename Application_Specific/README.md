@@ -13,6 +13,9 @@ TSP script for the DMM6500 to measure Amp-hours (charge) or Watt-hours (energy).
 * **[Battery Simulation](./Battery_Simulation/2281S_Battery_Models)**  
 Holds a repository of battery models for the [2281S-20-6 Dynamic Model Battery Simulator](https://www.tek.com/tektronix-and-keithley-dc-power-supplies/2281s).
 
+* **[Battery Test](./Battery_Test)**  
+Holds a repository of various battery test scripts, program code, and support utilities.
+
 * **[Custom Thermistor](./Custom_Thermistor)**  
 Allows the usage of custom Steinhart–Hart coefficients to compute the temperature of a thermistor.
 
