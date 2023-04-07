@@ -1,3 +1,14 @@
+--[[
+	
+Script: Thermistor.tsp
+Written by: Keithley Factory Applications
+`
+***********************************************************
+*** Copyright 2019 Tektronix, Inc.                      ***
+*** See www.tek.com/sample-license for licensing terms. ***
+***********************************************************
+]]
+
 dmm.measure.func = dmm.FUNC_RESISTANCE
 
 display.clear()
