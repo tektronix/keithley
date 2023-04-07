@@ -6,6 +6,16 @@ loadscript Battery_DCIR
 -- $Version: 1.0
 -- LoadedAppName = "DCIR App"
 
+--[[
+	
+Script: Battery_CYCLE.tsp
+Written by: Keithley Factory Applications
+`
+***********************************************************
+*** Copyright 2023 Tektronix, Inc.                      ***
+*** See www.tek.com/sample-license for licensing terms. ***
+***********************************************************
+]]
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 -- MENU
