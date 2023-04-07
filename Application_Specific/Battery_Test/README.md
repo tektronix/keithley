@@ -7,7 +7,7 @@ This GitHub repository stores code and utilities for one or multiple Keithley In
 
 [comment]: **[Title](./directory)**  
 
-* **[Battery Cycling](./Battey_Cycling)**  
+* **[Battery Cycling](./Battery_Cycling)**  
 Example TSP scripts and code used for battery cycling applications.
 
 * **[Battery Test PCB Sample Design](./Battery_Test_PCB_Design)**  
