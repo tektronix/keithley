@@ -1,3 +1,14 @@
+--[[
+	
+Script: Battery_CYCLE.tsp
+Written by: Keithley Field Applications (Junichi Miyamoto)
+`
+***********************************************************
+*** Copyright 2023 Tektronix, Inc.                      ***
+*** See www.tek.com/sample-license for licensing terms. ***
+***********************************************************
+]]
+
 function main()
     local TCOND={batt={},CHG={},LD={}}
     local TRSLT={}
