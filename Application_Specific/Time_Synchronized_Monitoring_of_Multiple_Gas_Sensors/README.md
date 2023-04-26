@@ -8,15 +8,16 @@ This GitHub repository features automation examples used for gas sensor monitori
 [comment]: **[Title](./directory)**  
 
 * **[MS01_SetupAndRun.tsp](./MS01_SetupAndRun.tsp)**  
-Holds the following: <br>
-  * The script code featured in the application note [Resistivity Measurements Using the Model 2450 SourceMeter SMU Instrument and a Four-Point Collinear Probe](https://www.tek.com/en/documents/application-note/resistivity-measurements-using-model-2450-sourcemeter-smu-instrument-and-f).
-  * Python code that shows how to...
-    * Connect to an instrument using the instrcomms module which can be found at [Instrument Communication Resources](../General/Instrument_Communication_Resouces).
-    * Upload a script file with the resistivity measurement function embedded within it.
-    * Execute the function and return the computed resistivity value to the caller. 
+  * Configures the TSP-Linked SMUs for Source Voltage, Measure Resistance.
+  * Builds three different variations of trigger model:
+	* One for the master to act as the main initiator for the trigger to all units to measure.
+	* One for the primary acceptor to coordinate the measure complete from all acceptors and notification back to the master.
+	* One for remaining acceptors to receive trigger events and to report back measure completion
+  * Configures/sizes the default buffers to accommodate up to 5.1M readings per run 
 	
 * **[MS02_ExportData.tsp](./MS02_ExportData.tsp)** 
-  * Stuff
-  * Things
+  * Creates a timestamped CSV on a connected USB drive. 
+  * Extracts the data from all connected instrument nodes.
+  * Writes all data to USB and uses the relative times of the master for timestamps. 
 
  
