@@ -33,3 +33,7 @@ Supplemental TSP code to a series of videos made by Keithley Applications Engine
 
 * **[Resistivity of Materials](./Resistivity_of_Materials/)**  
 An assortment of examples that highlight the different instrument setups and methods used to determine resistivity of materials. 
+
+* **[Time Synchronized Monitoring of Multiple (Gas) Sensors](./Time_Synchronized_Monitoring_of_Multiple_Gas_Sensors/)**  
+A pair of TSP scripts used to coordinate synchronous multi-channel resistance measurements of sensor devices: one script for coordinating the instrument setup, trigger model build, and intiation, the other for exporting data to USB. 
+
