@@ -16,8 +16,11 @@ Quick generic tutorials for controlling instruments but not dedicated to any one
 * **[Instrument Communication Resources](./Instrument_Communication_Resouces)** 
 Reusable code that can be used to help streamline instrument communications setups. 
 
-* **[Send as Script File to a Keithley Touchscreen Instrument](./Send_a_Script_File_to_A_Keithley_Touchscreen_Instrument)** 
+* **[Send a Script File to a Keithley Touchscreen Instrument](./Send_a_Script_File_to_A_Keithley_Touchscreen_Instrument)** 
 Series of examples in different programming languages, showing how you can upload a custom script file to your TSP-enabled instrument. 
+
+* **[Send a Script File to a Keithley TSP-Enabled Instrument](./Send_a_Script_File_to_A_Keithley_TSP-Enabled_Instrument)** 
+Series of examples in different programming languages, showing how you can upload a custom script file to your TSP-enabled instrument. This directory offers examples for the Series 2600B SourceMeters, Series 3706A Switch/Multimeter System, and the 700 Series Switching Systems. 
 
 * **[Synchronize Internal Clock with NTP Server](./Synchronize_Internal_Clock_with_NTP_Server)**
 Example script used to synchronize your Keithley touchscreen instrument time to NTP server time. 
