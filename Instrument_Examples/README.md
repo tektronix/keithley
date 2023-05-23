@@ -28,6 +28,9 @@ Visual basic examples for the 2001 and 2002 Multimeters.
 * **[Model 2015 THD Audio Analyzer DMM](./Model_2015/)**  
 Python code example.
 
+* **[Model 4200A-SCS](./Model_4200A/)**  
+Examples for controlling the 4200A-SCS via the KXCI command set. 
+
 * **[Model 6430 Electrometer](./Model_6430/)**  
 C# examples.
 
