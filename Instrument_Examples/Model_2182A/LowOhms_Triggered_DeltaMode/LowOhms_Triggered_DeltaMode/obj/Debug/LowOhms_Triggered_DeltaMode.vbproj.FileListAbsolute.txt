@@ -1,0 +1,11 @@
+c:\users\aclary\documents\visual studio 2012\Projects\LowOhms_Triggered_DeltaMode\LowOhms_Triggered_DeltaMode\bin\Debug\LowOhms_Triggered_DeltaMode.exe.config
+c:\users\aclary\documents\visual studio 2012\Projects\LowOhms_Triggered_DeltaMode\LowOhms_Triggered_DeltaMode\bin\Debug\LowOhms_Triggered_DeltaMode.exe
+c:\users\aclary\documents\visual studio 2012\Projects\LowOhms_Triggered_DeltaMode\LowOhms_Triggered_DeltaMode\bin\Debug\LowOhms_Triggered_DeltaMode.pdb
+c:\users\aclary\documents\visual studio 2012\Projects\LowOhms_Triggered_DeltaMode\LowOhms_Triggered_DeltaMode\bin\Debug\LowOhms_Triggered_DeltaMode.xml
+c:\users\aclary\documents\visual studio 2012\Projects\LowOhms_Triggered_DeltaMode\LowOhms_Triggered_DeltaMode\obj\Debug\LowOhms_Triggered_DeltaMode.vbproj.ResolveComReference.cache
+c:\users\aclary\documents\visual studio 2012\Projects\LowOhms_Triggered_DeltaMode\LowOhms_Triggered_DeltaMode\obj\Debug\LowOhms_Triggered_DeltaMode.Form1.resources
+c:\users\aclary\documents\visual studio 2012\Projects\LowOhms_Triggered_DeltaMode\LowOhms_Triggered_DeltaMode\obj\Debug\LowOhms_Triggered_DeltaMode.Resources.resources
+c:\users\aclary\documents\visual studio 2012\Projects\LowOhms_Triggered_DeltaMode\LowOhms_Triggered_DeltaMode\obj\Debug\LowOhms_Triggered_DeltaMode.vbproj.GenerateResource.Cache
+c:\users\aclary\documents\visual studio 2012\Projects\LowOhms_Triggered_DeltaMode\LowOhms_Triggered_DeltaMode\obj\Debug\LowOhms_Triggered_DeltaMode.exe
+c:\users\aclary\documents\visual studio 2012\Projects\LowOhms_Triggered_DeltaMode\LowOhms_Triggered_DeltaMode\obj\Debug\LowOhms_Triggered_DeltaMode.xml
+c:\users\aclary\documents\visual studio 2012\Projects\LowOhms_Triggered_DeltaMode\LowOhms_Triggered_DeltaMode\obj\Debug\LowOhms_Triggered_DeltaMode.pdb

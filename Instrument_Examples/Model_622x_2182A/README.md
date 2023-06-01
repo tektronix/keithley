@@ -1,7 +1,7 @@
 
 # Model 622x & 2182A
 
-These examples are for use with Keithley Models 6220, 6221, or 2182A. 
+These examples are for use with Keithley Models 6220, 6221, or 2182A. See also [example code for the 2182A](/Instrument_Examples/Model_2182A/). 
 
 ## Directory
 
