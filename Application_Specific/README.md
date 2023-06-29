@@ -19,6 +19,9 @@ Holds a repository of various battery test scripts, program code, and support ut
 * **[Custom Thermistor](./Custom_Thermistor)**  
 Allows the usage of custom Steinhart–Hart coefficients to compute the temperature of a thermistor.
 
+* **[DC-DC Converter Efficiency](./DC-DC%20Converter%20Efficiency/)**  
+Python code to characterize the efficiency of a DC-DC converter using 2 TTI Source Measure Units, 1 to source and 1 to sink. Tested with two 2450 SMUs. 
+
 * **[Ford EMC-CS-2009.1 specification](./Ford%20EMC-CS-2009.1%20specification/)**  
 A script that turns the Keithley 2600B or 2650A Series SMUs into Arbitrary Waveform Generators, as referenced and used in the Application Note [Using the Arbitrary Waveform Capabilities of the Series 2600B and Series 2650A System SourceMeter SMU Instruments to Perform Ford EMC Power Cycling Testing](https://www.tek.com/en/documents/application-note/using-the-arbitrary-waveform-capabilities-of-the-series-2600b-and-2650a-to-perform-ford-emc).
 
