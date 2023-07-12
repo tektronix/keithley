@@ -87,7 +87,8 @@ def get_block(s, chunkSize, buffSize):
     s.send(sndStr.encode())
     response = s.recv(1024)
     # New content....
-    fmtStr = '%df' % (chunkSize)
+    #fmtStr = '%df' % (chunkSize) # Old way of formatting
+    fmtStr = f"{chunkSize}f"      # Use f-strings instead
     altResp = struct.unpack(fmtStr, response[2:-1])
     return altResp
 
