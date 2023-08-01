@@ -1,6 +1,6 @@
 # Model 2790 SourceMeter Airbag Test System
 
-These examples include those found in the User Manual, Application Notes, and other sources. The files in this directory will work with [Model 2790 SourceMeter Airbag Test System](https://www.tek.com/en/products/keithley/source-measure-units/2400-graphical-series-sourcemeter), the sub directories will generally only work for those units, but might be able to be adapted. 
+These examples include those found in the User Manual, Application Notes, and other sources. The files in this directory will work with [Model 2790 SourceMeter Airbag Test System](https://www.tek.com/en/products/keithley/switching-and-data-acquisition-systems/2790-airbag-and-electrical-device-test-system), the sub directories will generally only work for those units, but might be able to be adapted. 
 
 ## Directory
 
