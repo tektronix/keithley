@@ -6,7 +6,7 @@ These examples include those found in the User Manual, Application Notes, and ot
 
 ### Instrument agnostic:
 
-* **[Bridgewire](Airbag_Bridgewire.py)**  
+* **[Bridgewire](./Airbag_Test/Airbag_Bridgewire.py)**  
 This example code verifies the current source then measures the resistance of each bridgewire. 
 
 * **[Contact Verify](./Airbag_Contact_Verify.py)**  
