@@ -25,6 +25,7 @@ class Communications:
         self._instrument_object = None
         self._timeout = 20000
         self._echo_cmds = False
+        self._version = 1.1
 
         try:
             if self._resource_manager is None:
@@ -55,9 +56,10 @@ class Communications:
             )
 
             if timeout is None:
-                self._instrument_object.timeout = timeout
-            else:
                 self._instrument_object.timeout = self._timeout
+            else:
+                self._instrument_object.timeout = timeout
+                self._timeout = timeout
 
             # Check for the SOCKET as part of the instrument ID string and set
             # the following accordingly...
