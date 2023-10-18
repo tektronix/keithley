@@ -12,3 +12,5 @@ These examples are applicable to a range of instruments, not having the same lev
 --- Presents docstring suggestions for RS-232 settings that might otherwise be difficult to piece together from documentation.<br>
 --- Provides echoing of commands to the terminal when the internal flag is set.<br>
 
+* RS485demo.py<br>
+--- Leverages the serial Python package to help show how a user can automate communications with devices or instrumantation that use RS-485.
