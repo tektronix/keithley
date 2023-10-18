@@ -33,7 +33,7 @@ jobs:
     steps:
 
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Check for CODEOWNERS
         id: codeowners_file
@@ -57,7 +57,7 @@ jobs:
     steps:
 
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Check for README.md
         id: readme_file
@@ -83,7 +83,7 @@ jobs:
     steps:
 
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Check for LICENSE.md
         id: license_file
@@ -107,7 +107,7 @@ jobs:
     steps:
 
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Check for dependabot.yml
         id: dependabot_file
@@ -131,7 +131,7 @@ jobs:
     steps:
 
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Check for codeql-analysis.yml
         id: codeql-analysis_file
