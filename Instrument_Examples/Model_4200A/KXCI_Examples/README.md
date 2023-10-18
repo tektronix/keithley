@@ -12,3 +12,6 @@ This example performs a family of curves test on a MOSFET, using the 4200A-SCS w
 
 * **[family_curves_LAN_keithleyLib.py](./family_curves_LAN_keithleyLib.py/)**  
 This example performs a family of curves test on a MOSFET, using the 4200A-SCS with three SMUs connected to a MOSFET via a LAN connection. It will output the ID-VD Curves of the MOSFET directly onto the KXCI interface. 
+
+* **[pmu_scope_annotated.py](./pmu_scope_annotated.py/)**  
+This program outputs five square wave pulses (2V, 50e-6s) from a 4225-PMU without the 4225-RPMs. This code uses ethernet to communicate to the 4200A.
