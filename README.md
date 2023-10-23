@@ -38,6 +38,8 @@ If you're looking for officially supported software, we invite you to visit [tek
 - [KickStart](https://www.tek.com/en/products/keithley/keithley-control-software-bench-instruments/kickstart), Instrument control and automation software for both Keithley and Tektronix products.
 - [Keithley Automated Characterization Suite (ACS)](https://www.tek.com/en/products/keithley/semiconductor-test-systems/automated-characterization-suite), Advanced characterization and automation software.
 
+- [For more Information on TSP](https://www.tek.com/en/solutions/application/test-automation/tsp-for-test-automation), Test Script Processor, our instrument control command set and programming language
+
 ## Maintainers
 
 Josh Brown: [jbrown1234](https://github.com/jbrown1234)  
