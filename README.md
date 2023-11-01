@@ -41,9 +41,8 @@ If you're looking for officially supported software, we invite you to visit [tek
 
 ## Maintainers
 
-Josh Brown: [jbrown1234](https://github.com/jbrown1234)  
+Liz Makley: [Little-LIZard](https://github.com/Little-LIZard)  
 Brad Odhner: [Brad-O](https://github.com/Brad-O)  
-Liz Makley: [Little-LIZard](https://github.com/Little-LIZard)
 
 ## License
 
