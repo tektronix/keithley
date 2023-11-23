@@ -28,7 +28,44 @@ class DMM6500:
                              "dmm.FUNC_DCV_RATIO",
                              "dmm.FUNC_DIGITIZE_VOLTAGE",
                              "dmm.FUNC_DIGITIZE_CURRENT"]
-        
+
+        self.trigger_edge_type = ["EDGE_FALLING",
+                              "EDGE_RISING",
+                              "EDGE_EITHER"]
+
+        self.trigger_line_type = ["trigger.dig",
+                              "trigger.ext",
+                              "trigger.tsplink"]
+
+        self.trigger_logic = ["LOGIC_NEGATIVE",
+                          "LOGIC_POSITIVE"]
+
+        self.stimulus = ["EVENT_NONE",
+                     "EVENT_DISPLAY",
+                     "EVENT_NOTIFYn",
+                     "EVENT_COMMAND",
+                     "EVENT_DIGIOn",
+                     "EVENT_TSPLINKn",
+                     "EVENT_LANn",
+                     "EVENT_ANALOGTRIGGER",
+                     "EVENT_TIMERn",
+                     "EVENT_EXTERNAL",
+                     "EVENT_SCAN_ALARM_LIMIT",
+                     "EVENT_SCAN_CHANNEL_READY",
+                     "EVENT_SCAN_COMPLETE",
+                     "EVENT_SCAN_MEASURE_COMPLETE",
+                     "EVENT_SCAN_ALARM_LIMIT"]
+
+        self.dig_io_mode = ["digio.MODE_DIGITAL_IN",
+                        "digio.MODE_DIGITAL_OUT",
+                        "digio.MODE_DIGITAL_OPEN_DRAIN",
+                        "digio.MODE_TRIGGER_IN",
+                        "digio.MODE_TRIGGER_OUT",
+                        "digio.MODE_TRIGGER_OPEN_DRAIN",
+                        "digio.MODE_SYNCHRONOUS_MASTER",
+                        "digio.MODE_SYNCHRONOUS_ACCEPTOR"]
+
+
     # ======================================================================
     #      DEFINE INSTRUMENT CONNECTION AND COMMUNICATIONS FUNCTIONS HERE
     # ======================================================================
@@ -203,9 +240,9 @@ class DMM6500:
             
             # Set the filter type
             if filter_type is not None:
-                if filter_type == FilterType.REPEAT:
+                if filter_type == self.FilterType.REPEAT:
                     self.SendCmd("dmm.measure.filter.type = dmm.FILTER_REPEAT_AVG")
-                elif filter_type == FilterType.MOVE:
+                elif filter_type == self.FilterType.MOVE:
                     self.SendCmd("dmm.measure.filter.type = dmm.FILTER_MOVING_AVG")
                     
             # Set the filter count
@@ -223,9 +260,9 @@ class DMM6500:
             
             # Set the filter type
             if filter_type is not None:
-                if filter_type == FilterType.REPEAT:
+                if filter_type == self.FilterType.REPEAT:
                     self.SendCmd("channel.setdmm(\"{0}\", dmm.ATTR_MEAS_FILTER_TYPE, dmm.FILTER_REPEAT_AVG)")
-                elif filter_type == FilterType.MOVE:
+                elif filter_type == self.FilterType.MOVE:
                     self.SendCmd("channel.setdmm(\"{0}\", dmm.ATTR_MEAS_FILTER_TYPE, dmm.FILTER_MOVING_AVG)")
                     
             # Set the filter count
@@ -311,7 +348,7 @@ class DMM6500:
 
     def configure_trigger_input(self, input_type=None, line=None, edge_type=None, do_clear=None, do_wait=None):
         if input_type is None:
-            input_type = TriggerLineType.TSPLINK
+            input_type = self.TriggerLineType.TSPLINK
             if line is None:
                 line = 1
 
@@ -355,22 +392,14 @@ class DMM6500:
         RISING = 1
         EITHER = 2
 
-    self.trigger_edge_type = ["EDGE_FALLING",
-                              "EDGE_RISING",
-                              "EDGE_EITHER"]
-    
     class TriggerLineType(Enum):
         DIGITAL = 0
         EXTERNAL = 1
         TSPLINK = 2
-        
-    self.trigger_line_type = ["trigger.dig",
-                              "trigger.ext",
-                              "trigger.tsplink"]
 
     def configure_trigger_output(self, output_type=None, logic_type=None, line=None, stimulus_type=None, pulse_width=None, do_assert=None, do_release=None):
         if output_type is None:
-            output_type = TriggerLineType.TSPLINK
+            output_type = self.TriggerLineType.TSPLINK
             if line is None:
                 line = 1
 
@@ -379,7 +408,7 @@ class DMM6500:
             if line is not None:
                 send_buffer = "{0}out[{1}].logic = trigger.{2}".format(self.trigger_line_type[logic_type.value], line, self.trigger_logic[logic_type.value])
             else:
-                send_buffer = "{0}out.logic = trigger.{2}".format(self.trigger_line_type[input_type.value], line, self.trigger_logic[logic_type.value])
+                send_buffer = "{0}out.logic = trigger.{2}".format(self.trigger_line_type[logic_type.value], line, self.trigger_logic[logic_type.value])
             self.SendCmd(send_buffer)       # trigger.tsplinkout[N].logic = trigger.LOGIC_POSITIVE trigger.extout.logic trigger.tsplinkout[N].logic
 
         if do_release is not None:
@@ -415,9 +444,6 @@ class DMM6500:
         NEGATIVE = 0
         POSITIVE = 1
 
-    self.trigger_logic = ["LOGIC_NEGATIVE",
-                          "LOGIC_POSITIVE"]
-
     class Stimulus(Enum):
         NONE = 0
         DISPLAY = 1
@@ -435,22 +461,6 @@ class DMM6500:
         SCAN_MEASURE_COMPLETE = 13
         SCAN_ALARM_LIMIT_2 = 14
 
-    self.stimulus = ["EVENT_NONE",
-                     "EVENT_DISPLAY",
-                     "EVENT_NOTIFYn",
-                     "EVENT_COMMAND",
-                     "EVENT_DIGIOn",
-                     "EVENT_TSPLINKn",
-                     "EVENT_LANn",
-                     "EVENT_ANALOGTRIGGER",
-                     "EVENT_TIMERn",
-                     "EVENT_EXTERNAL",
-                     "EVENT_SCAN_ALARM_LIMIT",
-                     "EVENT_SCAN_CHANNEL_READY",
-                     "EVENT_SCAN_COMPLETE",
-                     "EVENT_SCAN_MEASURE_COMPLETE",
-                     "EVENT_SCAN_ALARM_LIMIT"]
-    
     def trigger_reset(self):
         trigger.ext.reset()
         return
@@ -502,16 +512,16 @@ class DMM6500:
     
     def SetMeasure_InputImpedance(self, *args):
         if type(args[0]) != str:
-            if myZ == self.InputZ.Z_AUTO:
+            if args[0] == self.InputZ.Z_AUTO:
                 funcStr = "dmm.IMPEDANCE_AUTO"
-            elif myZ == self.InputZ.Z_10M:
+            elif args[0] == self.InputZ.Z_10M:
                 funcStr = "dmm.IMPEDANCE_10M"
             self.SendCmd("dmm.measure.inputimpedance = {}".format(funcStr))
         else:
             setStr = "channel.setdmm(\"{}\", ".format(args[0])
-            if myZ == self.InputZ.Z_AUTO:
+            if args[0] == self.InputZ.Z_AUTO:
                 funcStr = "dmm.IMPEDANCE_AUTO"
-            elif myZ == self.InputZ.Z_10M:
+            elif args[0] == self.InputZ.Z_10M:
                 funcStr = "dmm.IMPEDANCE_10M"
             self.SendCmd("{}dmm.ATTR_MEAS_INPUT_IMPEDANCE, {})".format(setStr, funcStr))
         return
@@ -567,9 +577,9 @@ class DMM6500:
         return
     
     def SetMeasure_FilterType(self, my_filter):
-        if my_filter == self.FilterType.REP:
+        if my_filter == self.FilterType.REPEAT:
             func_str = "dmm.FILTER_REPEAT_AVG"
-        elif myFilter == self.FilterType.MOV:
+        elif my_filter == self.FilterType.MOVE:
             func_str = "dmm.FILTER_MOVING_AVG"
         send_buffer = "dmm.measure.filter.type = {}".format(func_str)
         self.SendCmd(send_buffer)
@@ -897,15 +907,6 @@ class DMM6500:
         TRIG_OPEN_DRAIN = 5
         TRIG_SYNC_MASTER = 6
         TRIG_SYNC_ACCEPTOR = 7
-        
-    self.dig_io_mode = ["digio.MODE_DIGITAL_IN",
-                        "digio.MODE_DIGITAL_OUT",
-                        "digio.MODE_DIGITAL_OPEN_DRAIN",
-                        "digio.MODE_TRIGGER_IN",
-                        "digio.MODE_TRIGGER_OUT",
-                        "digio.MODE_TRIGGER_OPEN_DRAIN",
-                        "digio.MODE_SYNCHRONOUS_MASTER",
-                        "digio.MODE_SYNCHRONOUS_ACCEPTOR"]
 
     def SetScan_BasicAttributes(self, *args):
         self.SendCmd("scan.create(\"{}\")".format(args[0]))
