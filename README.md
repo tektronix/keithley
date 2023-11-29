@@ -22,7 +22,7 @@ Code in any language for any instrument that fulfills a specific application. Th
 Code that makes up a partial or complete instrument driver library for any programming language.
 
 * **[KickStart Template Projects](./KickStart_Template_Projects/)**  
-Application specific template projects that can be loaded into [Keithley KickStart software](https://www.tek.com/en/products/keithley/keithley-control-software-bench-instruments/kickstart). 
+Application specific template projects that can be loaded into [Keithley KickStart software](https://www.tek.com/products/keithley/keithley-control-software-bench-instruments/kickstart). 
 
 * **[TTI Apps](./TTI_Apps)**  
 TSP&reg; Apps for Touch, Test, Invent&reg; instruments (i.e. Keithley's line of touch screen enabled instruments). These are not traditional TSP scripts.
@@ -34,10 +34,10 @@ If you don't want to clone this entire repository, it's still possible to take i
 ## Relevant Keithley Software
 
 If you're looking for officially supported software, we invite you to visit [tek.com/software](https://www.tek.com/software). Here are some especially relevant software options for controlling Keithley equipment:
-- [Test Script Builder](https://www.tek.com/en/keithley-test-script-builder), dedicated IDE for TSP code development. 
-- [KickStart](https://www.tek.com/en/products/keithley/keithley-control-software-bench-instruments/kickstart), Instrument control and automation software for both Keithley and Tektronix products.
-- [Keithley Automated Characterization Suite (ACS)](https://www.tek.com/en/products/keithley/semiconductor-test-systems/automated-characterization-suite), Advanced characterization and automation software.
-- [More Information on TSP](https://www.tek.com/en/solutions/application/test-automation/tsp-for-test-automation), our instrument control command set and programming language
+- [Test Script Builder](https://www.tek.com/keithley-test-script-builder), dedicated IDE for TSP code development. 
+- [KickStart](https://www.tek.com/products/keithley/keithley-control-software-bench-instruments/kickstart), Instrument control and automation software for both Keithley and Tektronix products.
+- [Keithley Automated Characterization Suite (ACS)](https://www.tek.com/products/keithley/semiconductor-test-systems/automated-characterization-suite), Advanced characterization and automation software.
+- [More Information on TSP](https://www.tek.com/solutions/application/test-automation/tsp-for-test-automation), our instrument control command set and programming language
 
 ## Maintainers
 
