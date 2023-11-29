@@ -1,7 +1,7 @@
 
 ### Pull Request Checklist
 
-Please review the [Contribution Guidelines](https://github.com/tektronix/keithley/CONTRIBUTING.md) before submitting.
+Please review the [Contribution Guidelines](/CONTRIBUTING.md) before submitting.
 
 - [ ] You have previously submitted a Contributor License Agreement or have contacted a maintainer to request one.
 - [ ] You have given the Pull Request a descriptive name above.

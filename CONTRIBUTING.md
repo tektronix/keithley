@@ -2,7 +2,7 @@
 
 Thank you for your interest in contributing to the official example code repo for Keithley Instruments products! This code in this repo is not officially supported and is maintained on a volunteer basis by Keithley engineers. We welcome any input or additions from the community that meet these contributing guidelines. 
 
-First, please consult the Tektronix [Code of Conduct](https://tektronix.github.io/Code-Of-Conduct/) that governs the usage of this repo.
+First, please consult the Tektronix [Code of Conduct](https://github.com/tektronix/.github/blob/main/CODE_OF_CONDUCT.md) that governs the usage of this repo.
 
 - [Contributing to the Keithley Instruments Example Repo](#contributing-to-the-keithley-instruments-example-repo)
     - [Contributor License Agreement](#contributor-license-agreement)
