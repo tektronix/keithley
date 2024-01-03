@@ -19,10 +19,7 @@ These examples include those found in the User Manual, Application Notes, and ot
 * **[2470-SMU](./2470-SMU/)**  
 1100V / 1A SMU with high-V triaxial outputs
 
-* **[Basic Measurements(./Basic_Measurements/)**  
-A series of general purpose example providing insight on how to configure and execute the most common measurement operations. 
-
-### Instrument agnostic:
+### Instrument agnostic (In this directory):
 
 * **[Battery Cycler](./smu_battery_cycle_solution.py)**  
 This Python script can be used to perform battery cycling (charge/discharge) testing. See comments in the file for details. 
