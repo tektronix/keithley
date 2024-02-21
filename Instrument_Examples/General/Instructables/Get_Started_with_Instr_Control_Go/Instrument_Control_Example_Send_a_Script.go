@@ -164,14 +164,43 @@ func instrument_read(conn *net.TCPConn, anticipated_receive_size int) (string){
 	Revisions:
 		2019-07-04    JJB    Initial revision.
 *********************************************************************************/
-func instrument_query(conn *net.TCPConn, my_command string, 
-                      anticipated_receive_size int) (string) {
+func instrument_query(conn *net.TCPConn, my_command string, anticipated_receive_size int) (string) {
 	// A query is the same as a question: send an "ask" and receive
 	// a reply. 
 	instrument_write(conn, my_command + "\n")
 	return instrument_read(conn, anticipated_receive_size)
 }
 
+/*********************************************************************************
+	Function: load_script_file_onto_keithley_instrument(my_script_file string,
+                                                        conn *net.TCPConn)
+	
+	Purpose: Copy the contents of a specific script file off of the computer 
+	         and upload onto the target instrument. 
+
+	Parameters:
+		my_script_file (string) - The script file/path (ASCII text format) that 
+								  will be read from the computer and sent to the
+								  instrument. 
+		conn (*net.TCPConn) - The TCP instrument connection object used for 
+							  sending and receiving data. 
+	Returns:
+		None
+
+	Revisions:
+		2019-07-04    JJB    Initial revision.
+*********************************************************************************/
+func load_script_file_onto_keithley_instrument(my_script_file string, conn *net.TCPConn){
+	var my_response_receive_size = 128
+	
+	// Read the entire script file into the computer's memory...
+	dat, err := ioutil.ReadFile(my_script_file)
+	check(err)
+	
+	instrument_write(conn, "if loadfuncs ~= nil then script.delete('loadfuncs') end")
+	instrument_write(conn, "loadscript loadfuncs\n" + string(dat) + "\nendscript")
+	println("Reply from instrument = ", string(instrument_query(conn, "loadfuncs()", my_response_receive_size)))
+}
 
 /*********************************************************************************
 	This example copies the contents of a script file on the host computer and
