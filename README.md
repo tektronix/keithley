@@ -33,10 +33,11 @@ If you don't want to clone this entire repository, it's still possible to take i
 
 ## Relevant Keithley Software
 
-If you're looking for officially supported software, we invite you to visit [tek.com/software](https://www.tek.com/software). Here are some especially relevant software options for controlling Keithley equipment:
-- [Test Script Builder](https://www.tek.com/keithley-test-script-builder), dedicated IDE for TSP code development. 
+If you're looking for officially supported software, we invite you to visit [tek.com/software](https://www.tek.com/software). Here are some relevant software options for controlling Keithley equipment:
+- [Keithley TSP Toolkit (Beta)](https://github.com/tektronix/tsp-toolkit), An open source [Visual Studio Code](https://code.visualstudio.com/) extension that facilitates communicating with TSP instruments from VS Code, adds command auto-complete and syntax checking, and provides TSP command documentation from within VS Code.
 - [KickStart](https://www.tek.com/products/keithley/keithley-control-software-bench-instruments/kickstart), Instrument control and automation software for both Keithley and Tektronix products.
 - [Keithley Automated Characterization Suite (ACS)](https://www.tek.com/products/keithley/semiconductor-test-systems/automated-characterization-suite), Advanced characterization and automation software.
+- [Test Script Builder](https://www.tek.com/keithley-test-script-builder), dedicated IDE for TSP code development. Consider using the Visual Studio Code extension, TSP Toolkit, instead.
 - [More Information on TSP](https://www.tek.com/solutions/application/test-automation/tsp-for-test-automation), our instrument control command set and programming language
 
 ## Maintainers
