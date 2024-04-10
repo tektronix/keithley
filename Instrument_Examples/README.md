@@ -6,60 +6,64 @@ These code examples are a good place to start learning how to work with your ins
 ## Directory
 
 [comment]: **[Instrument](./directory)**  
+[comment]: The order of included languages is: TSP, Python, Matlab, Visual Basic, C#, LabVIEW, (others)
 
 * **[General](./General)**  
-Instrument examples which might be applicable to across an instrument platform, series, or instrument independent.  
+TSP, Python, Visual Basic, C#, Go
 
 * **[DAQ6510](./DAQ6510)**  
-Examples include those from the module card manuals (7700, 7701, 7702, 7703, 7705, 7706, 7707, 7708, 7709, 7710, 7711, and 7712) where applicable.
+TSP, Python, Matlab, Visual Basic, LabVIEW
 
 * **[DMM6500](./DMM6500)**  
-Some examples work with all graphical Keithley instruments. Includes examples from the DMM6500 User's Manual.
+TSP, Python
 
 * **[DMM7510](./DMM7510)**  
-Python, TSP, and C# code examples.
+TSP, Python, C#
 
 * **[Model 2000 DMM](./Model_2000/)**  
-Visual basic example for controlling 2000-SCAN cards. Also works with DMM6500 in Model 2000 emulation mode. 
+Visual Basic
 
 * **[Model 2001 DMM](./Model_2001/)**  
-Visual basic examples for the 2001 and 2002 Multimeters.
+Visual Basic
 
 * **[Model 2015 THD Audio Analyzer DMM](./Model_2015/)**  
-Python code example.
+Python
 
 * **[Model 2182A Nanovoltmeter](./Model_2182A/)**  
-Visual basic example for delta mode with a 2450 SMU. 
+Visual Basic 
+
+* **[Model 2790 SourceMeter Airbag Test System](./Model_2790/)**  
+Python 
 
 * **[Model 4200A-SCS](./Model_4200A/)**  
-Examples for controlling the 4200A-SCS via the KXCI command set. 
+Python
 
 * **[Models 622x and 2182A](./Model_622x_2182A/)**  
-Examples of using the 6220 or 6221 current source to measure low resistance with the 2182A Nanovoltmeter. 
+Python
 
 * **[Model 6430 Electrometer](./Model_6430/)**  
-C# examples.
+C#
 
 * **[2200 Series Power Supplies](./Series_2200/)**  
-Python and C# examples.
+Python, C#
 
 * **[2260B Series Power Supplies](./Series_2260B)**  
-General examples to show basic and advanced features.
+Python
 
 * **[2280S Series Power Supplies](./Series_2280S)**  
-Assorted examples for remotely operating the PSU in different modes and connecting/controlling as a slave instrument using a Keithley TSP-enabled instrument.
+TSP, Python
 
 * **[2380 Series Electronic Loads](./Series_2380)**  
-General examples to show basic and advanced features.
+Python
 
 * **[2400 Series SourceMeter&reg; Source Measure Units](./Series_2400/)**  
-Code examples for the non-graphical (classic VFD display) 2400 Series Source Measure Units.
+Python
 
 * **[2400 Series Graphical SourceMeter&reg; Source Measure Units](./Series_2400_Graphical/)**  
-Code examples for the graphical 2400 Series Source Measure Units. Some examples are written for specific models.
+TSP, Python
 
 * **[2600B Series SourceMeter&reg; Source Measure Units](./Series_2600/)**  
-Many examples will work with non-A and A versions of the 2600 Series
+TSP, Python
 
 * **[3706A Series System Switch/Multimeter](./Series_3706A)**  
-A variety of scanning and switching examples.
+TSP, Python, Visual Basic, C#
