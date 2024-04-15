@@ -6,7 +6,7 @@ These code examples are a good place to start learning how to work with your ins
 ## Directory
 
 [comment]: **[Instrument](./directory)**  
-[comment]: The order of included languages is: TSP, Python, Matlab, Visual Basic, C#, LabVIEW, (others)
+<!-- The order of included languages is: TSP, Python, Matlab, Visual Basic, C#, LabVIEW, (others) -->
 
 * **[General](./General)**  
 TSP, Python, Visual Basic, C#, Go
