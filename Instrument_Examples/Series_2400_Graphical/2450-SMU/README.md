@@ -28,3 +28,6 @@ See the description within the lower directory.
 * **[Other Devices](./Other_Devices)**  
 A variety of TSP scripts that target specific applications. 
 
+* **[Simple Source I, Measure V, Calculate R](./Simple_SourceI_MeasureV_CalcR/)**  
+Python script to simply source I, measure V, and calculate resistance. Includes a simple tolerance band alert. 
+

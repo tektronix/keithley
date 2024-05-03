@@ -165,8 +165,7 @@ func instrument_read(conn *net.TCPConn, anticipated_receive_size int) (string){
 	Revisions:
 		2019-07-04    JJB    Initial revision.
 *********************************************************************************/
-func instrument_query(conn *net.TCPConn, my_command string, 
-                      anticipated_receive_size int) (string) {
+func instrument_query(conn *net.TCPConn, my_command string, anticipated_receive_size int) (string) {
 	// A query is the same as a question: send an "ask" and receive
 	// a reply. 
 	instrument_write(conn, my_command + "\n")
@@ -193,8 +192,7 @@ func instrument_query(conn *net.TCPConn, my_command string,
 	Revisions:
 		2019-07-04    JJB    Initial revision.
 *********************************************************************************/
-func load_script_file_onto_keithley_instrument(my_script_file string,
-                                               conn *net.TCPConn){
+func load_script_file_onto_keithley_instrument(my_script_file string, conn *net.TCPConn){
 	var my_response_receive_size = 128
 	
 	// Read the entire script file into the computer's memory...
@@ -203,8 +201,7 @@ func load_script_file_onto_keithley_instrument(my_script_file string,
 	
 	instrument_write(conn, "if loadfuncs ~= nil then script.delete('loadfuncs') end")
 	instrument_write(conn, "loadscript loadfuncs\n" + string(dat) + "\nendscript")
-	println("Reply from instrument = ", string(instrument_query(conn, "loadfuncs()",
-           	 my_response_receive_size)))
+	println("Reply from instrument = ", string(instrument_query(conn, "loadfuncs()", my_response_receive_size)))
 }
 
 func check(e error) {
@@ -230,8 +227,7 @@ func main() {
 	conn, _ := instrument_connect(my_ip_address, my_port)
 	
 	// Ask the instrument to identify itself....
-    println("Reply from instrument = ", string(instrument_query(conn, 
-	        "*IDN?", my_id_receive_size)))
+    println("Reply from instrument = ", string(instrument_query(conn, "*IDN?", my_id_receive_size)))
 	
 	instrument_write(conn, "OUTPut:MODE 0")	// set for constant voltage
 	instrument_write(conn, "VOLT 0.0")		// set voltage level to start at 0V
@@ -247,12 +243,9 @@ func main() {
 		instrument_write(conn, command_string)
 		time.Sleep(1 * time.Second)
 		
-		println("Voltage = ", string(instrument_query(conn, 
-				"MEAS:VOLT?", my_id_receive_size)))
-		println("Voltage = ", string(instrument_query(conn, 
-				"MEAS:CURR?", my_id_receive_size)))
-		println("Voltage = ", string(instrument_query(conn, 
-				"MEAS:POW?", my_id_receive_size)))
+		println("Voltage = ", string(instrument_query(conn, "MEAS:VOLT?", my_id_receive_size)))
+		println("Voltage = ", string(instrument_query(conn, "MEAS:CURR?", my_id_receive_size)))
+		println("Voltage = ", string(instrument_query(conn, "MEAS:POW?", my_id_receive_size)))
 	}
 	
 	instrument_write(conn, "OUTP OFF")		// turn the output off

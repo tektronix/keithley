@@ -171,7 +171,25 @@ func instrument_query(conn *net.TCPConn, my_command string, anticipated_receive_
 }
 
 
+/*********************************************************************************
+	Function: load_script_file_onto_keithley_instrument(my_script_file string,
+                                                        conn *net.TCPConn)
+	
+	Purpose: Copy the contents of a specific script file off of the computer 
+	         and upload onto the target instrument. 
 
+	Parameters:
+		my_script_file (string) - The script file/path (ASCII text format) that 
+								  will be read from the computer and sent to the
+								  instrument. 
+		conn (*net.TCPConn) - The TCP instrument connection object used for 
+							  sending and receiving data. 
+	Returns:
+		None
+
+	Revisions:
+		2019-07-04    JJB    Initial revision.
+*********************************************************************************/
 func load_script_file_onto_keithley_instrument(my_script_file string, conn *net.TCPConn){
 	var my_response_receive_size = 128
 	

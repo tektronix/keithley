@@ -1,6 +1,6 @@
 # Series 2400 Graphical Source Measure Units
 
-These examples include those found in the User Manual, Application Notes, and other sources. The files in this directory will work with all [2400 Graphical SMUs](https://www.tek.com/en/products/keithley/source-measure-units/2400-graphical-series-sourcemeter), the sub directories will generally only work for those units, but might be able to be adapted. 
+These examples include those found in the User Manual, Application Notes, and other sources. The files in this directory will work with all [2400 Graphical SMUs](https://www.tek.com/products/keithley/source-measure-units/2400-graphical-series-sourcemeter), the sub directories will generally only work for those units, but might be able to be adapted. 
 
 ## Directory
 
@@ -8,10 +8,10 @@ These examples include those found in the User Manual, Application Notes, and ot
 [comment]: **[2450-SMU](./directory)**  
 
 * **[2450-SMU](./2450-SMU/)**  
-200V / 1A SMU with Triaxial outputs
+200V / 1A SMU with triaxial outputs
 
 * **[2460-SMU](./2460-SMU/)**  
-100V / 1A SMU
+100V / 7A SMU
 
 * **[2461-SMU](./2461-SMU/)**  
 100V / 10A (pulsed) SMU
@@ -19,10 +19,10 @@ These examples include those found in the User Manual, Application Notes, and ot
 * **[2470-SMU](./2470-SMU/)**  
 1100V / 1A SMU with high-V triaxial outputs
 
-* **[Basic Measurements(./Basic_Measurements/)**  
-A series of general purpose example providing insight on how to configure and execute the most common measurement operations. 
+### Instrument agnostic (In this directory):
 
-### Instrument agnostic:
+* **[Controlled Ramp](./Controlled_Ramp.tsp)**  
+A TSP script to sweep at a defined speed using a timer and the trigger model. 
 
 * **[Battery Cycler](./smu_battery_cycle_solution.py)**  
 This Python script can be used to perform battery cycling (charge/discharge) testing. See comments in the file for details. 
