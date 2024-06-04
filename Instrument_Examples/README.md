@@ -3,6 +3,8 @@
 
 These code examples are a good place to start learning how to work with your instrument over a remote interface. Many examples are taken from the instruments' user manuals, check there first if you need help understanding the code.
 
+See the [main page](/) for a description of this whole Repo. 
+
 ## Directory
 
 [comment]: **[Instrument](./directory)**  
