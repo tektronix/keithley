@@ -1,6 +1,6 @@
 # PMU
 
-These examples are for external control of the 4200A PMU with the KXCI application running on it and using a PC. 
+These examples are for external control of the 4200A PMU with the KXCI application running on it and using a PC. For information on running IV tests with the PMU, see the application note **[Pulse IV Test Automation with the Keithley 4225-PMU Pulse Measure Unit](https://www.tek.com/en/documents/application-note/pulse-iv-test-automation-with-the-keithley-4225-pmu-pulse-measure-unit)**
 
 Requirements
 

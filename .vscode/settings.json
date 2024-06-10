@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "*.tsp": "lua"
+    },
+    "Lua.diagnostics.libraryFiles": "Disable",
+    "Lua.workspace.ignoreDir": [],
+    "Lua.workspace.library": []
+}
