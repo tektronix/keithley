@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "*.tsp": "lua"
+    },
+    "Lua.diagnostics.libraryFiles": "Disable",
+    "Lua.workspace.ignoreDir": [],
+    "Lua.workspace.library": [
+        "c:\\Users\\esarver1\\.vscode\\extensions\\tektronix.tsp-toolkit-0.16.1\\node_modules\\@tektronix\\keithley_instrument_libraries\\keithley_instrument_libraries\\2450\\Helper",
+        "c:\\Users\\esarver1\\.vscode\\extensions\\tektronix.tsp-toolkit-0.16.1\\node_modules\\@tektronix\\keithley_instrument_libraries\\keithley_instrument_libraries\\2450\\AllTspCommands"
+    ]
+}

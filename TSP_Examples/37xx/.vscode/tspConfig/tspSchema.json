@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "nodes": {
+      "type": "object",
+      "patternProperties": {
+        "^node\\d+$": {
+              "type": "object",
+              "properties": {
+                "model": {
+                  "type": "string",
+                  "enum": ["2450","2460","2461","2470","2601B","2602B","2604B","2611B","2612B","2614B","2634B","2635B","2636B","DMM7510"]
+                },
+                "slots": {
+                  "type": "object",
+                  "patternProperties": {
+                    "^slot\\d+$": {
+                      "type": "string"
+                    }
+                  },
+                  "minProperties": 1
+                }
+              },
+              "required": ["model"]
+            }
+        }
+      },
+      "self": {
+        "type": "string",
+        "enum": ["2450","2460","2461","2470","2601B","2602B","2604B","2611B","2612B","2614B","2634B","2635B","2636B","DMM7510"]
+      }
+    }
+
+  }

@@ -1,0 +1,12 @@
+{
+    "$schema": "./tspSchema.json",
+    "nodes":{
+        "node1": {
+            "model": "2470"
+        },
+        "node2": {
+            "model": "2470"
+        }
+    },
+    "self": "2470"
+}
