@@ -18,7 +18,7 @@ Visual Basic example (with dummy TSP script) to load and run a TSP file.
 Python example to scan thermocouples over 24+ hours and plot results with matplotlib. See README in directory for more.
 
 * **[Mixed Function Multi-Channel Scanning](./Mixed_Function_Multi-Channel_Scanning/)**  
-Python and Visual Basic examples to perform more complex scans with multiple measurement functions. See README in directory for more. 
+Both TSP and Python with Visual Basic examples to perform more complex scans with multiple measurement functions. See README in directory for more. 
 
 * **[Mixed Signal Scanning](./Mixed_Signal_Scanning/)**  
 Python and MatLab example with RS-232 to set up and execute a scan with multiple measurement functions. 
@@ -27,19 +27,19 @@ Python and MatLab example with RS-232 to set up and execute a scan with multiple
 Zipped C# project to control the DIO ports on the 7707 Differential Multiplexer Switch Card and TSP Script to configure the same card. See README in directory for more.
 
 * **[Pre-Scan Monitor](./Pre-Scan_Monitor/)**  
-Python examples with TSP and SCPI commands to wait for a temperature chamber to come up to temperature before executing a scan. See README in directory for more. 
+Native TSP and Python examples with TSP and SCPI commands to wait for a temperature chamber to come up to temperature before executing a scan. See README in directory for more. 
 
 * **[Scan Temperature using Thermocouples](./Scan_Temperaure_Using_Thermocouples/)**  
-Python and Visual Basic examples to scan temperature with thermocouples. See README in directory for more. 
+TSP and Python with Visual Basic examples to scan temperature with thermocouples. See README in directory for more. 
 
 * **[Scanning Low Level DC Voltage](./Scanning_Low_Level_DC_Voltage/)**  
-Python examples demonstrating the use of NPLC and Autozero functions to accurately measure low voltage. See README in directory for more. 
+TSP and Python examples demonstrating the use of NPLC and Autozero functions to accurately measure low voltage. See README in directory for more. 
 
-* **[Scannig Resistors with 4W Measurement](./Scanning_Resistors_Using_4W_Measurement/)**  
+* **[Scanning Resistors with 4W Measurement](./Scanning_Resistors_Using_4W_Measurement/)**  
 Python examples to scan ressitance measurements with a preference for 4-wire/Kelvin connections. See README in directory for more. 
 
 * **[Speed Scanning for Increased Throughput](./Speed_Scanning_for_Increased_Test_Throughput/)**  
-Python examples demonstrating differences in scan speed between the 7700, 7703, and 7710 multiplexer modules. See README in directory for more. 
+TSP and Python examples demonstrating differences in scan speed between the 7700, 7703, and 7710 multiplexer modules. See README in directory for more. 
 
 * **[Three Ways to Manage Scanning](./Three_Ways_To_Manage_Scanning/)**  
 Three python examples demonstrating different ways to control a scan: a traditional triggered approach, a manual approach, and a interval triggered approach. See README in directory for more. 

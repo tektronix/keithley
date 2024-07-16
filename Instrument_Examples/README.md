@@ -46,6 +46,9 @@ Python
 * **[Model 6430 Electrometer](./Model_6430/)**  
 C#
 
+* **[700B Series Switch System](./Series_700B/)**  
+TSP
+
 * **[2200 Series Power Supplies](./Series_2200/)**  
 Python, C#
 
