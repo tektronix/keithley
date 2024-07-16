@@ -21,6 +21,7 @@ Description:
 	and analysis.
 
 Required Equipment:  1 Model 2601B-PULSE System SourceMeter instrument
+                     1 2602B System SourceMeter intrument
 
 Note:  The function does not perform any error checking.  It is the user's 
        responsibility to specify settings that are compatible with the 
