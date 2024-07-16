@@ -3,7 +3,7 @@
 
 This example application demonstrates how to use the DAQ6510 to perform complex multi-channel,
 mixed function scanning in a production-test environment.
-The DAQ6510 can perform more than one function in a multichannel scan, providing a range of dataacquisition
+The DAQ6510 can perform more than one function in a multichannel scan, providing a range of data acquisition
 options in a single test.
 In this production environment the DAQ6510 is:
 
