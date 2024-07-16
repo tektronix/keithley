@@ -203,7 +203,7 @@ function DualSmuRdson(gateLevel, dstart, dstop, dsteps, pulseWidth, pulsePeriod,
 	node[2].smua.source.output		= node[2].smua.OUTPUT_ON
 	smua.source.output				= smua.OUTPUT_ON
 	if errorqueue.count > 0 then
-		print(�Errors were encountered�)
+		print("Errors were encountered")
 		reset()
 		return
 	end
