@@ -36,7 +36,10 @@ TSP and Python with Visual Basic examples to scan temperature with thermocouples
 TSP and Python examples demonstrating the use of NPLC and Autozero functions to accurately measure low voltage. See README in directory for more. 
 
 * **[Scanning Resistors with 4W Measurement](./Scanning_Resistors_Using_4W_Measurement/)**  
-Python examples to scan ressitance measurements with a preference for 4-wire/Kelvin connections. See README in directory for more. 
+Python examples to scan resistance measurements with a preference for 4-wire/Kelvin connections. See README in directory for more. 
+
+* **[Scanning User Defined Thermistors](./Scanning_User_Defined_Thermistors/)**  
+TSP Example to create a scan measuring thermistors outside of the default options or user defined thermistors. See README in directory for more. 
 
 * **[Speed Scanning for Increased Throughput](./Speed_Scanning_for_Increased_Test_Throughput/)**  
 TSP and Python examples demonstrating differences in scan speed between the 7700, 7703, and 7710 multiplexer modules. See README in directory for more. 
