@@ -42,6 +42,6 @@ TSP examples to check voltage drop on selected current range of max current in d
 * **[Linear Conversion](./LinearConversion.tsp/)**  
 TSP code to calculate the two constants, m and b of the linear conversion, apply them as a math operation and set unit Y = m.X+b
 
-* **[Save Measurement](./ave_Measurement.tsp/)**  
+* **[Save Measurement](./Save_Measurement.tsp/)**  
 TSP code to save defbuffer1 + basic statistics to USB flash drive.
 
