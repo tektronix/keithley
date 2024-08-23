@@ -1,7 +1,7 @@
 
-# Resistivty of Materials
+# Streaming Examples
 
-This GitHub repository features automation examples used in determining resistivity of materials made using one or multiple Keithley Instruments products.
+This GitHub repository features automation examples that stream data from the DMM to the controlling PC during execution. 
 
 ## Directory
 
