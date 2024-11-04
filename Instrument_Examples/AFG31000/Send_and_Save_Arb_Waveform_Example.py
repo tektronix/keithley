@@ -52,4 +52,6 @@ instrument.write("SOURce1:VOLTage:LEVel:IMMediate:LOW -1V") # Set offset
 # Save channel 1 as a .tfwx file
 instrument.write("MMEMory:STORe:TRACe EMEMory1,\"M:/sample1.tfwx\"")
 
-rm.close() #Close Visa Connection
+instrument.clear() # Clear connection
+instrument.close() # Close VISA session
+rm.close() # Close Visa Connection
