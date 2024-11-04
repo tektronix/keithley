@@ -13,6 +13,9 @@ See the [main page](/) for a description of this whole Repo.
 * **[General](./General)**  
 TSP, Python, Visual Basic, C#, Go
 
+* **[AFG31000](./AFG31000/)**  
+Python
+
 * **[DAQ6510](./DAQ6510)**  
 TSP, Python, Matlab, Visual Basic, LabVIEW
 
