@@ -1,6 +1,6 @@
 <h1>The TTI Display API</h1>
 
-The user interfaces of the Keithley Touch, Test, Invent&reg; (TTI) products are designed to offer an easy-to-use and expansive user experience. 
+The user interfaces of the Keithley Touch, Test, Invent:tm: (TTI) products are designed to offer an easy-to-use and expansive user experience. 
 It allows access to all the features and functionality of the TTI products. 
 But as such, it may not offer the best experience for very specific applications.
 Thus, the TTI Display API allows control of the Display for custom GUI applications and flexible additions to current System displays.

@@ -25,7 +25,7 @@ Code that makes up a partial or complete instrument driver library for any progr
 Application specific template projects that can be loaded into [Keithley KickStart software](https://www.tek.com/products/keithley/keithley-control-software-bench-instruments/kickstart). 
 
 * **[TTI Apps](./TTI_Apps)**  
-TSP&reg; Apps for Touch, Test, Invent&reg; instruments (i.e. Keithley's line of touch screen enabled instruments). These are not traditional TSP scripts.
+TSP:tm: Apps for Touch, Test, Invent:tm: instruments (i.e. Keithley's line of touch screen enabled instruments). These are not traditional TSP scripts.
 
 ## Downloading Files
 
