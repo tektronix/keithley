@@ -64,13 +64,13 @@ TSP, Python
 * **[2380 Series Electronic Loads](./Series_2380)**  
 Python
 
-* **[2400 Series SourceMeter:tm: Source Measure Units](./Series_2400/)**  
+* **[2400 Series SourceMeter™ Source Measure Units](./Series_2400/)**  
 Python
 
-* **[2400 Series Graphical SourceMeter:tm: Source Measure Units](./Series_2400_Graphical/)**  
+* **[2400 Series Graphical SourceMeter™ Source Measure Units](./Series_2400_Graphical/)**  
 TSP, Python
 
-* **[2600B Series SourceMeter:tm: Source Measure Units](./Series_2600/)**  
+* **[2600B Series SourceMeter™ Source Measure Units](./Series_2600/)**  
 TSP, Python
 
 * **[3706A Series System Switch/Multimeter](./Series_3706A)**  

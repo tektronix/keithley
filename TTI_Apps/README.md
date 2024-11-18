@@ -1,6 +1,6 @@
 # TTI Apps
 
-Keithley's TSP:tm: (Test Script Processor) enabled instruments have an on-board, user accessible processor. This allows the instruments to control themselves by writing functions or entire scripts that can be stored on the instrument itself and called either from an external computer or the front panel of the instrument. For our Touch, Test, Invent:tm: touchscreen enabled instruments, TSP can be used to take further control of the instruments' display and user interface to create mini, instrument specific applications, or Apps. TTI Apps have the extension .tspa to distinguish them from traditional .tsp scripts.
+Keithley's TSP™ (Test Script Processor) enabled instruments have an on-board, user accessible processor. This allows the instruments to control themselves by writing functions or entire scripts that can be stored on the instrument itself and called either from an external computer or the front panel of the instrument. For our Touch, Test, Invent™ touchscreen enabled instruments, TSP can be used to take further control of the instruments' display and user interface to create mini, instrument specific applications, or Apps. TTI Apps have the extension .tspa to distinguish them from traditional .tsp scripts.
 
 Touch, Test, Invent instruments include:
 | Instrument Type |  |  |  |  |

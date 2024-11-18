@@ -4,7 +4,7 @@ These Folders and files contain TSP code structured as a tutorial on each TSP to
 
 For the best experience, have your instrument in front of you and communicate to it with [Test Script Builder](https://www.tek.com/software/TestScriptBuilder/KTS-850J02) over any of the supported communication interfaces.  The terminal of Test Script Builder will be very helpful in understanding how the TSP language works.
 
-If you have a non-A, or A version of a 2600 Series, these tutorials will mostly still work as the TSP language has remained largely the same on all 2600 Series SMUs.  That said, these tutorial were tested with a 2602B SourceMeter&reg; so there may be some incompatabilities.  A few examples are written to require a dual channel SMU (2602, 2604, 2606, 2612, 2614, 2634, & 2636), but they can still provide a good understanding on the topics.
+If you have a non-A, or A version of a 2600 Series, these tutorials will mostly still work as the TSP language has remained largely the same on all 2600 Series SMUs.  That said, these tutorial were tested with a 2602B SourceMeter™ so there may be some incompatibilities.  A few examples are written to require a dual channel SMU (2602, 2604, 2606, 2612, 2614, 2634, & 2636), but they can still provide a good understanding on the topics.
 
 > Python's [PyVISA](https://pyvisa.readthedocs.io/en/master/) also supports a terminal-like shell interface.  See their documentation for more information.
 
