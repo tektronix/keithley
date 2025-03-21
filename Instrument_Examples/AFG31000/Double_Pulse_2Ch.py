@@ -186,20 +186,19 @@ def main():
     voltageLow = 0
     try:
         generateDoublePulse(instrument, 1, pulse1OnTime, pulse1OffTime, pulse2OnTime, pulse2OffTime, voltageHigh, voltageLow)
-        generateDoublePulse(instrument, 2, pulse1OnTime, pulse1OffTime, pulse2OnTime, pulse2OffTime, voltageHigh, voltageLow)
+        generateDoublePulse(instrument, 2, pulse1OnTime, pulse1OffTime, pulse2OnTime, pulse2OffTime, voltageHigh, voltageLow, 1)
     except Exception as e:
         print(f"Error: {e}")
         sys.exit()
         
     # Output double pulses
-    instrument.write("*TRG")
     instrument.write(":OUTPut1:STATe ON;:OUTPut2:STATe ON")
     time.sleep(1) # wait for channels outputs to both be on and ready
     instrument.write("*TRG")
     time.sleep(totalPulseTiming) # wait for total time of double pulse before turning channels off
-    instrument.write(":OUTPut1:STATe OFF")
-    instrument.write(":OUTPut2:STATe OFF")
-
+    instrument.write(":OUTPut1:STATE OFF;:OUTPut2:STATe OFF")
+    
+    time.sleep(0.5) # Wait for sent commands to operate before clearing connection
     instrument.clear() # Clear connection
     instrument.close() # Close VISA session
     rm.close() # Close resource manager session
