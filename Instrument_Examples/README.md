@@ -25,6 +25,9 @@ TSP, Python
 * **[DMM7510](./DMM7510)**  
 TSP, Python, C#
 
+* **[ElektroAutomatik](./ElektroAutomatik)**  
+Python
+
 * **[Model 2000 DMM](./Model_2000/)**  
 Visual Basic
 
