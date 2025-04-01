@@ -42,7 +42,7 @@ If you're looking for officially supported software, we invite you to visit [tek
 ## Maintainers
 
 Liz Makley: [Little-LIZard](https://github.com/Little-LIZard)  
-Brad Odhner: [Brad-O](https://github.com/Brad-O)  
+Andrea Clary: [aclary100-bit](https://github.com/aclary100-bit)
 
 ## License
 
