@@ -6,7 +6,7 @@ These code examples are a good place to start learning how to work with your [EA
 
 [comment]: **[ElektroAutomatik](./directory)**  
 
-* **[Power Supplies](./PowerSupplies)**  
+* **[Power Supplies](./PowerSupply)**  
 Examples for EA Power Supplies
 
 * **[Electronic Loads](./)**  
