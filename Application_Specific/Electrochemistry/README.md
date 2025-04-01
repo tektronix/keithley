@@ -1,4 +1,4 @@
-# 2450 Electrochemical Solutions
+# 2400 Graphical SMU Electrochemical Solutions
 
 This Directory holds electrochemical scripts for the [2400 Graphical Series SMUs](https://www.tek.com/en/products/keithley/source-measure-units/2400-graphical-series-sourcemeter). These scripts were designed for the 2450-EC, 2460-EC and 2461-EC Potentiostat and Galvanostat Solutions. These model numbers have been discontinued and the scripts are no longer officially supported. To contribute to these scripts or suggest corrections, please see the [Contribution Guidelines](/CONTRIBUTING.md)
 
