@@ -111,12 +111,12 @@ plt.margins(x=0.1, y=0.1)
 plt.grid(True)
 plt.show()
 
-print("*******************")
-print(y_max)
-print(y_min)
-print(x_max)
-print(x_min)
-print("*******************")
+#print("*******************")
+#print(y_max)
+#print(y_min)
+#print(x_max)
+#print(x_min)
+#print("*******************")
 
 #put instrument back to local and close connection
 my_instr.write("SYST:LOCK OFF")  # disable remote control
