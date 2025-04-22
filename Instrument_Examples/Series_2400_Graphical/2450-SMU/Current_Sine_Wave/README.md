@@ -18,13 +18,25 @@ This TSP file demos how to pass parameter values and use the sine wave generatio
 topic 1
 
 ![define functions](images/define_functions.png)
+
 topic 2
+
+![define functions](images/define_detail.png)
+
 
 topic 3
 
+![define functions](images/use_functions.png)
+
+
 topic 4
 
+![define functions](images/outcome.png)
+
 topic 5
+
+![define functions](images/run_tsp_toolkit.png)
+
 
 
 
