@@ -1,6 +1,6 @@
 --[[
 
-KEITHLEY INSTRUMENTS,MODEL 2450,04407385,1.7.0e
+KEITHLEY INSTRUMENTS,MODEL 2450,04407385,1.7.16a
 
 Purpose:  custom version of smu.source.sweeplinear()
           for generation of current sine wave
