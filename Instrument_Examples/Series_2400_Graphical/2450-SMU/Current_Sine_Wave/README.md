@@ -43,7 +43,7 @@ Touch the screen where it displays 'No Script'.  This will give a pop-up list
 of available scripts on thumb drive or stored on the instrument.
 Run the current_sine_wave_define.tsp once.
 Then run the current_sine_wave_use.tsp to generate the sine wave of current.
-To run again without any value chnages, press TRIG button to execute it again.
+To run again without any value changes, press TRIG button to execute it again.
 
 ![define functions](images/outcome.png)
 
