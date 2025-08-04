@@ -12,3 +12,5 @@ Example for 2 channel double pulse on the AFG31k using remote commands. Creates 
 * **[Sending and Saving Arbitrary Waveforms](./Send_and_Save_Arb_Waveform_Example.py/)**  
 Creates a sine waveform, sends it to the AFG31000's edit memory 1, and saves the waveform as a .tfwx file to the AFG31k's internal memory.
 
+* **[Transfering Waveforms to the AFG31k](./Transfer_Waveform_File.py/)**  
+Transfer an AFG31k waveform file (.tfwx) over a remote communication to an AFG31k (requires AFG31k firmware 1.6.5 or above). Note waveform file to transfer must be in the same directory as this Python script.
