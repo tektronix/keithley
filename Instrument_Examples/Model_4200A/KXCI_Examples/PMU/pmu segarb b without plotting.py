@@ -9,7 +9,7 @@ Device used: 1 Kohm resistor
 from instrcomms import Communications
 import time
 
-INST_RESOURCE_STR = "TCPIP0::192.0.2.0::1225::SOCKET" # instrument resource string, obtained from NI MAX
+INST_RESOURCE_STR = "TCPIP0::134.63.74.151::1225::SOCKET" # instrument resource string, obtained from NI MAX
 
 my4200 = Communications(INST_RESOURCE_STR) # opens the resource manager in PyVISA with the corresponding instrument resource string
 my4200.connect() # opens connections to the 4200A-SCS
