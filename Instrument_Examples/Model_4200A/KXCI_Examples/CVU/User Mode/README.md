@@ -8,7 +8,7 @@ Requirements
 * KXCI terminal setup: String Terminator = None, Reading Delimiter= String Terminator, Set to ethernet mode
 * KXCI Configuration (set within KCON): TH, String Terminator = None, Reading Terminator = String Terminator
 * Python: Version 3.6 or later
-* Dependencies:  **[instrcomms.py](https://github.com/tektronix/keithley/blob/main/Instrument_Examples/General/Instrument_Communication_Resouces/instrcomms.py)**,  pyVISA
+* Dependencies:  **[instrcomms.py](../../../../General/Instrument_Communication_Resouces/instrcomms.py)**,  pyVISA
 
 ## Directory
 

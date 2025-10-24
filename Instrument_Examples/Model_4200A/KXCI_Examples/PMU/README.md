@@ -4,11 +4,9 @@ All of the code was written in python, and requires python 3.6 to run, and it wa
 
 The KXCI terminal setup is as follows: String Terminator = None, Reading Delimiter= String Terminator, Set to ethernet mode.
 
-Required dependencies: Instrcomms, time, and pyvisa
+Required dependencies: **[instrcomms](../../../General/Instrument_Communication_Resouces/instrcomms.py)**, time, and pyvisa
 Optional dependencies (Need for the code to run, but can be modified to run with it. All lines are marked where these can be removed)
 plotly.express, pandas, plotly.graph_objects (used  in 4 chan sync test, 4 chan sync test segarb, pmu segarb b, pmu segarb complete, pulse vds-id prelim test LLEC), plotly_subplot (used in pmu segarb b)
-
-Instrcomms can be found at the following link: https://github.com/tektronix/keithley/blob/main/Instrument_Examples/General/Instrument_Communication_Resouces/instrcomms.py
 
 The KXCI configuration, as set within KCON, used to create these scripts was: ETH, String Terminator = None, Reading Terminator = String Terminator. If these settings are not configured the same, the scripts may fail. 
 

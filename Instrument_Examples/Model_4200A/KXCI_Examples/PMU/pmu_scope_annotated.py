@@ -7,7 +7,7 @@ communicate to the 4200A.
 import time
 from instrcomms import Communications
 
-INST_RESOURCE_STR = "TCPIP0::134.63.74.187::1225::SOCKET" #establish ethernet connection with the 4200A - change address based your IP address
+INST_RESOURCE_STR = "TCPIP0::192.0.2.0::1225::SOCKET" #establish ethernet connection with the 4200A - change address based your IP address
 pmuWave = Communications(INST_RESOURCE_STR)
 pmuWave.connect()
 pmuWave._instrument_object.write_termination = "\0"
