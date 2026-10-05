@@ -52,6 +52,9 @@ Python
 * **[Model 6430 Electrometer](./Model_6430/)**  
 C#
 
+* **[MP5000 Modular Precision Test System](./MP5000/)**
+TSP
+
 * **[700B Series Switch System](./Series_700B/)**  
 TSP
 
