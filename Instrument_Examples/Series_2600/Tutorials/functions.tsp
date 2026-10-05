@@ -24,7 +24,7 @@ print("For input "..tostring(5)..", x2 returns "..x2(5).."\n")
 function applyToTable(tab, f)           -- This function applies function, f, to each item in a table, tab, and returns the result
     newtab = {n=table.getn(tab)}
     for index = 1, table.getn(tab) do
-        tab[index] = x2(tab[index])
+        tab[index] = f(tab[index])
     end
     return tab
 end
@@ -48,7 +48,7 @@ function sum(a, b, ...)             -- This function returns the sum of every nu
     return result
 end
 
-result = sum(10, 20, 30, 40, 50, 60, 70, 80)
+bigNumber = sum(10, 20, 30, 40, 50, 60, 70, 80)
 print("sum(10, 20, 30, 40, 50, 60, 70, 80) = "..bigNumber)
 print(" ")
 

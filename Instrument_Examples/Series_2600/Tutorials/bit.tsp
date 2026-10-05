@@ -90,7 +90,6 @@ print("Bitwise logical AND operation")
 value = bit.bitand(value1,value2)
 print(value1," AND ",value2," = ",value,"\n")
 
-
 -- Perform the bit OR function
 print("Bitwise logical OR operation")
 value = bit.bitor(value1,value2)
@@ -101,12 +100,10 @@ print("Bitwise logical XOR operation")
 value = bit.bitor(value1,value2)
 print(value1," XOR ",value2," = ",value,"\n")
 
-
 -- Peform a bit clear on value2 with an index of 4
 print("Bit CLEAR operation")
 value = bit.clear(value2, 4)
 print(value2," after clearing bit index 4 = ",value,"\n")
-
 
 -- Get the bit information for value1. This example only looks at the first 16 bits.
 print("Bit GET operation")
@@ -125,14 +122,12 @@ for index = 1, 8 do
 end
 print()  -- Print a space between sections
 
-
 -- This part will set a bit in value1 at index 6 to change the value of value1. This new value1 will
 -- be used in the remaining sections.
 print("Bit SET operation")
 value = bit.set(value1, 6)
 print(value1,"after setting bit index 6 = ",value,"\n")
 value1 = value					-- Updates value1 to the new value for the next sections.
-
 
 -- This part will overwrite a bit field at a given index position set by the loop. The value that 
 -- will be overwritten will be that of 'value1'. Width will be 4. Watch how 'value1' is changed.
@@ -144,7 +139,6 @@ for index = 1, 8 do
 end
 print()		-- Print a space between sections
 
-	
 -- This next section performs returns the Boolean value (true or false) of a bit at a given index position.
 -- We will use the last value computed in the previous section for 'value1'.
 print("Bit TEST operation")
@@ -154,7 +148,6 @@ for index= 1, 11 do
 	print("The boolean value at Index = ",index,"is ",value)
 end
 print()		-- Print a space between sections
-	
 	
 -- This final section toggles a bit. We will use 'value2' and toggel the bit at index = 2
 print("Bit TOGGLE operation")

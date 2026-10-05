@@ -24,9 +24,6 @@ These examples include those found in the User Manual, Application Notes, and ot
 * **[Controlled Ramp](./Controlled_Ramp.tsp)**  
 A TSP script to sweep at a defined speed using a timer and the trigger model. 
 
-* **[Battery Cycler](./smu_battery_cycle_solution.py)**  
-This Python script can be used to perform battery cycling (charge/discharge) testing. See comments in the file for details. 
-
 * **[PulseTrain_SVMI](./PulseTrain_SVMI.tsp)**  
 Defines an operation to toggle between two source levels when a timer object elapses. The timer object is also used as the stimulus for a digital output strobe; this gives some timing marks to have more insight into the trigger blocks rate of operation/speed.
 
