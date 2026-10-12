@@ -56,4 +56,8 @@ Full description [here](https://forum.tek.com/viewtopic.php?f=617&t=141115).
 * **[Resistance Tolerance Meter](./Resistance_Tolerance_Meter.tspa)**  
 Turns the DMM6500 or DAQ6510 into a dedicated resistor tolerance meter. You can set the expected value, number of resistors to be tested, and several other options. The app gives you an option to export the data when you're done. This is basically a wrapper of the limit test functionality.
 
+* **[Serial Decode](./Serial_Decode.tspa)**  
+A UART decoder built in TSP for the DMM6500 and DMM7510 digitize functions. It should also be possible for this to run on the 2461 but that is untested.
+Authored by Ian Ameline and reproduced here with permission, see [Ian's Github](https://github.com/ameline-design/dmm6500-serial-decode) for the latest.
+
 For these or other TTI Apps, please also visit [TSP Applications for Keithley Touch Test Invent® Models](https://www.tek.com/en/keithley/tsp-applications-for-touch-test-invent-models).

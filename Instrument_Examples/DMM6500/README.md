@@ -28,7 +28,7 @@ Application note and TSP code for Power Measurements using Digitizer functions. 
 Application note and TSP code demonstrating how to log temperature measurements from multiple scan card channels at 1rdg/s for 24 hours. The data is saved to a flash drive.
 
 * **[Streaming Examples](./Streaming_Examples/)**  
-Automation examples to collect and stream readings back to the controlling PC. Includes an example for streaming as well as digitizing on two TSP-Linked DMM6500s. 
+Automation examples to collect and stream readings back to the controlling PC. Includes an example for streaming as well as digitizing on two TSP-Linked DMM6500s.
 
 * **[TSP-Link Examples](./TSP-Link%20Examples/)**  
 Example to configure two DMM6500 instruments to use TSP-Link to measure the power consumed by a Bluetooth (R) low energy (BLE) device
@@ -39,9 +39,17 @@ Python and TSP code to execute a test sequence defined by a CSV file. CSV files 
 * **[Check Burden Voltage](./Check_Burden_Voltage.tsp/)**  
 TSP examples to check voltage drop on selected current range of max current in default buffer.
 
+* **[Continuity Tester](./Continuity_Tester.tsp)**  
+TSP code from EEVBlog user KungfuJosh to beep when continuity is present.
+
+* **[Discontinuity Tester](./Discontinuity_Tester.tsp)**  
+TSP code from EEVBlog user KungfuJosh to beep when discontinuity is present.
+
 * **[Linear Conversion](./LinearConversion.tsp/)**  
 TSP code to calculate the two constants, m and b of the linear conversion, apply them as a math operation and set unit Y = m.X+b
 
+* **[Range Buzzer](./Range_Buzzer_1M.tsp)**  
+TSP code from EEVBlog user KungfuJosh to buzz when resistance is between 2 set values.
+
 * **[Save Measurement](./Save_Measurement.tsp/)**  
 TSP code to save defbuffer1 + basic statistics to USB flash drive.
-
