@@ -1,4 +1,3 @@
-loadandrunscript
 --[[
 ################################################################################
 
@@ -238,6 +237,18 @@ function configDcLonger500us(startI,stopI,nPulse,pulsePeriod,pulseWidth,measAper
 	smua.trigger.source.action		= smua.ENABLE
 end
 
+--[[ 
+Because we want this script to run on the 2601B-PULSE (for ease of debugging) AND 
+	there are some DMM trigger model blocks that the 2601B-PULSE doesn't know about, 
+	we need to use a trick. 
+We define the script that configures the DMM as a string variable here. 
+Later in initializeTSPLINK(), we call DMM_node.execute(setDMM6500). This command 
+	executes a string as a command on a remote node.
+Finally in completePulse_CaseI_2601B_PULSE_DMM(), we call 
+	node[2].execute("DMM_setup(...)")" You see clearly that .execute takes a string. 
+Thus, the code below appears as a comment, but it is interpreted by the instruments 
+	as a string, which ultimately allows it to be executed as code.
+]]
 local setDMM6500 =[[
 function DMM_setup(nReading,measAperture,noReadings,rangeDMM,pulseWidth)
 
@@ -311,7 +322,7 @@ function completePulse()
 	local protectVsrc 	= 10
 	local protectVsns	= 10
 	local biasCurrent   = 0.5e-3
-	local rangeDMM   	= 0.1e-3
+	local rangeDMM   	= 10e-3
 	completePulse_CaseI_2601B_PULSE_DMM(startI,stopI,nPulse,pulsePeriod,pulseWidth,measAperture,rangeV,rangeI,protectVsrc,protectVsns,biasCurrent,rangeDMM,1)
 end
 
@@ -328,6 +339,6 @@ function initializeTSPLINK()
 	waitcomplete(1)
 	print("TSPLINK is successfully linked")
 end
-endscript
-print("the script is loaded")
 
+initializeTSPLINK()
+completePulse()

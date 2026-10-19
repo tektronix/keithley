@@ -1,4 +1,3 @@
-loadandrunscript
 --[[
 ################################################################################
 
@@ -265,5 +264,6 @@ function initializeTSPLINK()
 	end
 	print("TSPLINK is sucessfully linked")
 end
-endscript
-print("the script is loaded")
+
+initializeTSPLINK()
+completePulse()

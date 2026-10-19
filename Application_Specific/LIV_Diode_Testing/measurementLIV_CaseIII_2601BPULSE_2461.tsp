@@ -1,4 +1,3 @@
-loadandrunscript
 --[[
 ################################################################################
 
@@ -291,7 +290,5 @@ function initializeTSPLINK()
 end
 	
 
-endscript
-print("the script is loaded")
-
-
+initializeTSPLINK()
+measurementLIV()

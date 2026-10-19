@@ -1,4 +1,3 @@
-loadandrunscript
 --[[
 ################################################################################
 
@@ -286,6 +285,6 @@ function measurementLIV()
 
 	measurementLIV_CaseII_2601BPULSE_2602B(startI,stopI,nPulse,pulsePeriod,pulseWidth,measAperture,measDelay,rangeV,rangeI,protectVsrc,protectVsns,biasCurrent, biasPD1,measRngPD1,nplcPD1,optoFactor,1)
 end 
-endscript
-print("the script is loaded")
 
+initializeTSPLINK()
+measurementLIV()
